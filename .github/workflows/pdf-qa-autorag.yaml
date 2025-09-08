@@ -63,18 +63,23 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
 
     - name: Install Poetry and Python dependencies
       run: |
         # Install Poetry
         curl -sSL https://install.python-poetry.org | python3 -
-        export PATH="$HOME/.local/bin:$PATH"
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
         
         # Configure Poetry for CI
-        poetry config virtualenvs.create false
+        $HOME/.local/bin/poetry config virtualenvs.create false
         
         # Install dependencies
-        poetry install
+        $HOME/.local/bin/poetry install
     
     - name: Login to Hugging Face
       run: |

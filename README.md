@@ -60,10 +60,11 @@ graph LR
 git clone <repository-url>
 cd autorag
 
-# Install dependencies (uses uv for speed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-uv pip install -r requirements-hf.txt --system
-uv pip install -r requirements-domain-eval.txt --system
+# Install Poetry (if not already installed)
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Install dependencies with Poetry
+poetry install
 
 # Set up Hugging Face token
 export HF_TOKEN="your_hugging_face_token_here"
@@ -132,8 +133,7 @@ autorag/
 │   └── domain_eval_gpu.py                    # Audio equipment domain evaluator
 ├── 🎯 Configuration
 │   ├── audio_equipment_domain_questions.json  # Domain-specific evaluation config
-│   ├── requirements-hf.txt                   # ML dependencies
-│   └── requirements-domain-eval.txt          # Evaluation dependencies
+│   └── pyproject.toml                         # Poetry dependencies and project config
 ├── 🤖 .github/workflows/
 │   └── pdf-qa-autorag.yaml                   # Complete CI/CD pipeline
 └── 📊 Output Directories (auto-created)
@@ -188,6 +188,25 @@ Specifically tuned for **guitar amplifiers and effects**:
 - **Domain Terms**: amplifier, guitar, tone, distortion, overdrive, gain, EQ, tube, preamp, etc.
 - **Question Categories**: Technical specifications, setup procedures, troubleshooting, comparisons
 - **Knowledge Areas**: Impedance matching, tube saturation, power handling, signal processing
+
+---
+
+## 📚 **Detailed Documentation**
+
+For in-depth technical details on each component:
+
+### Component Documentation
+- **[Q&A Generation](docs/cli_pdf_qa.md)** - PDF processing and LLM-based Q&A extraction
+- **[Quality Selection](docs/qa_pair_selector.md)** - Multi-metric quality assessment and filtering  
+- **[Vector Store](docs/qa_faiss_builder.md)** - GPU-accelerated FAISS indexing and hybrid search
+- **[RAG Evaluation](docs/qa_autorag_evaluator.md)** - Base vs RAG performance comparison
+- **[Training Dataset](docs/training_dataset_generator.md)** - Quality-filtered training data generation
+- **[Domain Evaluation](docs/domain_eval_gpu.md)** - Domain expertise and specialization analysis
+
+### Architecture Overview  
+- **[Pipeline Architecture](docs/architecture.md)** - Complete system design and data flow
+
+Each component document includes technical implementation details, configuration options, performance characteristics, and use cases.
 
 ---
 
