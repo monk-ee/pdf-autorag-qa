@@ -1,0 +1,138 @@
+{
+  "domain_info": {
+    "domain": "audio_equipment",
+    "description": "Audio equipment analysis and technical knowledge evaluation for guitar amplifiers and effects",
+    "version": "1.0",
+    "last_updated": "2024-09-08"
+  },
+  "domain_terms": [
+    "amplifier", "guitar", "tone", "distortion", "overdrive", "gain", "EQ", "frequency", 
+    "tube", "preamp", "power", "watts", "impedance", "speaker", "cabinet", "effects", 
+    "boost", "volume", "knob", "channel", "reverb", "delay", "chorus", "compressor",
+    "pickup", "signal", "output", "input", "jack", "phantom power", "headroom"
+  ],
+  "evaluation_questions": [
+    {
+      "category": "in_domain_factual",
+      "difficulty": "basic",
+      "question": "What is the primary function of a guitar amplifier's preamp section?",
+      "expected_terms": ["preamp", "signal", "gain", "amplification", "tone"]
+    },
+    {
+      "category": "in_domain_factual", 
+      "difficulty": "basic",
+      "question": "What does impedance matching mean in audio equipment?",
+      "expected_terms": ["impedance", "matching", "ohms", "speaker", "amplifier"]
+    },
+    {
+      "category": "in_domain_conceptual",
+      "difficulty": "intermediate",
+      "question": "What is the difference between overdrive and distortion effects?",
+      "expected_terms": ["overdrive", "distortion", "clipping", "saturation", "tone"]
+    },
+    {
+      "category": "in_domain_conceptual",
+      "difficulty": "intermediate", 
+      "question": "How does tube saturation affect guitar tone compared to solid-state amplification?",
+      "expected_terms": ["tube", "solid-state", "saturation", "tone", "harmonic", "warmth"]
+    },
+    {
+      "category": "in_domain_procedural",
+      "difficulty": "intermediate",
+      "question": "What are the steps for properly setting up a guitar amplifier?",
+      "expected_terms": ["setup", "volume", "gain", "EQ", "power", "speaker", "cable"]
+    },
+    {
+      "category": "in_domain_procedural",
+      "difficulty": "advanced",
+      "question": "How do you troubleshoot a noisy guitar amplifier signal?",
+      "expected_terms": ["noise", "troubleshoot", "ground", "shielding", "cable", "interference"]
+    },
+    {
+      "category": "in_domain_technical",
+      "difficulty": "advanced",
+      "question": "How do you calculate the power handling requirements for a speaker cabinet?",
+      "expected_terms": ["power", "watts", "RMS", "speaker", "cabinet", "handling", "impedance"]
+    },
+    {
+      "category": "in_domain_technical",
+      "difficulty": "advanced",
+      "question": "What are the key specifications to consider when matching effects pedals with amplifiers?",
+      "expected_terms": ["effects", "pedals", "impedance", "signal", "level", "compatibility"]
+    },
+    {
+      "category": "out_domain_general",
+      "difficulty": "unknown",
+      "question": "How do you change the oil in a car engine?",
+      "expected_terms": []
+    },
+    {
+      "category": "out_domain_technical",
+      "difficulty": "unknown", 
+      "question": "What is the difference between Python and JavaScript programming languages?",
+      "expected_terms": []
+    },
+    {
+      "category": "out_domain_audio_adjacent",
+      "difficulty": "unknown",
+      "question": "What are the acoustics of a large concert hall?",
+      "expected_terms": []
+    },
+    {
+      "category": "edge_case_ambiguous",
+      "difficulty": "unknown",
+      "question": "Which amplifier sounds the best?",
+      "expected_terms": ["amplifier", "tone", "sound"]
+    }
+  ],
+  "uncertainty_phrases": [
+    "i don't know",
+    "not sure", 
+    "unclear",
+    "don't have information",
+    "not specified in",
+    "would need more information",
+    "i'm not sure",
+    "cannot provide",
+    "unable to determine",
+    "not familiar with",
+    "don't have specific information",
+    "not certain",
+    "hard to say",
+    "difficult to determine",
+    "insufficient information",
+    "requires more details",
+    "not covered in the available",
+    "beyond my knowledge",
+    "not documented in"
+  ],
+  "context_templates": {
+    "comparison": {
+      "prefix": "AUDIO EQUIPMENT COMPARISON ANALYSIS\n\nReference Examples:\n",
+      "suffix": "Based on the audio equipment examples above, please compare and contrast: {question}\n\n",
+      "confidence_instructions": {
+        "low": "IMPORTANT: If you cannot find sufficient information in the reference examples to answer this audio equipment question confidently, please respond with: 'I'm not sure based on the audio equipment information I found in the documentation.'",
+        "medium": "CAUTION: Use only the audio equipment information provided in the references above. If any part of your answer goes beyond what's explicitly stated, clearly indicate uncertainty.",
+        "high": "Use the reference audio equipment information to provide a comprehensive comparison."
+      }
+    },
+    "technical": {
+      "prefix": "AUDIO EQUIPMENT TECHNICAL REFERENCE\n\n",
+      "suffix": "Audio Equipment Question: {question}\n",
+      "confidence_instructions": {
+        "low": "INSTRUCTIONS: Provide an audio equipment answer using ONLY the reference information above. If the specific technical details are not available in the references, respond with: 'I'm not sure based on the audio equipment information I have. The references don't contain sufficient details about this specific technical aspect.'",
+        "medium": "Provide an audio equipment answer based primarily on the reference information above. Clearly indicate if you're making any inferences.",
+        "high": "Provide a detailed audio equipment answer using the reference information above."
+      }
+    },
+    "general": {
+      "prefix": "AUDIO EQUIPMENT REFERENCE INFORMATION\n\n",
+      "suffix": "Question: {question}\n\n",
+      "confidence_instructions": {
+        "low": "CRITICAL: The retrieved audio equipment information may not be sufficient to answer this question accurately. If you cannot provide a confident answer based on the audio equipment references above, please respond with: 'I'm not sure based on the information I found. This question may require additional technical documentation or specifications that aren't available in my current references.'",
+        "medium": "CAUTION: Use only the audio equipment information provided in the references above. If any part of your answer goes beyond what's explicitly stated in the references, clearly indicate uncertainty with phrases like 'Based on the available technical information...' or 'The references suggest...'",
+        "high": "Answer confidently using the audio equipment reference information provided above."
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+# Core dependencies for HF Q&A extractor
+torch>=2.1.0
+transformers>=4.42.0
+accelerate>=0.24.0
+auto-gptq>=0.7.1
+bitsandbytes>=0.41.0
+tqdm>=4.65.0
+numpy<2.0.0
+
+# Optional dependencies for better performance
+optimum>=1.8.0
+datasets>=2.12.0
+hf_transfer>=0.1.3
+
+# Parallel processing dependencies
+multiprocess>=0.70.0
+
+# System monitoring dependencies
+psutil>=5.9.0
+
+# PDF processing dependencies
+PyPDF2>=3.0.0
+PyMuPDF>=1.23.0
