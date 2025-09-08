@@ -64,14 +64,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install uv and Python dependencies (Combined)
+    - name: Install Poetry and Python dependencies
       run: |
-        curl -LsSf https://astral.sh/uv/install.sh | sh
+        # Install Poetry
+        curl -sSL https://install.python-poetry.org | python3 -
         export PATH="$HOME/.local/bin:$PATH"
         
-        # Install both sets of requirements for the complete pipeline
-        sudo env PATH="$PATH" uv pip install -r requirements-hf.txt --system
-        sudo env PATH="$PATH" uv pip install -r requirements-domain-eval.txt --system
+        # Configure Poetry for CI
+        poetry config virtualenvs.create false
+        
+        # Install dependencies
+        poetry install
     
     - name: Login to Hugging Face
       run: |
