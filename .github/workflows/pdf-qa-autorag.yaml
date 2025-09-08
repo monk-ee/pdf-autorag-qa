@@ -89,7 +89,10 @@ jobs:
       run: |
         # Use uv for faster installation
         export UV_SYSTEM_PYTHON=1
-        poetry install --with gpu --no-dev
+        poetry install --no-dev
+        
+        # Install GPU-specific packages manually (platform-specific)
+        pip install faiss-gpu>=1.7.4 || pip install faiss-cpu>=1.7.4
         
         # Verify critical dependencies
         python -c "import sentence_transformers; print('✅ sentence-transformers installed')"

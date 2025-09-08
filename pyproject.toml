@@ -52,6 +52,13 @@ pytest = "^8.0.0"
 black = "^23.0.0"
 
 [tool.poetry.group.gpu.dependencies]
-faiss-gpu = "^1.7.4"
+# FAISS GPU is platform-specific, install manually:
+# pip install faiss-gpu
+# or use conda: conda install -c pytorch faiss-gpu
 
-# Install with: poetry install --with gpu
+[tool.poetry.extras]
+gpu = []
+
+# Manual GPU setup:
+# poetry install 
+# pip install faiss-gpu  # Install GPU version manually
