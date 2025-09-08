@@ -41,6 +41,9 @@ This documentation explains each component of the AutoRAG pipeline in technical 
 ### [Pipeline Architecture](architecture.md)
 Complete system overview with data flow, technical stack, and design principles.
 
+### [Key Takeaways](takeaways.md)
+Production insights and optimization opportunities from real pipeline runs.
+
 ## Quick Navigation
 
 - **Getting Started**: See main [README.md](../README.md)

@@ -69,17 +69,19 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Install Poetry and Python dependencies
+    - name: Install Poetry
       run: |
-        # Install Poetry
         curl -sSL https://install.python-poetry.org | python3 -
         echo "$HOME/.local/bin" >> $GITHUB_PATH
         
-        # Configure Poetry for CI
-        $HOME/.local/bin/poetry config virtualenvs.create false
+    - name: Install dependencies
+      run: |
+        # Configure Poetry for CI (system-wide installation)
+        poetry config virtualenvs.create false
+        poetry config virtualenvs.in-project false
         
-        # Install dependencies
-        $HOME/.local/bin/poetry install
+        # Install all dependencies
+        poetry install --no-dev
     
     - name: Login to Hugging Face
       run: |
