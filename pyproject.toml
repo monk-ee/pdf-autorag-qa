@@ -17,7 +17,6 @@ dependencies = [
     # Vector search and embeddings
     "sentence-transformers>=2.2.0",
     "faiss-cpu>=1.7.4",
-    "faiss-gpu>=1.7.4",
     
     # Evaluation and metrics
     "bert-score>=0.3.13",
@@ -51,3 +50,8 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
 black = "^23.0.0"
+
+[tool.poetry.group.gpu.dependencies]
+faiss-gpu = "^1.7.4"
+
+# Install with: poetry install --with gpu
