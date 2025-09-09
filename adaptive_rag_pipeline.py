@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 import faiss
@@ -279,7 +279,7 @@ class AdaptiveRetriever:
                 elif strategy.fallback_strategy == 'context_expansion':
                     # Expand search with lower threshold
                     expanded_strategy = strategy_name if strategy_name != 'conservative' else 'balanced'
-                    return self.retrieve_adaptive(query, analysis._replace(confidence_threshold=0.2))
+                    return self.retrieve_adaptive(query, replace(analysis, confidence_threshold=0.2))
         
         return results, strategy_name
 
