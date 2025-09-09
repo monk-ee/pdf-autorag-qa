@@ -34,18 +34,34 @@ class RAGComparisonAnalyzer:
                 'final_evaluation_report.json'
             ]
             
+            logger.info(f"Searching for evaluation files in: {results_dir}")
+            
+            # List all files in directory for debugging
+            if results_dir.exists():
+                all_files = list(results_dir.glob('*'))
+                logger.info(f"Files found in {results_dir}: {[f.name for f in all_files]}")
+            else:
+                logger.error(f"Results directory does not exist: {results_dir}")
+                return {}
+            
             for filename in result_files:
                 result_file = results_dir / filename
                 if result_file.exists():
                     logger.info(f"Loading results from: {result_file}")
                     with open(result_file, 'r') as f:
-                        return json.load(f)
+                        data = json.load(f)
+                        logger.info(f"Loaded data keys: {list(data.keys()) if data else 'Empty'}")
+                        logger.info(f"Data size: {len(str(data))} characters")
+                        return data
             
             logger.warning(f"No standard result files found in {results_dir}")
+            logger.warning(f"Tried files: {result_files}")
             return {}
             
         except Exception as e:
             logger.error(f"Error loading results from {results_dir}: {e}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
             return {}
     
     def extract_key_metrics(self, results: Dict, approach_name: str) -> Dict:
@@ -263,8 +279,22 @@ class RAGComparisonAnalyzer:
         adaptive_results = self.load_evaluation_results(self.adaptive_dir)
         
         if not standard_results and not adaptive_results:
-            logger.error("No evaluation results found in either directory")
-            return {}
+            logger.error("❌ CRITICAL: No evaluation results found in either directory")
+            logger.error(f"Standard RAG directory: {self.standard_dir}")
+            logger.error(f"Adaptive RAG directory: {self.adaptive_dir}")
+            logger.error("This suggests the RAG evaluation steps failed completely")
+            return {
+                'error': 'No evaluation results found',
+                'standard_dir': str(self.standard_dir),
+                'adaptive_dir': str(self.adaptive_dir),
+                'suggestion': 'Check if qa_autorag_evaluator.py is running successfully'
+            }
+        
+        if not standard_results:
+            logger.warning("⚠️ Standard RAG evaluation results missing")
+        
+        if not adaptive_results:
+            logger.warning("⚠️ Adaptive RAG evaluation results missing")
         
         # Extract metrics
         standard_metrics = self.extract_key_metrics(standard_results, 'standard')
