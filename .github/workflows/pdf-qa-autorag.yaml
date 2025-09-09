@@ -100,14 +100,45 @@ jobs:
             conda remove -n faiss-gpu-env --all -y 2>/dev/null || true
             conda create -n faiss-gpu-env python=3.11 -y
             
-            # Activate environment and install FAISS-GPU
+            # Activate environment and install FAISS-GPU with CUDA support
             conda activate faiss-gpu-env
-            echo "🔥 Installing FAISS-GPU in conda environment..."
-            conda install -c conda-forge faiss-gpu -y
+            echo "🔥 Installing FAISS-GPU with CUDA support in conda environment..."
             
-            # Verify FAISS-GPU installation works
-            python -c "import faiss; gpu_count=faiss.get_num_gpus(); print(f'✅ FAISS GPU devices: {gpu_count}'); exit(0 if gpu_count > 0 else 1)" || {
-              echo "❌ FAISS-GPU verification failed - no GPUs detected"
+            # Install CUDA toolkit, FAISS-GPU, and all required dependencies
+            conda install -c conda-forge -c nvidia cuda-toolkit faiss-gpu pytorch pytorch-cuda=11.8 -y
+            
+            # Install additional packages via pip in the conda environment
+            pip install bitsandbytes>=0.41.0 sentence-transformers>=2.2.0 transformers>=4.42.0
+            
+            # Debug GPU visibility in conda environment
+            echo "🔍 Debugging GPU visibility in conda environment:"
+            nvidia-smi || echo "nvidia-smi not accessible"
+            python -c "import os; print(f'CUDA_VISIBLE_DEVICES: {os.environ.get(\"CUDA_VISIBLE_DEVICES\", \"not set\")}')"
+            
+            # Test FAISS GPU detection with detailed output
+            python -c "
+import faiss
+import os
+print(f'FAISS version: {faiss.__version__}')
+print(f'CUDA_VISIBLE_DEVICES: {os.environ.get(\"CUDA_VISIBLE_DEVICES\", \"not set\")}')
+gpu_count = faiss.get_num_gpus()
+print(f'FAISS GPU devices: {gpu_count}')
+if gpu_count == 0:
+    print('❌ No GPUs detected by FAISS')
+    try:
+        import torch
+        print(f'PyTorch CUDA available: {torch.cuda.is_available()}')
+        print(f'PyTorch GPU count: {torch.cuda.device_count()}')
+        if torch.cuda.is_available():
+            print(f'GPU name: {torch.cuda.get_device_name()}')
+    except:
+        print('PyTorch not available for GPU testing')
+    exit(1)
+else:
+    print(f'✅ {gpu_count} GPU(s) detected by FAISS')
+    exit(0)
+            " || {
+              echo "❌ FAISS-GPU verification failed - installing faiss-cpu fallback"
               conda deactivate
               uv pip install faiss-cpu>=1.7.4
             }
@@ -116,15 +147,13 @@ jobs:
           else
             echo "❌ No conda available, using fallback..."
             uv pip install faiss-cpu>=1.7.4
+            uv pip install bitsandbytes>=0.41.0 sentence-transformers>=2.2.0
           fi
         else
           echo "❌ NO GPU DETECTED"
           uv pip install faiss-cpu>=1.7.4
+          uv pip install bitsandbytes>=0.41.0 sentence-transformers>=2.2.0
         fi
-        uv pip install bitsandbytes>=0.41.0
-        
-        # Ensure sentence-transformers is installed (critical dependency)
-        uv pip install sentence-transformers>=2.2.0
         
         # Verify critical imports and GPU detection
         uv run python -c "import sentence_transformers; print('✅ sentence-transformers:', sentence_transformers.__version__)"
