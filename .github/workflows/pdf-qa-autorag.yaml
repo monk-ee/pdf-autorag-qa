@@ -67,7 +67,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11'
+        python-version: '3.10'
 
     - name: Install uv
       uses: astral-sh/setup-uv@v4
@@ -84,55 +84,22 @@ jobs:
         echo "🔍 Checking GPU availability..."
         nvidia-smi || echo "No NVIDIA GPU detected"
         
-        # FINAL SOLUTION: Use conda to create clean environment with FAISS-GPU
-        echo "🚀 ULTIMATE FAISS-GPU SOLUTION: Fresh conda environment"
+        # SIMPLE SOLUTION: Use Python 3.10 with FAISS-GPU (no conda bullshit)
+        echo "🚀 SIMPLE FAISS-GPU: Using Python 3.10 (supported by faiss-gpu)"
         
         if nvidia-smi > /dev/null 2>&1; then
-          echo "💪 GPU detected - creating dedicated FAISS-GPU environment..."
-          
-          # Create and use conda environment with proper activation
-          echo "🔥 Creating conda environment with Python 3.11 + FAISS-GPU"
-          if command -v conda >/dev/null 2>&1; then
-            # Initialize conda for bash (required for activation)
-            eval "$(conda shell.bash hook)"
-            
-            # Remove any existing env and create fresh
-            conda remove -n faiss-gpu-env --all -y 2>/dev/null || true
-            conda create -n faiss-gpu-env python=3.11 -y
-            
-            # Activate environment and install FAISS-GPU with CUDA support
-            conda activate faiss-gpu-env
-            echo "🔥 Installing FAISS-GPU with CUDA support in conda environment..."
-            
-            # Install CUDA toolkit, FAISS-GPU, and all required dependencies
-            conda install -c conda-forge -c nvidia cuda-toolkit faiss-gpu pytorch pytorch-cuda=11.8 -y
-            
-            # Install additional packages via pip in the conda environment
-            pip install bitsandbytes>=0.41.0 sentence-transformers>=2.2.0 transformers>=4.42.0
-            
-            # Debug GPU visibility in conda environment
-            echo "🔍 Debugging GPU visibility in conda environment:"
-            nvidia-smi || echo "nvidia-smi not accessible"
-            python -c "import os; print(f'CUDA_VISIBLE_DEVICES: {os.environ.get(\"CUDA_VISIBLE_DEVICES\", \"not set\")}')"
-            
-            # Test FAISS GPU detection with detailed output
-            python -c "import faiss, os; gpu_count = faiss.get_num_gpus(); print(f'FAISS version: {faiss.__version__}'); print(f'CUDA_VISIBLE_DEVICES: {os.environ.get(\"CUDA_VISIBLE_DEVICES\", \"not set\")}'); print(f'FAISS GPU devices: {gpu_count}'); exit(0 if gpu_count > 0 else 1)" || {
-              echo "❌ FAISS-GPU verification failed - installing faiss-cpu fallback"
-              conda deactivate
-              uv pip install faiss-cpu>=1.7.4
-            }
-            
-            echo "✅ FAISS-GPU successfully installed and verified!"
-          else
-            echo "❌ No conda available, using fallback..."
+          echo "💪 GPU detected - installing FAISS-GPU directly..."
+          uv pip install faiss-gpu>=1.7.4 || {
+            echo "❌ FAISS-GPU failed, using faiss-cpu"
             uv pip install faiss-cpu>=1.7.4
-            uv pip install bitsandbytes>=0.41.0 sentence-transformers>=2.2.0
-          fi
+          }
         else
-          echo "❌ NO GPU DETECTED"
+          echo "💻 No GPU detected, installing faiss-cpu..."
           uv pip install faiss-cpu>=1.7.4
-          uv pip install bitsandbytes>=0.41.0 sentence-transformers>=2.2.0
         fi
+        
+        # Install other dependencies
+        uv pip install bitsandbytes>=0.41.0 sentence-transformers>=2.2.0
         
         # Verify critical imports and GPU detection
         uv run python -c "import sentence_transformers; print('✅ sentence-transformers:', sentence_transformers.__version__)"
