@@ -84,16 +84,26 @@ jobs:
         echo "🔍 Checking GPU availability..."
         nvidia-smi || echo "No NVIDIA GPU detected"
         
-        # Install FAISS-GPU with proper CUDA version detection
+        # Install FAISS with proper Python version and GPU detection
+        echo "🐍 Python version: $(python --version)"
+        
         if nvidia-smi > /dev/null 2>&1; then
-          echo "🚀 GPU detected, installing faiss-gpu..."
-          # Try different FAISS GPU versions
-          uv pip install faiss-gpu>=1.7.4 || \
-          uv pip install faiss-gpu==1.7.4 || \
-          uv pip install "faiss-gpu<1.8.0" || {
-            echo "⚠️ All faiss-gpu installations failed, falling back to faiss-cpu"
+          echo "🚀 GPU detected, checking Python compatibility..."
+          
+          # Check Python version compatibility for faiss-gpu
+          python_version=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+          echo "🐍 Python version: $python_version"
+          
+          if [[ "$python_version" == "3.11" ]] || [[ "$python_version" == "3.12" ]]; then
+            echo "⚠️ Python $python_version detected - faiss-gpu not available, using faiss-cpu"
             uv pip install faiss-cpu>=1.7.4
-          }
+          else
+            echo "✅ Python $python_version compatible with faiss-gpu, installing..."
+            uv pip install faiss-gpu>=1.7.4 || {
+              echo "❌ faiss-gpu installation failed, falling back to faiss-cpu"
+              uv pip install faiss-cpu>=1.7.4
+            }
+          fi
         else
           echo "💻 No GPU detected, installing faiss-cpu..."
           uv pip install faiss-cpu>=1.7.4
