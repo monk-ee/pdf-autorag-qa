@@ -134,7 +134,7 @@ class QARAGEvaluator:
         # Load model
         model_kwargs = {
             'trust_remote_code': True,
-            'torch_dtype': torch.float16 if self.device == 'cuda' else torch.float32,
+            'dtype': torch.float16 if self.device == 'cuda' else torch.float32,
             'device_map': 'auto' if self.device == 'cuda' else None,
         }
         

@@ -50,11 +50,10 @@ class BaseQAExtractor(ABC):
     def _load_model(self, quantize: bool):
         """Load the Hugging Face model with optimizations."""
         model_kwargs = {
-            "torch_dtype": torch.float16 if self.use_gpu else torch.float32,
+            "dtype": torch.float16 if self.use_gpu else torch.float32,
             "device_map": "auto" if self.use_gpu else None,
             "trust_remote_code": True,
             "low_cpu_mem_usage": True,
-            "resume_download": True,
         }
         
         if "GPTQ" in self.model_name:
@@ -81,7 +80,7 @@ class BaseQAExtractor(ABC):
         pipeline_kwargs = {
             "model": self.model,
             "tokenizer": self.tokenizer,
-            "torch_dtype": torch.float16 if self.use_gpu else torch.float32,
+            "dtype": torch.float16 if self.use_gpu else torch.float32,
             "batch_size": 16 if self.use_gpu else 1
         }
         

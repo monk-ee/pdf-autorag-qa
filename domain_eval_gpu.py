@@ -242,7 +242,7 @@ class DomainEvaluatorGPU:
             )
             self.model = AutoModelForCausalLM.from_pretrained(
                 model_name,
-                torch_dtype=torch.float16,
+                dtype=torch.float16,
                 device_map="auto",
                 quantization_config=quantization_config,
             )
@@ -250,7 +250,7 @@ class DomainEvaluatorGPU:
             logger.info("Loading model without quantization (full precision)")
             self.model = AutoModelForCausalLM.from_pretrained(
                 model_name,
-                torch_dtype=torch.float16,
+                dtype=torch.float16,
                 device_map="auto",
             )
         
