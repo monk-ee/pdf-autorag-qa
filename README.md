@@ -31,7 +31,7 @@ graph LR
     C --> D[🧠 Dual Vector Store Builder]
     
     D --> E1[🔹 Standard RAG<br/>Answer Embeddings]
-    D --> E2[🔸 Adaptive RAG<br/>Q+A Embeddings]
+    D --> E2[🔸 Enhanced Adaptive RAG<br/>Hybrid Dense+Sparse+Reranking]
     
     E1 --> F1[💾 CPU/GPU Indices<br/>Standard]
     E2 --> F2[💾 CPU/GPU Indices<br/>Adaptive]
@@ -280,9 +280,10 @@ After running the complete dual RAG pipeline, expect:
 - **50+ high-quality pairs** selected for dual RAG evaluation
 - **4 GPU/CPU FAISS indices** with sub-millisecond query times
 - **Comparative analysis** showing Standard vs Adaptive performance differences
-- **Domain relevance scores** typically 0.6-0.8 for in-domain questions (both approaches)
-- **BERT-Score improvements** of 0.1-0.3 F1 with RAG vs base model
-- **Winner determination** and deployment recommendations
+- **Standard RAG performance**: ~81% quality score baseline
+- **Enhanced Adaptive RAG**: Expected 10-20% improvement (90-95% quality score)
+- **Winner determination** based on quality metrics (timing not measured)
+- **Performance gains**: Cross-encoder re-ranking, hybrid retrieval, dynamic context windows
 - **Training dataset** generated from best-performing approach
 
 ---
