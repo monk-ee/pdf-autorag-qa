@@ -107,7 +107,7 @@ jobs:
     # Run all 9 permutations sequentially (model loads once and stays in memory)
     - name: "Q&A Generation - Basic × High Creativity"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_basic_high_creativity_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -126,7 +126,7 @@ jobs:
 
     - name: "Q&A Generation - Basic × Balanced"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_basic_balanced_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -145,7 +145,7 @@ jobs:
 
     - name: "Q&A Generation - Basic × Conservative"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_basic_conservative_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -164,7 +164,7 @@ jobs:
 
     - name: "Q&A Generation - Intermediate × High Creativity"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_intermediate_high_creativity_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -183,7 +183,7 @@ jobs:
 
     - name: "Q&A Generation - Intermediate × Balanced"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_intermediate_balanced_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -202,7 +202,7 @@ jobs:
 
     - name: "Q&A Generation - Intermediate × Conservative"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_intermediate_conservative_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -221,7 +221,7 @@ jobs:
 
     - name: "Q&A Generation - Advanced × High Creativity"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_advanced_high_creativity_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -240,7 +240,7 @@ jobs:
 
     - name: "Q&A Generation - Advanced × Balanced"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_advanced_balanced_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -259,7 +259,7 @@ jobs:
 
     - name: "Q&A Generation - Advanced × Conservative"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_advanced_conservative_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -307,7 +307,7 @@ jobs:
     
     - name: Select Top K Q&A Pairs
       run: |
-        uv run python qa_pair_selector.py \
+        python qa_pair_selector.py \
           --qa-artifacts-dir outputs \
           --output-dir rag_input \
           --top-k ${{ github.event.inputs.top_k_selection || '50' }} \
@@ -315,7 +315,7 @@ jobs:
     
     - name: Build Q&A Vector Stores (Standard + Adaptive RAG)
       run: |
-        uv run python qa_faiss_builder.py \
+        python qa_faiss_builder.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
           --output-dir rag_store \
           --embedding-model all-MiniLM-L6-v2 \
@@ -335,7 +335,7 @@ jobs:
           FAISS_INDEX="rag_store/qa_faiss_index_standard_cpu.bin"
         fi
         
-        uv run python qa_autorag_evaluator.py \
+        python qa_autorag_evaluator.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
           --qa-faiss-index "$FAISS_INDEX" \
           --qa-metadata rag_store/qa_metadata.json \
@@ -356,7 +356,7 @@ jobs:
         echo "===================================="
         
         # Use Enhanced Adaptive RAG Evaluator (no FAISS index needed - uses internal pipeline)
-        uv run python qa_enhanced_adaptive_evaluator.py \
+        python qa_enhanced_adaptive_evaluator.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
           --output-dir autorag_results/adaptive_rag \
           --model-name "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
@@ -369,7 +369,7 @@ jobs:
         echo "📊 RAG APPROACH COMPARISON ANALYSIS"
         echo "===================================="
         
-        uv run python rag_comparison_analyzer.py \
+        python rag_comparison_analyzer.py \
           --standard-results autorag_results/standard_rag \
           --adaptive-results autorag_results/adaptive_rag \
           --output-file autorag_results/rag_comparison_report.json \
@@ -399,7 +399,7 @@ jobs:
           EVAL_RESULTS="autorag_results/standard_rag/qa_rag_evaluation_report.json"
         fi
         
-        uv run python training_dataset_generator.py \
+        python training_dataset_generator.py \
           --evaluation-results "$EVAL_RESULTS" \
           --output-dir autorag_results \
           --min-similarity 0.3 \
@@ -410,7 +410,7 @@ jobs:
 
     - name: Run Audio Equipment Domain Specificity Evaluation
       run: |
-        uv run python domain_eval_gpu.py \
+        python domain_eval_gpu.py \
           --model "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
           --results-dir outputs \
           --config audio_equipment_domain_questions.json \
