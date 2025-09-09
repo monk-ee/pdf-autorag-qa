@@ -80,37 +80,51 @@ class RAGComparisonAnalyzer:
         }
         
         try:
-            # Pipeline summary metrics
-            if 'pipeline_summary' in results:
-                summary = results['pipeline_summary']
+            logger.info(f"Extracting metrics for {approach_name} from keys: {list(results.keys())}")
+            
+            # Check evaluation_summary structure
+            if 'evaluation_summary' in results:
+                summary = results['evaluation_summary']
+                logger.info(f"Evaluation summary keys: {list(summary.keys()) if isinstance(summary, dict) else 'Not a dict'}")
+                
+                # Extract from evaluation summary
                 metrics.update({
-                    'total_pairs_evaluated': summary.get('total_evaluated_pairs', 0),
-                    'high_quality_pairs': summary.get('high_quality_pairs', 0),
+                    'total_pairs_evaluated': summary.get('total_questions_evaluated', summary.get('total_pairs', 0)),
+                    'avg_bert_score': summary.get('average_bert_f1', summary.get('avg_bert_score', 0.0)),
+                    'avg_similarity_score': summary.get('average_similarity', summary.get('avg_similarity', 0.0)),
                     'quality_retention_rate': summary.get('quality_retention_rate', 0.0)
                 })
             
-            # Performance metrics
-            if 'performance_metrics' in results:
-                perf = results['performance_metrics']
-                metrics.update({
-                    'avg_retrieval_score': perf.get('avg_retrieval_score', 0.0),
-                    'avg_similarity_score': perf.get('avg_similarity_score', 0.0),
-                    'avg_bert_score': perf.get('avg_bert_score', 0.0),
-                    'avg_context_relevance': perf.get('avg_context_relevance', 0.0),
-                    'retrieval_time_ms': perf.get('avg_retrieval_time_ms', 0.0),
-                    'generation_time_ms': perf.get('avg_generation_time_ms', 0.0)
-                })
+            # Check detailed_results for additional metrics
+            if 'detailed_results' in results:
+                detailed = results['detailed_results']
+                if isinstance(detailed, list) and len(detailed) > 0:
+                    # Calculate averages from detailed results
+                    bert_scores = [item.get('bert_f1', 0) for item in detailed if isinstance(item, dict)]
+                    similarity_scores = [item.get('similarity_score', 0) for item in detailed if isinstance(item, dict)]
+                    
+                    if bert_scores:
+                        metrics['avg_bert_score'] = sum(bert_scores) / len(bert_scores)
+                    if similarity_scores:
+                        metrics['avg_similarity_score'] = sum(similarity_scores) / len(similarity_scores)
+                    
+                    metrics['total_pairs_evaluated'] = len(detailed)
+                    
+                    logger.info(f"Calculated from detailed results: {len(detailed)} pairs, avg_bert_score: {metrics['avg_bert_score']:.3f}")
             
-            # Quality distribution
-            if 'quality_distribution' in results:
-                dist = results['quality_distribution']
-                high_quality = dist.get('high_quality', 0)
-                total = sum(dist.values()) if dist else 1
-                metrics['quality_retention_rate'] = high_quality / total if total > 0 else 0.0
-            
+            # If still no meaningful data, log the actual structure
+            if metrics['total_pairs_evaluated'] == 0:
+                logger.warning(f"No meaningful metrics extracted for {approach_name}")
+                logger.warning(f"Available keys: {list(results.keys())}")
+                if 'evaluation_summary' in results:
+                    logger.warning(f"Evaluation summary content: {results['evaluation_summary']}")
+                
         except Exception as e:
             logger.error(f"Error extracting metrics for {approach_name}: {e}")
+            import traceback
+            logger.error(f"Traceback: {traceback.format_exc()}")
         
+        logger.info(f"Final metrics for {approach_name}: {metrics}")
         return metrics
     
     def calculate_performance_differences(self, standard_metrics: Dict, adaptive_metrics: Dict) -> Dict:
