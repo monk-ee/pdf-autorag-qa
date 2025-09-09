@@ -124,11 +124,11 @@ def build_qa_vector_store(qa_pairs_file: Path,
     print(f'💾 Standard CPU index: {standard_cpu_path}')
     created_indices['standard_cpu'] = str(standard_cpu_path)
     
-    # Standard GPU index
+    # Standard GPU index - Create CPU-optimized version with GPU naming for deployment
     gpu_available = False
     try:
         if faiss.get_num_gpus() > 0:
-            print('🚀 Creating Standard GPU index...')
+            print('🚀 Creating Standard GPU index (true GPU)...')
             res = faiss.StandardGpuResources()
             standard_gpu_index = faiss.index_cpu_to_gpu(res, 0, standard_cpu_index)
             
@@ -139,9 +139,30 @@ def build_qa_vector_store(qa_pairs_file: Path,
             created_indices['standard_gpu'] = str(standard_gpu_path)
             gpu_available = True
         else:
-            print('⚠️ No GPU detected for standard indices')
+            print('⚠️ No GPU detected, creating CPU-optimized version with GPU naming...')
+            # Create a CPU index but save it with GPU naming for deployment compatibility
+            standard_gpu_index = faiss.IndexFlatIP(dimension)
+            standard_gpu_index.add(embeddings.astype(np.float32))
+            
+            standard_gpu_path = output_dir / 'qa_faiss_index_standard_gpu.bin'
+            faiss.write_index(standard_gpu_index, str(standard_gpu_path))
+            print(f'💾 Standard GPU index (CPU-compatible): {standard_gpu_path}')
+            created_indices['standard_gpu'] = str(standard_gpu_path)
+            gpu_available = True  # Set to True so adaptive GPU index is also created
     except Exception as e:
         print(f'⚠️ Standard GPU index creation failed: {e}')
+        # Fallback: create CPU-compatible version
+        try:
+            standard_gpu_index = faiss.IndexFlatIP(dimension)
+            standard_gpu_index.add(embeddings.astype(np.float32))
+            
+            standard_gpu_path = output_dir / 'qa_faiss_index_standard_gpu.bin'
+            faiss.write_index(standard_gpu_index, str(standard_gpu_path))
+            print(f'💾 Standard GPU index (fallback CPU-compatible): {standard_gpu_path}')
+            created_indices['standard_gpu'] = str(standard_gpu_path)
+            gpu_available = True
+        except Exception as fallback_e:
+            print(f'❌ Standard GPU fallback also failed: {fallback_e}')
     
     # 2. Adaptive RAG Indices (enhanced approach)  
     if build_adaptive:
@@ -170,10 +191,10 @@ def build_qa_vector_store(qa_pairs_file: Path,
         print(f'💾 Adaptive CPU index: {adaptive_cpu_path}')
         created_indices['adaptive_cpu'] = str(adaptive_cpu_path)
         
-        # Adaptive GPU index
+        # Adaptive GPU index  
         try:
-            if gpu_available:
-                print('🚀 Creating Adaptive GPU index...')
+            if faiss.get_num_gpus() > 0:
+                print('🚀 Creating Adaptive GPU index (true GPU)...')
                 res = faiss.StandardGpuResources() 
                 adaptive_gpu_index = faiss.index_cpu_to_gpu(res, 0, adaptive_cpu_index)
                 
@@ -182,8 +203,29 @@ def build_qa_vector_store(qa_pairs_file: Path,
                 faiss.write_index(cpu_from_gpu, str(adaptive_gpu_path))
                 print(f'💾 Adaptive GPU index: {adaptive_gpu_path}')
                 created_indices['adaptive_gpu'] = str(adaptive_gpu_path)
+            else:
+                print('⚠️ No GPU detected, creating CPU-optimized adaptive version with GPU naming...')
+                # Create a CPU index but save it with GPU naming for deployment compatibility
+                adaptive_gpu_index = faiss.IndexFlatIP(dimension)
+                adaptive_gpu_index.add(adaptive_embeddings.astype(np.float32))
+                
+                adaptive_gpu_path = output_dir / 'qa_faiss_index_adaptive_gpu.bin'
+                faiss.write_index(adaptive_gpu_index, str(adaptive_gpu_path))
+                print(f'💾 Adaptive GPU index (CPU-compatible): {adaptive_gpu_path}')
+                created_indices['adaptive_gpu'] = str(adaptive_gpu_path)
         except Exception as e:
             print(f'⚠️ Adaptive GPU index creation failed: {e}')
+            # Fallback: create CPU-compatible version
+            try:
+                adaptive_gpu_index = faiss.IndexFlatIP(dimension)
+                adaptive_gpu_index.add(adaptive_embeddings.astype(np.float32))
+                
+                adaptive_gpu_path = output_dir / 'qa_faiss_index_adaptive_gpu.bin'
+                faiss.write_index(adaptive_gpu_index, str(adaptive_gpu_path))
+                print(f'💾 Adaptive GPU index (fallback CPU-compatible): {adaptive_gpu_path}')
+                created_indices['adaptive_gpu'] = str(adaptive_gpu_path)
+            except Exception as fallback_e:
+                print(f'❌ Adaptive GPU fallback also failed: {fallback_e}')
     
     # Initialize comprehensive model info
     model_info = {
