@@ -70,38 +70,32 @@ jobs:
         python-version: '3.11'
 
     - name: Install uv
+      uses: astral-sh/setup-uv@v4
+      with:
+        enable-cache: true
+        cache-dependency-glob: "pyproject.toml"
+
+    - name: Install dependencies with uv
       run: |
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        # Install main dependencies via uv
+        uv sync --frozen
         
-    - name: Install Poetry
-      run: |
-        curl -sSL https://install.python-poetry.org | python3 -
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        # Install FAISS GPU separately (platform specific)
+        uv pip install faiss-gpu || uv pip install faiss-cpu
         
-    - name: Configure Poetry to use uv
-      run: |
-        poetry self add poetry-plugin-up
-        poetry config installer.parallel true
-        poetry config virtualenvs.create false
+        # Install GPU dependencies for CI (bitsandbytes works on Linux)
+        uv pip install bitsandbytes>=0.41.0
         
-    - name: Install dependencies with Poetry + uv
-      run: |
-        # Use uv for faster installation
-        export UV_SYSTEM_PYTHON=1
-        poetry install --no-dev
-        
-        # Install GPU-specific packages manually (platform-specific)
-        pip install faiss-gpu>=1.7.4 || pip install faiss-cpu>=1.7.4
-        
-        # Verify critical dependencies
-        python -c "import sentence_transformers; print('✅ sentence-transformers installed')"
-        python -c "import faiss; print('✅ faiss installed')"
-        python -c "import torch; print('✅ torch installed')"
+        # Verify critical imports
+        uv run python -c "import sentence_transformers; print('✅ sentence-transformers:', sentence_transformers.__version__)"
+        uv run python -c "import faiss; print('✅ faiss installed')"
+        uv run python -c "import torch; print('✅ torch:', torch.__version__)"
+        uv run python -c "import transformers; print('✅ transformers:', transformers.__version__)"
+        uv run python -c "import bitsandbytes; print('✅ bitsandbytes available for quantization')"
     
     - name: Login to Hugging Face
       run: |
-        python -c "from huggingface_hub import login; login('${{ secrets.HF_TOKEN }}')"
+        uv run python -c "from huggingface_hub import login; login('${{ secrets.HF_TOKEN }}')"
 
     - name: Create output directories
       run: |
@@ -112,7 +106,7 @@ jobs:
     # Run all 9 permutations sequentially (model loads once and stays in memory)
     - name: "Q&A Generation - Basic × High Creativity"
       run: |
-        python cli_pdf_qa.py \
+        uv run python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_basic_high_creativity_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -131,7 +125,7 @@ jobs:
 
     - name: "Q&A Generation - Basic × Balanced"
       run: |
-        python cli_pdf_qa.py \
+        uv run python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_basic_balanced_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -150,7 +144,7 @@ jobs:
 
     - name: "Q&A Generation - Basic × Conservative"
       run: |
-        python cli_pdf_qa.py \
+        uv run python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_basic_conservative_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -169,7 +163,7 @@ jobs:
 
     - name: "Q&A Generation - Intermediate × High Creativity"
       run: |
-        python cli_pdf_qa.py \
+        uv run python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_intermediate_high_creativity_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -188,7 +182,7 @@ jobs:
 
     - name: "Q&A Generation - Intermediate × Balanced"
       run: |
-        python cli_pdf_qa.py \
+        uv run python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_intermediate_balanced_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -207,7 +201,7 @@ jobs:
 
     - name: "Q&A Generation - Intermediate × Conservative"
       run: |
-        python cli_pdf_qa.py \
+        uv run python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_intermediate_conservative_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -226,7 +220,7 @@ jobs:
 
     - name: "Q&A Generation - Advanced × High Creativity"
       run: |
-        python cli_pdf_qa.py \
+        uv run python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_advanced_high_creativity_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -245,7 +239,7 @@ jobs:
 
     - name: "Q&A Generation - Advanced × Balanced"
       run: |
-        python cli_pdf_qa.py \
+        uv run python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_advanced_balanced_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -264,7 +258,7 @@ jobs:
 
     - name: "Q&A Generation - Advanced × Conservative"
       run: |
-        python cli_pdf_qa.py \
+        uv run python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_advanced_conservative_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -312,7 +306,7 @@ jobs:
     
     - name: Select Top K Q&A Pairs
       run: |
-        python qa_pair_selector.py \
+        uv run python qa_pair_selector.py \
           --qa-artifacts-dir outputs \
           --output-dir rag_input \
           --top-k ${{ github.event.inputs.top_k_selection || '50' }} \
@@ -320,7 +314,7 @@ jobs:
     
     - name: Build Q&A Vector Store
       run: |
-        python qa_faiss_builder.py \
+        uv run python qa_faiss_builder.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
           --output-dir rag_store \
           --embedding-model all-MiniLM-L6-v2
@@ -336,7 +330,7 @@ jobs:
           FAISS_INDEX="rag_store/qa_faiss_index_cpu.bin"
         fi
         
-        python qa_autorag_evaluator.py \
+        uv run python qa_autorag_evaluator.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
           --qa-faiss-index "$FAISS_INDEX" \
           --qa-metadata rag_store/qa_metadata.json \
@@ -348,7 +342,7 @@ jobs:
     
     - name: Generate High-Quality Training Dataset
       run: |
-        python training_dataset_generator.py \
+        uv run python training_dataset_generator.py \
           --evaluation-results autorag_results/qa_rag_evaluation_report.json \
           --output-dir autorag_results \
           --min-similarity 0.3 \
@@ -359,7 +353,7 @@ jobs:
 
     - name: Run Audio Equipment Domain Specificity Evaluation
       run: |
-        python domain_eval_gpu.py \
+        uv run python domain_eval_gpu.py \
           --model "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
           --results-dir outputs \
           --config audio_equipment_domain_questions.json \
@@ -392,7 +386,7 @@ jobs:
           echo ""
           echo "📊 PIPELINE SUMMARY:"
           echo "==================="-debug
-          python -c "
+          uv run python -c "
         import json
         with open('autorag_results/final_evaluation_report.json', 'r') as f:
             report = json.load(f)
@@ -418,7 +412,7 @@ jobs:
         if [ -f "domain_eval_analysis.json" ]; then
           echo "📈 DOMAIN EVALUATION RESULTS:"
           echo "============================"
-          python -c "
+          uv run python -c "
         import json
         with open('domain_eval_analysis.json', 'r') as f:
             analysis = json.load(f)

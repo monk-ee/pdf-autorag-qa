@@ -7,12 +7,12 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.9"
+
 dependencies = [
     # Core ML dependencies
     "torch>=2.1.0",
     "transformers>=4.42.0",
     "accelerate>=0.24.0",
-    "bitsandbytes>=0.41.0",
     
     # Vector search and embeddings
     "sentence-transformers>=2.2.0",
@@ -43,6 +43,9 @@ dependencies = [
     "huggingface-hub>=0.20.0",
 ]
 
+[tool.uv]
+package = false
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -52,9 +55,8 @@ pytest = "^8.0.0"
 black = "^23.0.0"
 
 [tool.poetry.group.gpu.dependencies]
-# FAISS GPU is platform-specific, install manually:
-# pip install faiss-gpu
-# or use conda: conda install -c pytorch faiss-gpu
+# GPU-specific dependencies (install manually for local dev)
+bitsandbytes = ">=0.41.0"
 
 [tool.poetry.extras]
 gpu = []
