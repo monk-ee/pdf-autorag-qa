@@ -63,7 +63,7 @@ class QueryAnalyzer:
     def __init__(self, domain_config_file: str = "audio_equipment_domain_questions.json"):
         self.config_file = Path(domain_config_file)
         self.config = self.load_config()
-        self.embedder = SentenceTransformer('all-mpnet-base-v2')
+        self.embedder = SentenceTransformer('all-MiniLM-L6-v2')
         
         # IMPROVEMENT 4: Enhanced query classification with domain knowledge
         # Build domain-specific ontology for better query understanding
@@ -377,16 +377,10 @@ class AdaptiveRetriever:
         self.qa_data = qa_data
         self.embedder = embedder
         
-        # IMPROVEMENT 1: Cross-encoder for re-ranking
-        logger.info("🔄 Loading cross-encoder for re-ranking...")
-        try:
-            self.cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
-            self.has_cross_encoder = True
-            logger.info("✅ Cross-encoder loaded successfully")
-        except Exception as e:
-            logger.warning(f"⚠️  Cross-encoder failed to load: {e}")
-            self.cross_encoder = None
-            self.has_cross_encoder = False
+        # IMPROVEMENT 1: Cross-encoder for re-ranking - TEMPORARILY DISABLED for debugging
+        logger.info("🔧 Cross-encoder temporarily disabled for performance testing...")
+        self.cross_encoder = None
+        self.has_cross_encoder = False
         
         # Build enhanced indices with hybrid retrieval
         self._build_enhanced_indices()
@@ -459,29 +453,13 @@ class AdaptiveRetriever:
         faiss.normalize_L2(answer_embeddings)
         self.answer_index.add(answer_embeddings.astype('float32'))
         
-        # IMPROVEMENT 2: BM25 sparse retrieval for lexical matching
-        logger.info("📝 Building BM25 sparse retrieval index...")
-        
-        try:
-            # Tokenize texts for BM25
-            tokenized_docs = [doc.lower().split() for doc in self.qa_texts]
-            self.bm25 = BM25Okapi(tokenized_docs)
-            self.has_bm25 = True
-            logger.info("✅ BM25 sparse index built successfully")
-        except Exception as e:
-            logger.warning(f"⚠️  BM25 failed to initialize: {e}")
-            self.bm25 = None
-            self.has_bm25 = False
-        
-        # TF-IDF backup for lexical similarity
-        try:
-            self.tfidf_vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
-            self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(self.qa_texts)
-            self.has_tfidf = True
-            logger.info("✅ TF-IDF backup index built successfully")
-        except Exception as e:
-            logger.warning(f"⚠️  TF-IDF failed to initialize: {e}")
-            self.has_tfidf = False
+        # IMPROVEMENT 2: BM25 sparse retrieval - TEMPORARILY DISABLED for debugging
+        logger.info("🔧 BM25 and TF-IDF temporarily disabled for performance testing...")
+        self.bm25 = None
+        self.has_bm25 = False
+        self.tfidf_vectorizer = None
+        self.tfidf_matrix = None
+        self.has_tfidf = False
         
         logger.info(f"🎯 Hybrid retrieval indices completed:")
         logger.info(f"   📊 {len(self.qa_data)} Q&A pairs indexed")
@@ -529,52 +507,31 @@ class AdaptiveRetriever:
         return final_results, strategy_name
     
     def _hybrid_retrieval(self, query: str, query_analysis: QueryAnalysis, top_k: int = 10) -> List[Tuple[int, float, str]]:
-        """🚀 IMPROVEMENT 2: Perform hybrid dense + sparse retrieval"""
-        logger.info(f"🧠 Performing hybrid retrieval for query type: {query_analysis.query_type}")
+        """FIX: Simplified retrieval - use dense only until performance is restored"""
+        logger.info(f"🧠 Performing simplified dense retrieval for query type: {query_analysis.query_type}")
         
-        # Dense retrieval scores from multiple strategies
-        dense_scores = self._get_dense_scores(query, query_analysis, top_k * 2)
+        # FIX: Use dense retrieval only (hybrid disabled for debugging)
+        dense_scores = self._get_dense_scores(query, query_analysis, top_k)
         
-        # Sparse retrieval scores  
-        sparse_scores = self._get_sparse_scores(query, top_k * 2)
+        # Get top candidates directly from dense scores
+        top_candidates = sorted(dense_scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
         
-        # Combine scores with adaptive weighting
-        alpha = self._get_adaptive_alpha(query_analysis)
-        combined_scores = self._combine_hybrid_scores(dense_scores, sparse_scores, alpha)
-        
-        # Get top candidates for re-ranking
-        top_candidates = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
-        
-        logger.info(f"📊 Hybrid retrieval: dense={len(dense_scores)}, sparse={len(sparse_scores)}, combined={len(top_candidates)} (α={alpha:.3f})")
-        return [(idx, score, "hybrid") for idx, score in top_candidates]
+        logger.info(f"📊 Dense retrieval: {len(dense_scores)} candidates, returning top {len(top_candidates)}")
+        return [(idx, score, "dense_only") for idx, score in top_candidates]
     
     def _get_dense_scores(self, query: str, query_analysis: QueryAnalysis, top_k: int) -> Dict[int, float]:
-        """Get scores from dense retrieval using multiple embedding strategies"""
+        """FIX: Simplified dense retrieval - use primary strategy only to avoid over-complexity"""
         query_embedding = self.embedder.encode([query])[0].astype('float32')
         query_embedding = query_embedding.reshape(1, -1)
         faiss.normalize_L2(query_embedding)
         
         scores = {}
         
-        # Strategy 1: Combined Q+A similarity (primary)
+        # FIX: Use combined Q+A similarity only (primary strategy) - simpler and more reliable
         combined_scores, combined_indices = self.combined_index.search(query_embedding, min(top_k, len(self.qa_data)))
         for i, (idx, score) in enumerate(zip(combined_indices[0], combined_scores[0])):
             if idx >= 0:  # Valid index
-                scores[idx] = scores.get(idx, 0) + float(score) * 0.6  # Primary weight
-        
-        # Strategy 2: Question similarity (for question-like queries)
-        if query_analysis.query_type in ['factual', 'conceptual', 'comparison']:
-            question_scores, question_indices = self.question_index.search(query_embedding, min(top_k//2, len(self.qa_data)))
-            for i, (idx, score) in enumerate(zip(question_indices[0], question_scores[0])):
-                if idx >= 0:
-                    scores[idx] = scores.get(idx, 0) + float(score) * 0.3  # Secondary weight
-        
-        # Strategy 3: Answer similarity (for solution-seeking queries)
-        if query_analysis.query_type in ['procedural', 'technical', 'troubleshooting']:
-            answer_scores, answer_indices = self.answer_index.search(query_embedding, min(top_k//2, len(self.qa_data)))
-            for i, (idx, score) in enumerate(zip(answer_indices[0], answer_scores[0])):
-                if idx >= 0:
-                    scores[idx] = scores.get(idx, 0) + float(score) * 0.4  # Balanced weight
+                scores[idx] = float(score)  # FIX: Use raw scores without complex weighting
         
         return scores
     
@@ -665,19 +622,20 @@ class AdaptiveRetriever:
         return combined_scores
     
     def _cross_encoder_rerank(self, query: str, candidates: List[Tuple[int, float, str]]) -> List[Tuple[int, float, str]]:
-        """🚀 IMPROVEMENT 1: Cross-encoder re-ranking for better context scoring"""
+        """🚀 IMPROVEMENT 1: Cross-encoder re-ranking for better context scoring - FIXED"""
         if not self.has_cross_encoder or len(candidates) <= 1:
             return candidates
         
         try:
-            # Prepare query-document pairs for cross-encoder
+            # Prepare query-document pairs for cross-encoder - FIXED format
             pairs = []
             candidate_indices = []
             
             for idx, score, source in candidates:
                 if idx < len(self.qa_data):
-                    doc_text = f"Q: {self.qa_data[idx]['instruction']} A: {self.qa_data[idx]['output']}"
-                    pairs.append([query, doc_text])
+                    # FIX: Use answer text directly, not Q+A format for cross-encoder
+                    answer_text = self.qa_data[idx]['output']
+                    pairs.append([query, answer_text])
                     candidate_indices.append((idx, source))
             
             if not pairs:
@@ -686,19 +644,23 @@ class AdaptiveRetriever:
             # Get cross-encoder scores
             ce_scores = self.cross_encoder.predict(pairs)
             
-            # Combine with original scores (weighted combination)
+            # FIX: Normalize cross-encoder scores to [0,1] range and fix score combination
+            ce_scores = np.array(ce_scores)
+            ce_scores_normalized = (ce_scores - ce_scores.min()) / (ce_scores.max() - ce_scores.min() + 1e-8)
+            
+            # Combine with original scores (fixed weighting)
             reranked_candidates = []
-            for i, (ce_score, (idx, source)) in enumerate(zip(ce_scores, candidate_indices)):
+            for i, (ce_score, (idx, source)) in enumerate(zip(ce_scores_normalized, candidate_indices)):
                 original_score = candidates[i][1]
                 
-                # Weighted combination: 60% cross-encoder, 40% original
-                combined_score = 0.6 * float(ce_score) + 0.4 * original_score
+                # FIX: Balanced combination with normalized scores
+                combined_score = 0.7 * float(ce_score) + 0.3 * max(0, original_score)  # Ensure positive scores
                 reranked_candidates.append((idx, combined_score, f"reranked_{source}"))
             
             # Sort by combined score
             reranked_candidates.sort(key=lambda x: x[1], reverse=True)
             
-            logger.info(f"🔄 Cross-encoder re-ranking: score range [{min(ce_scores):.3f}, {max(ce_scores):.3f}]")
+            logger.info(f"🔄 Cross-encoder re-ranking: normalized score range [{min(ce_scores_normalized):.3f}, {max(ce_scores_normalized):.3f}]")
             return reranked_candidates
             
         except Exception as e:

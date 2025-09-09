@@ -108,14 +108,7 @@ jobs:
         uv run python -c "import torch; print('✅ torch:', torch.__version__, '| CUDA available:', torch.cuda.is_available(), '| Device count:', torch.cuda.device_count())"
         uv run python -c "import transformers; print('✅ transformers:', transformers.__version__)"
         uv run python -c "import bitsandbytes; print('✅ bitsandbytes available for quantization')"
-        uv run python -c "
-import faiss
-print('✅ faiss installed')
-try:
-    print('🔍 FAISS GPU detection:', faiss.get_num_gpus(), 'GPUs available')
-except Exception as e:
-    print('⚠️ FAISS GPU detection failed:', e)
-"
+        uv run python -c "import faiss; print('✅ faiss installed'); print('🔍 FAISS GPU detection:', faiss.get_num_gpus() if hasattr(faiss, 'get_num_gpus') else 'N/A', 'GPUs available')"
     
     - name: Login to Hugging Face
       run: |
