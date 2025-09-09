@@ -88,9 +88,18 @@ jobs:
         echo "🚀 SIMPLE FAISS-GPU: Using Python 3.10 (supported by faiss-gpu)"
         
         if nvidia-smi > /dev/null 2>&1; then
-          echo "💪 GPU detected - installing FAISS-GPU directly..."
-          uv pip install faiss-gpu>=1.7.4 || {
-            echo "❌ FAISS-GPU failed, using faiss-cpu"
+          echo "💪 GPU detected - installing FAISS-GPU with CUDA 12.x support..."
+          
+          # Check CUDA version and install compatible FAISS-GPU
+          cuda_version=$(nvidia-smi | grep "CUDA Version" | awk '{print $9}' | cut -d'.' -f1,2)
+          echo "🔍 Detected CUDA version: $cuda_version"
+          
+          # Try CUDA 12.x compatible versions first
+          echo "🚀 Installing FAISS-GPU for CUDA 12.x..."
+          pip install faiss-gpu --index-url https://download.pytorch.org/whl/cu121 || \
+          pip install faiss-gpu --index-url https://download.pytorch.org/whl/cu118 || \
+          uv pip install faiss-gpu || {
+            echo "❌ All FAISS-GPU installations failed, using faiss-cpu"
             uv pip install faiss-cpu>=1.7.4
           }
         else
