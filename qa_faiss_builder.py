@@ -240,9 +240,12 @@ def build_qa_vector_store(qa_pairs_file: Path,
     print(f'💾 Saved model info: {info_path}')
     
     print('✅ Q&A vector store built successfully!')
-    print(f'   - CPU FAISS Index: {cpu_index_path}')
+    print(f'   - Standard CPU Index: {standard_cpu_path}')
+    if build_adaptive:
+        print(f'   - Adaptive CPU Index: {adaptive_cpu_path}')
     print(f'   - Metadata: {metadata_path}')
     print(f'   - Model Info: {info_path}')
+    print(f'   - Created Indices: {list(created_indices.keys())}')
 
 
 def main():
