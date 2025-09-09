@@ -1,17 +1,20 @@
-# RAG Performance Evaluation (qa_autorag_evaluator.py)
+# Dual RAG Performance Evaluation (qa_autorag_evaluator.py)
 
 ## Purpose
-Compares base language model performance against RAG-enhanced responses to quantify the value of retrieved context for domain-specific questions.
+Compares base language model performance against both Standard and Adaptive RAG-enhanced responses to quantify the effectiveness of each approach and determine optimal deployment strategy.
 
 ## The RAG Evaluation Problem
 How do you prove that RAG actually helps? This component provides rigorous, multi-metric evaluation to demonstrate (or disprove) RAG effectiveness for technical domains.
 
 ## Evaluation Methodology
 
-### Comparison Framework
+### Dual Comparison Framework
 1. **Base Model**: Llama-3-8B answers questions from parametric knowledge only
-2. **RAG Model**: Same model with retrieved Q&A context from vector store
-3. **Ground Truth**: Original PDF content and expert-curated answers
+2. **Standard RAG**: Same model with retrieved context from answer-only embeddings
+3. **Adaptive RAG**: Same model with retrieved context from Q+A combined embeddings  
+4. **Ground Truth**: Original PDF content and expert-curated answers
+
+This enables A/B testing between RAG approaches on identical questions.
 
 ### Test Question Sources
 - **Domain-Specific**: Audio equipment evaluation questions
