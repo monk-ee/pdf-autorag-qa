@@ -52,13 +52,13 @@ class QARAGEvaluator:
         self.embedding_model_name = embedding_model_name
         self.use_quantization = use_quantization
         
-        # FORCE GPU on dedicated GPU instance
+        # Set device
         if device == 'auto':
-            self.device = 'cuda'  # Force CUDA - no CPU fallbacks!
-            print(f'🚀 FORCING GPU device: {self.device} (dedicated GPU instance)')
+            self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         else:
             self.device = device
-            print(f'🔧 Using specified device: {self.device}')
+            
+        print(f'🔧 Using device: {self.device}')
         
         # Load components
         self._load_qa_knowledge_base(qa_faiss_index_path, qa_metadata_path)
@@ -73,17 +73,16 @@ class QARAGEvaluator:
         print(f'📥 Loading Q&A FAISS index: {index_path}')
         cpu_index = faiss.read_index(str(index_path))
         
-        # FORCE GPU FAISS - check if GPU functions are available
-        if self.device == 'cuda':
-            if hasattr(faiss, 'StandardGpuResources'):
-                print('🚀 FORCING FAISS index to GPU - no fallbacks!')
+        # Try to move to GPU if available
+        if self.device == 'cuda' and faiss.get_num_gpus() > 0:
+            try:
+                print('🚀 Moving FAISS index to GPU for faster retrieval')
                 res = faiss.StandardGpuResources()
                 self.qa_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
-                print('✅ FAISS index FORCED to GPU')
-            else:
-                print('❌ FAISS-GPU not properly installed - StandardGpuResources missing!')
-                print('💥 CRASHING because we need GPU FAISS on this instance!')
-                raise RuntimeError("FAISS-GPU installation broken - StandardGpuResources not available")
+                print('✅ FAISS index loaded on GPU')
+            except Exception as e:
+                print(f'⚠️ GPU index loading failed: {e} - using CPU index')
+                self.qa_index = cpu_index
         else:
             print('Using CPU FAISS index')
             self.qa_index = cpu_index
@@ -95,14 +94,10 @@ class QARAGEvaluator:
         print(f'✅ Loaded knowledge base with {len(self.qa_metadata)} Q&A pairs')
     
     def _load_embedding_model(self):
-        """Load sentence embedding model - FORCE GPU."""
+        """Load sentence embedding model."""
         print(f'📥 Loading embedding model: {self.embedding_model_name}')
         self.embedding_model = SentenceTransformer(self.embedding_model_name)
-        if self.device == 'cuda':
-            self.embedding_model.to(self.device)  # Force embedding model to GPU
-            print('✅ Embedding model loaded and FORCED to GPU')
-        else:
-            print('✅ Embedding model loaded')
+        print('✅ Embedding model loaded')
     
     def _load_generation_model(self):
         """Load text generation model."""
