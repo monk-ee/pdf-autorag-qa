@@ -344,6 +344,14 @@ class RAGComparisonAnalyzer:
         # Calculate differences
         differences = self.calculate_performance_differences(standard_metrics, adaptive_metrics)
         
+        # Filter out unavailable metrics (all zeros)
+        unavailable_metrics = ['retrieval_time_ms', 'generation_time_ms', 'avg_retrieval_score']
+        for metric in unavailable_metrics:
+            if (differences.get(metric, {}).get('standard', 0) == 0 and 
+                differences.get(metric, {}).get('adaptive', 0) == 0):
+                logger.info(f"⚠️  Removing {metric} from comparison (no data available)")
+                differences.pop(metric, None)
+        
         # Analyze characteristics
         analysis = self.analyze_approach_characteristics(standard_results, adaptive_results)
         
