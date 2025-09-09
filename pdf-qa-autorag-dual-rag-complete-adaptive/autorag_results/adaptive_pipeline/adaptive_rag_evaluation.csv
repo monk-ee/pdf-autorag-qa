@@ -1,0 +1,7 @@
+query,query_type,domain_relevance,complexity,strategy_used,num_retrieved,context_quality,context_diversity,num_adjustments,uncertainty_required
+What is impedance matching in guitar amplifiers?,comparison,0.2009174311926606,advanced,conservative,1,-1.9453625762177875,1,3,True
+How do you troubleshoot amplifier noise?,troubleshooting,0.08191349934469201,advanced,conservative,1,0.006384987950305676,1,3,True
+Compare tube versus solid-state preamps,comparison,0.2650356778797146,intermediate,conservative,1,-6.371101862740712,1,3,True
+How do you change a car tire?,procedural,0.0,advanced,conservative,1,-6.072263969435859,1,3,True
+What are Python data types?,factual,0.0,advanced,conservative,1,-6.367571278795592,1,3,True
+How does frequency response affect tone?,technical,0.37635066258919475,advanced,aggressive,10,-5.860189990713926,1,1,False

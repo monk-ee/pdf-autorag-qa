@@ -1,0 +1,18 @@
+{
+  "total_pairs": 60,
+  "selected_pairs": 50,
+  "top_k_requested": 50,
+  "quality_score_range": {
+    "min": 0.7999999999999999,
+    "max": 1.0,
+    "avg": 0.8739999999999989
+  },
+  "matrix_distribution": {
+    "basic_balanced_20250909": 11,
+    "basic_high_creativity_20250909": 11,
+    "intermediate_balanced_20250909": 11,
+    "advanced_high_creativity_20250909": 12,
+    "intermediate_high_creativity_20250909": 1,
+    "advanced_balanced_20250909": 4
+  }
+}

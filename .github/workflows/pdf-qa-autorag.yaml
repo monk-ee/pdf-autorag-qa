@@ -345,46 +345,24 @@ jobs:
           ${{ github.event.inputs.use_quantization == 'true' && '--quantization' || '' }} \
           --verbose
     
-    - name: Run Adaptive RAG Evaluation  
+    - name: Run Enhanced Adaptive RAG Evaluation  
       run: |
-        echo "🔸 ADAPTIVE RAG EVALUATION"
-        echo "=========================="
-        
-        # Use GPU adaptive index if available, fallback to CPU
-        if [ -f "rag_store/qa_faiss_index_adaptive_gpu.bin" ]; then
-          echo "🚀 Using Adaptive GPU-optimized FAISS index"
-          FAISS_INDEX="rag_store/qa_faiss_index_adaptive_gpu.bin"
-        else
-          echo "⚠️ Adaptive GPU index not found, using Adaptive CPU index"
-          FAISS_INDEX="rag_store/qa_faiss_index_adaptive_cpu.bin"
-        fi
-        
-        uv run python qa_autorag_evaluator.py \
-          --qa-pairs-file rag_input/selected_qa_pairs.json \
-          --qa-faiss-index "$FAISS_INDEX" \
-          --qa-metadata rag_store/qa_metadata.json \
-          --output-dir autorag_results/adaptive_rag \
-          --model-name "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
-          --embedding-model all-MiniLM-L6-v2 \
-          ${{ github.event.inputs.use_quantization == 'true' && '--quantization' || '' }} \
-          --verbose
-    
-    - name: Run Adaptive RAG Pipeline Evaluation
-      run: |
-        echo "🔸 ADAPTIVE RAG PIPELINE EVALUATION"
+        echo "🚀 ENHANCED ADAPTIVE RAG EVALUATION"
+        echo "===================================="
+        echo "✅ Cross-encoder re-ranking"
+        echo "✅ Hybrid dense+sparse retrieval"  
+        echo "✅ Dynamic context windows"
+        echo "✅ Enhanced query classification"
         echo "===================================="
         
-        uv run python adaptive_rag_pipeline.py \
-          --qa-data rag_input/selected_qa_pairs.json \
-          --config audio_equipment_domain_questions.json \
-          --test-queries \
-            "What is impedance matching in guitar amplifiers?" \
-            "How do you troubleshoot amplifier noise?" \
-            "Compare tube versus solid-state preamps" \
-            "How do you change a car tire?" \
-            "What are Python data types?" \
-            "How does frequency response affect tone?" \
-          --output-dir autorag_results/adaptive_pipeline
+        # Use Enhanced Adaptive RAG Evaluator (no FAISS index needed - uses internal pipeline)
+        uv run python qa_enhanced_adaptive_evaluator.py \
+          --qa-pairs-file rag_input/selected_qa_pairs.json \
+          --output-dir autorag_results/adaptive_rag \
+          --model-name "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
+          --domain-config audio_equipment_domain_questions.json \
+          ${{ github.event.inputs.use_quantization == 'true' && '--quantize' || '' }} \
+          --device auto
     
     - name: Compare Standard vs Adaptive RAG Performance
       run: |
@@ -457,7 +435,8 @@ jobs:
     - name: Display Pipeline Summary
       run: |
         echo "🎯 ============================================"
-        echo "   DUAL RAG AutoRAG Pipeline - FINAL RESULTS"
+        echo "   ENHANCED DUAL RAG Pipeline - FINAL RESULTS"
+        echo "🚀 Standard RAG vs Enhanced Adaptive RAG"
         echo "=============================================="
         
         echo "📦 FAISS INDICES CREATED:"

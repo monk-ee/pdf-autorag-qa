@@ -1,0 +1,116 @@
+{
+  "pipeline_summary": {
+    "total_matrix_combinations": 5,
+    "total_evaluated_pairs": 40,
+    "successful_evaluations": 40,
+    "high_quality_pairs": 24,
+    "quality_retention_rate": 0.6
+  },
+  "quality_thresholds": {
+    "minimum_similarity": 0.3,
+    "minimum_length_ratio": 0.5,
+    "maximum_length_ratio": 2.0,
+    "minimum_answer_length": 20,
+    "minimum_completeness": 0.2
+  },
+  "matrix_performance": {
+    "advanced_high_creativity_20250909": {
+      "count": 4,
+      "quality_scores": [
+        0.9999999999999999,
+        0.9689155817031859,
+        0.9762192765871684,
+        0.9999999999999999
+      ],
+      "avg_quality": 0.9862837145725886,
+      "avg_length_ratio": 1.03125,
+      "avg_completeness": 0.9618055555555556
+    },
+    "intermediate_balanced_20250909": {
+      "count": 4,
+      "quality_scores": [
+        0.8146579735095685,
+        1.0000001430511476,
+        0.9999999999999999,
+        0.9999999284744262
+      ],
+      "avg_quality": 0.9536645112587855,
+      "avg_length_ratio": 0.95,
+      "avg_completeness": 0.9230769230769231
+    },
+    "advanced_balanced_20250909": {
+      "count": 3,
+      "quality_scores": [
+        1.0000000715255737,
+        0.9057863586657755,
+        0.8701740429136489
+      ],
+      "avg_quality": 0.9253201577016661,
+      "avg_length_ratio": 0.9851851851851853,
+      "avg_completeness": 0.7765765765765766
+    },
+    "basic_balanced_20250909": {
+      "count": 3,
+      "quality_scores": [
+        0.9999999999999999,
+        0.7369637094844471,
+        0.9999999642372132
+      ],
+      "avg_quality": 0.9123212245738866,
+      "avg_length_ratio": 0.8787878787878788,
+      "avg_completeness": 0.7999999999999999
+    },
+    "basic_high_creativity_20250909": {
+      "count": 10,
+      "quality_scores": [
+        0.9092351301092851,
+        0.7962609512465341,
+        0.9999999642372132,
+        1.0000000715255737,
+        0.6700165417919989,
+        1.0000000715255737,
+        0.6585202488211593,
+        0.9156248467309134,
+        0.9999999999999999,
+        0.9999999642372132
+      ],
+      "avg_quality": 0.8949657790225464,
+      "avg_length_ratio": 1.1466406051360285,
+      "avg_completeness": 0.7818262411347516
+    }
+  },
+  "recommendations": {
+    "best_matrix_combinations": [
+      {
+        "combination": "advanced_high_creativity_20250909",
+        "avg_quality": 0.9862837145725886,
+        "pair_count": 4,
+        "avg_length_ratio": 1.03125,
+        "avg_completeness": 0.9618055555555556
+      },
+      {
+        "combination": "intermediate_balanced_20250909",
+        "avg_quality": 0.9536645112587855,
+        "pair_count": 4,
+        "avg_length_ratio": 0.95,
+        "avg_completeness": 0.9230769230769231
+      },
+      {
+        "combination": "advanced_balanced_20250909",
+        "avg_quality": 0.9253201577016661,
+        "pair_count": 3,
+        "avg_length_ratio": 0.9851851851851853,
+        "avg_completeness": 0.7765765765765766
+      }
+    ],
+    "suggested_improvements": [
+      "High creativity settings performed best - consider using higher temperature for production"
+    ]
+  },
+  "dataset_statistics": {
+    "total_training_pairs": 24,
+    "avg_question_length": 13.958333333333334,
+    "avg_answer_length": 32.25,
+    "avg_quality_score": 0.925932285015734
+  }
+}
