@@ -71,75 +71,38 @@ jobs:
 
     - name: Install uv
       uses: astral-sh/setup-uv@v4
-      with:
-        enable-cache: true
-        cache-dependency-glob: "pyproject.toml"
 
-    - name: Install dependencies with uv
-      run: |    
-        # Install all dependencies from pyproject.toml
-        uv sync
+    - name: Install dependencies (Working Approach)
+      run: |
+        # Use the working approach from other pipelines
+        echo "🚀 Installing from working requirements files..."
+        uv pip install -r requirements-hf.txt --system
+        uv pip install -r requirements-domain-eval.txt --system
         
-        # Install GPU-specific dependencies with better detection
-        echo "🔍 Checking GPU availability..."
-        nvidia-smi || echo "No NVIDIA GPU detected"
-        
-        # SIMPLE SOLUTION: Use Python 3.10 with FAISS-GPU (no conda bullshit)
-        echo "🚀 SIMPLE FAISS-GPU: Using Python 3.10 (supported by faiss-gpu)"
-        
-        if nvidia-smi > /dev/null 2>&1; then
-          echo "💪 GPU detected - installing FAISS-GPU with CUDA 12.x support..."
-          
-          # Check CUDA version and install compatible FAISS-GPU
-          cuda_version=$(nvidia-smi | grep "CUDA Version" | awk '{print $9}' | cut -d'.' -f1,2)
-          echo "🔍 Detected CUDA version: $cuda_version"
-          
-          # NUCLEAR OPTION: Force correct FAISS-GPU installation
-          echo "🔥 NUCLEAR FAISS-GPU INSTALLATION..."
-          
-          # Uninstall any existing FAISS
-          uv pip uninstall -y faiss-cpu faiss-gpu || true
-          
-          # Try multiple FAISS-GPU installation strategies
-          echo "🚀 Strategy 1: Install latest faiss-gpu..."
-          uv pip install faiss-gpu==1.8.0 && python -c "import faiss; print(f'FAISS GPU: {hasattr(faiss, \"StandardGpuResources\")}')" || {
-            echo "❌ Strategy 1 failed"
-            
-            echo "🚀 Strategy 2: Install faiss-gpu 1.7.4..."
-            uv pip uninstall -y faiss-gpu || true
-            uv pip install faiss-gpu==1.7.4 && python -c "import faiss; print(f'FAISS GPU: {hasattr(faiss, \"StandardGpuResources\")}')" || {
-              echo "❌ Strategy 2 failed"
-              
-              echo "💥 FAISS-GPU installation completely failed!"
-              echo "Installing faiss-cpu as emergency fallback..."
-              uv pip install faiss-cpu>=1.7.4
-            }
-          }
-        else
-          echo "💻 No GPU detected, installing faiss-cpu..."
-          uv pip install faiss-cpu>=1.7.4
-        fi
-        
-        # Install other dependencies
-        uv pip install bitsandbytes>=0.41.0 sentence-transformers>=2.2.0
+        # Verify FAISS-GPU installation worked
+        echo "🧪 Verifying FAISS-GPU installation..."
+        python -c "import faiss; assert hasattr(faiss, 'StandardGpuResources'), 'StandardGpuResources missing'; print('✅ FAISS-GPU with GPU classes verified')" || {
+          echo "💥 FAISS-GPU missing GPU classes - CRASHING PIPELINE!"
+          exit 1
+        }
         
         # Verify critical imports and GPU detection
-        uv run python -c "import sentence_transformers; print('✅ sentence-transformers:', sentence_transformers.__version__)"
-        uv run python -c "import torch; print('✅ torch:', torch.__version__, '| CUDA available:', torch.cuda.is_available(), '| Device count:', torch.cuda.device_count())"
-        uv run python -c "import transformers; print('✅ transformers:', transformers.__version__)"
-        uv run python -c "import bitsandbytes; print('✅ bitsandbytes available for quantization')"
-        uv run python -c "import faiss; print('✅ faiss installed'); print('🔍 FAISS GPU detection:', faiss.get_num_gpus() if hasattr(faiss, 'get_num_gpus') else 'N/A', 'GPUs available')"
+        python -c "import sentence_transformers; print('✅ sentence-transformers:', sentence_transformers.__version__)"
+        python -c "import torch; print('✅ torch:', torch.__version__, '| CUDA available:', torch.cuda.is_available(), '| Device count:', torch.cuda.device_count())"
+        python -c "import transformers; print('✅ transformers:', transformers.__version__)"
+        python -c "import bitsandbytes; print('✅ bitsandbytes available for quantization')"
+        python -c "import faiss; print('✅ faiss installed'); print('🔍 FAISS GPU detection:', faiss.get_num_gpus() if hasattr(faiss, 'get_num_gpus') else 'N/A', 'GPUs available')"
         
         # CRITICAL: Test FAISS-GPU functionality BEFORE expensive pipeline
         echo "🧪 TESTING FAISS-GPU FUNCTIONALITY ON GPU INSTANCE..."
-        uv run python test_faiss_gpu.py || {
+        python test_faiss_gpu.py || {
           echo "💥 FAISS-GPU test failed - aborting pipeline to save money!"
           exit 1
         }
     
     - name: Login to Hugging Face
       run: |
-        uv run python -c "from huggingface_hub import login; login('${{ secrets.HF_TOKEN }}')"
+        python -c "from huggingface_hub import login; login('${{ secrets.HF_TOKEN }}')"
 
     - name: Create output directories
       run: |
@@ -150,7 +113,7 @@ jobs:
     # Run all 9 permutations sequentially (model loads once and stays in memory)
     - name: "Q&A Generation - Basic × High Creativity"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_basic_high_creativity_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -169,7 +132,7 @@ jobs:
 
     - name: "Q&A Generation - Basic × Balanced"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_basic_balanced_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -188,7 +151,7 @@ jobs:
 
     - name: "Q&A Generation - Basic × Conservative"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_basic_conservative_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -207,7 +170,7 @@ jobs:
 
     - name: "Q&A Generation - Intermediate × High Creativity"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_intermediate_high_creativity_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -226,7 +189,7 @@ jobs:
 
     - name: "Q&A Generation - Intermediate × Balanced"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_intermediate_balanced_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -245,7 +208,7 @@ jobs:
 
     - name: "Q&A Generation - Intermediate × Conservative"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_intermediate_conservative_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -264,7 +227,7 @@ jobs:
 
     - name: "Q&A Generation - Advanced × High Creativity"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_advanced_high_creativity_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -283,7 +246,7 @@ jobs:
 
     - name: "Q&A Generation - Advanced × Balanced"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_advanced_balanced_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -302,7 +265,7 @@ jobs:
 
     - name: "Q&A Generation - Advanced × Conservative"
       run: |
-        uv run python cli_pdf_qa.py \
+        python cli_pdf_qa.py \
           ${{ github.event.inputs.input_file || 'pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf' }} \
           --output outputs/pdf_qa_advanced_conservative_$(date +%Y%m%d_%H%M%S).jsonl \
           --model ${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }} \
@@ -350,7 +313,7 @@ jobs:
     
     - name: Select Top K Q&A Pairs
       run: |
-        uv run python qa_pair_selector.py \
+        python qa_pair_selector.py \
           --qa-artifacts-dir outputs \
           --output-dir rag_input \
           --top-k ${{ github.event.inputs.top_k_selection || '50' }} \
@@ -358,7 +321,7 @@ jobs:
     
     - name: Build Q&A Vector Stores (Standard + Adaptive RAG)
       run: |
-        uv run python qa_faiss_builder.py \
+        python qa_faiss_builder.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
           --output-dir rag_store \
           --embedding-model all-MiniLM-L6-v2 \
@@ -378,7 +341,7 @@ jobs:
           FAISS_INDEX="rag_store/qa_faiss_index_standard_cpu.bin"
         fi
         
-        uv run python qa_autorag_evaluator.py \
+        python qa_autorag_evaluator.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
           --qa-faiss-index "$FAISS_INDEX" \
           --qa-metadata rag_store/qa_metadata.json \
@@ -399,7 +362,7 @@ jobs:
         echo "===================================="
         
         # Use Enhanced Adaptive RAG Evaluator (no FAISS index needed - uses internal pipeline)
-        uv run python qa_enhanced_adaptive_evaluator.py \
+        python qa_enhanced_adaptive_evaluator.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
           --output-dir autorag_results/adaptive_rag \
           --model-name "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
@@ -412,7 +375,7 @@ jobs:
         echo "📊 RAG APPROACH COMPARISON ANALYSIS"
         echo "===================================="
         
-        uv run python rag_comparison_analyzer.py \
+        python rag_comparison_analyzer.py \
           --standard-results autorag_results/standard_rag \
           --adaptive-results autorag_results/adaptive_rag \
           --output-file autorag_results/rag_comparison_report.json \
@@ -442,7 +405,7 @@ jobs:
           EVAL_RESULTS="autorag_results/standard_rag/qa_rag_evaluation_report.json"
         fi
         
-        uv run python training_dataset_generator.py \
+        python training_dataset_generator.py \
           --evaluation-results "$EVAL_RESULTS" \
           --output-dir autorag_results \
           --min-similarity 0.3 \
@@ -453,7 +416,7 @@ jobs:
 
     - name: Run Audio Equipment Domain Specificity Evaluation
       run: |
-        uv run python domain_eval_gpu.py \
+        python domain_eval_gpu.py \
           --model "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
           --results-dir outputs \
           --config audio_equipment_domain_questions.json \
@@ -509,7 +472,7 @@ jobs:
         echo "📊 RAG APPROACH COMPARISON:"
         echo "=========================="
         if [ -f "autorag_results/rag_comparison_report.json" ]; then
-          uv run python -c "
+          python -c "
         import json
         with open('autorag_results/rag_comparison_report.json', 'r') as f:
             report = json.load(f)
@@ -538,7 +501,7 @@ jobs:
         if [ -f "domain_eval_analysis.json" ]; then
           echo "📈 DOMAIN EVALUATION RESULTS:"
           echo "============================"
-          uv run python -c "
+          python -c "
         import json
         with open('domain_eval_analysis.json', 'r') as f:
             analysis = json.load(f)
