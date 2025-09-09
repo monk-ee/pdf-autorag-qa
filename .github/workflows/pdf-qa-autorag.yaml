@@ -90,25 +90,31 @@ jobs:
         if nvidia-smi > /dev/null 2>&1; then
           echo "💪 GPU detected - creating dedicated FAISS-GPU environment..."
           
-          # Create a fresh conda environment with Python 3.11 and FAISS-GPU
+          # Create and use conda environment with proper activation
           echo "🔥 Creating conda environment with Python 3.11 + FAISS-GPU"
           if command -v conda >/dev/null 2>&1; then
+            # Initialize conda for bash (required for activation)
+            eval "$(conda shell.bash hook)"
+            
             # Remove any existing env and create fresh
             conda remove -n faiss-gpu-env --all -y 2>/dev/null || true
             conda create -n faiss-gpu-env python=3.11 -y
+            
+            # Activate environment and install FAISS-GPU
             conda activate faiss-gpu-env
+            echo "🔥 Installing FAISS-GPU in conda environment..."
             conda install -c conda-forge faiss-gpu -y
             
-            # Verify FAISS-GPU installation
-            python -c "import faiss; print(f'✅ FAISS GPU devices: {faiss.get_num_gpus()}')" || {
-              echo "❌ FAISS-GPU verification failed"
+            # Verify FAISS-GPU installation works
+            python -c "import faiss; gpu_count=faiss.get_num_gpus(); print(f'✅ FAISS GPU devices: {gpu_count}'); exit(0 if gpu_count > 0 else 1)" || {
+              echo "❌ FAISS-GPU verification failed - no GPUs detected"
               conda deactivate
               uv pip install faiss-cpu>=1.7.4
             }
+            
+            echo "✅ FAISS-GPU successfully installed and verified!"
           else
-            echo "❌ No conda available, trying direct methods..."
-            # Try the working Python 3.11 pip strategies
-            python3.11 -m pip install faiss-gpu --index-url https://download.pytorch.org/whl/cu118 || \
+            echo "❌ No conda available, using fallback..."
             uv pip install faiss-cpu>=1.7.4
           fi
         else
