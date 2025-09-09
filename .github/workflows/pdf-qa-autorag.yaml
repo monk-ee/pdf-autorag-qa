@@ -77,14 +77,15 @@ jobs:
 
     - name: Install dependencies with uv
       run: |
-        # Install main dependencies via uv
-        uv sync --frozen
+        # Install all dependencies from pyproject.toml
+        uv sync
         
-        # Install FAISS GPU separately (platform specific)
+        # Install platform-specific dependencies
         uv pip install faiss-gpu || uv pip install faiss-cpu
-        
-        # Install GPU dependencies for CI (bitsandbytes works on Linux)
         uv pip install bitsandbytes>=0.41.0
+        
+        # Ensure sentence-transformers is installed (critical dependency)
+        uv pip install sentence-transformers>=2.2.0
         
         # Verify critical imports
         uv run python -c "import sentence_transformers; print('✅ sentence-transformers:', sentence_transformers.__version__)"
@@ -312,38 +313,116 @@ jobs:
           --top-k ${{ github.event.inputs.top_k_selection || '50' }} \
           --verbose
     
-    - name: Build Q&A Vector Store
+    - name: Build Q&A Vector Stores (Standard + Adaptive RAG)
       run: |
         uv run python qa_faiss_builder.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
           --output-dir rag_store \
-          --embedding-model all-MiniLM-L6-v2
+          --embedding-model all-MiniLM-L6-v2 \
+          --verbose
     
-    - name: Run Q&A AutoRAG Evaluation
+    - name: Run Standard RAG Evaluation
       run: |
-        # Use GPU index if available, fallback to CPU
-        if [ -f "rag_store/qa_faiss_index_gpu.bin" ]; then
-          echo "🚀 Using GPU-optimized FAISS index"
-          FAISS_INDEX="rag_store/qa_faiss_index_gpu.bin"
+        echo "🔹 STANDARD RAG EVALUATION"
+        echo "=========================="
+        
+        # Use GPU standard index if available, fallback to CPU
+        if [ -f "rag_store/qa_faiss_index_standard_gpu.bin" ]; then
+          echo "🚀 Using Standard GPU-optimized FAISS index"
+          FAISS_INDEX="rag_store/qa_faiss_index_standard_gpu.bin"
         else
-          echo "⚠️ GPU index not found, using CPU index"
-          FAISS_INDEX="rag_store/qa_faiss_index_cpu.bin"
+          echo "⚠️ Standard GPU index not found, using Standard CPU index"
+          FAISS_INDEX="rag_store/qa_faiss_index_standard_cpu.bin"
         fi
         
         uv run python qa_autorag_evaluator.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
           --qa-faiss-index "$FAISS_INDEX" \
           --qa-metadata rag_store/qa_metadata.json \
-          --output-dir autorag_results \
+          --output-dir autorag_results/standard_rag \
           --model-name "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
           --embedding-model all-MiniLM-L6-v2 \
           ${{ github.event.inputs.use_quantization == 'true' && '--quantization' || '' }} \
           --verbose
     
+    - name: Run Adaptive RAG Evaluation  
+      run: |
+        echo "🔸 ADAPTIVE RAG EVALUATION"
+        echo "=========================="
+        
+        # Use GPU adaptive index if available, fallback to CPU
+        if [ -f "rag_store/qa_faiss_index_adaptive_gpu.bin" ]; then
+          echo "🚀 Using Adaptive GPU-optimized FAISS index"
+          FAISS_INDEX="rag_store/qa_faiss_index_adaptive_gpu.bin"
+        else
+          echo "⚠️ Adaptive GPU index not found, using Adaptive CPU index"
+          FAISS_INDEX="rag_store/qa_faiss_index_adaptive_cpu.bin"
+        fi
+        
+        uv run python qa_autorag_evaluator.py \
+          --qa-pairs-file rag_input/selected_qa_pairs.json \
+          --qa-faiss-index "$FAISS_INDEX" \
+          --qa-metadata rag_store/qa_metadata.json \
+          --output-dir autorag_results/adaptive_rag \
+          --model-name "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
+          --embedding-model all-MiniLM-L6-v2 \
+          ${{ github.event.inputs.use_quantization == 'true' && '--quantization' || '' }} \
+          --verbose
+    
+    - name: Run Adaptive RAG Pipeline Evaluation
+      run: |
+        echo "🔸 ADAPTIVE RAG PIPELINE EVALUATION"
+        echo "===================================="
+        
+        uv run python adaptive_rag_pipeline.py \
+          --qa-data rag_input/selected_qa_pairs.json \
+          --config audio_equipment_domain_questions.json \
+          --test-queries \
+            "What is impedance matching in guitar amplifiers?" \
+            "How do you troubleshoot amplifier noise?" \
+            "Compare tube versus solid-state preamps" \
+            "How do you change a car tire?" \
+            "What are Python data types?" \
+            "How does frequency response affect tone?" \
+          --output-dir autorag_results/adaptive_pipeline
+    
+    - name: Compare Standard vs Adaptive RAG Performance
+      run: |
+        echo "📊 RAG APPROACH COMPARISON ANALYSIS"
+        echo "===================================="
+        
+        uv run python rag_comparison_analyzer.py \
+          --standard-results autorag_results/standard_rag \
+          --adaptive-results autorag_results/adaptive_rag \
+          --output-file autorag_results/rag_comparison_report.json \
+          --verbose
+    
     - name: Generate High-Quality Training Dataset
       run: |
+        echo "🏗️ TRAINING DATASET GENERATION"
+        echo "=============================="
+        
+        # Use the comparison report to determine which approach performed better
+        COMPARISON_REPORT="autorag_results/rag_comparison_report.json"
+        
+        if [ -f "$COMPARISON_REPORT" ]; then
+          WINNER=$(python -c "import json; print(json.load(open('$COMPARISON_REPORT'))['summary']['winner'])")
+          echo "🏆 RAG Comparison Winner: $WINNER"
+          
+          if [ "$WINNER" = "adaptive" ]; then
+            EVAL_RESULTS="autorag_results/adaptive_rag/qa_rag_evaluation_report.json"
+            echo "📈 Using Adaptive RAG results for training dataset"
+          else
+            EVAL_RESULTS="autorag_results/standard_rag/qa_rag_evaluation_report.json"
+            echo "📈 Using Standard RAG results for training dataset"
+          fi
+        else
+          echo "⚠️ No comparison report found, defaulting to Standard RAG"
+          EVAL_RESULTS="autorag_results/standard_rag/qa_rag_evaluation_report.json"
+        fi
+        
         uv run python training_dataset_generator.py \
-          --evaluation-results autorag_results/qa_rag_evaluation_report.json \
+          --evaluation-results "$EVAL_RESULTS" \
           --output-dir autorag_results \
           --min-similarity 0.3 \
           --min-length-ratio 0.5 \
@@ -365,7 +444,7 @@ jobs:
     - name: Upload Complete Pipeline Results
       uses: actions/upload-artifact@v4
       with:
-        name: pdf-qa-autorag-serial-complete
+        name: pdf-qa-autorag-dual-rag-complete
         path: |
           outputs/
           rag_input/
@@ -378,34 +457,42 @@ jobs:
     - name: Display Pipeline Summary
       run: |
         echo "🎯 ============================================"
-        echo "   PDF Q&A AutoRAG Pipeline - FINAL RESULTS"
+        echo "   DUAL RAG AutoRAG Pipeline - FINAL RESULTS"
         echo "=============================================="
         
-        if [ -f "autorag_results/final_evaluation_report.json" ]; then
-          echo "✅ AutoRAG Pipeline completed successfully"
-          echo ""
-          echo "📊 PIPELINE SUMMARY:"
-          echo "==================="-debug
+        echo "📦 FAISS INDICES CREATED:"
+        echo "========================"
+        find rag_store/ -name "*.bin" | sort | while read file; do
+          echo "  • $(basename "$file")"
+        done
+        
+        echo ""
+        echo "📊 RAG APPROACH COMPARISON:"
+        echo "=========================="
+        if [ -f "autorag_results/rag_comparison_report.json" ]; then
           uv run python -c "
         import json
-        with open('autorag_results/final_evaluation_report.json', 'r') as f:
+        with open('autorag_results/rag_comparison_report.json', 'r') as f:
             report = json.load(f)
         
-        summary = report['pipeline_summary']
-        print(f'Matrix Combinations Tested: {summary[\"total_matrix_combinations\"]}')
-        print(f'Q&A Pairs Selected: {summary[\"total_evaluated_pairs\"]}')
-        print(f'Pairs RAG Evaluated: {summary[\"total_evaluated_pairs\"]}')
-        print(f'High-Quality Training Pairs: {summary[\"high_quality_pairs\"]}')
-        print(f'Quality Retention Rate: {summary[\"quality_retention_rate\"]:.1%}')
+        summary = report['summary']
+        print(f'Winner: {summary[\"winner\"].upper()}')
+        print(f'Key Finding: {summary[\"key_finding\"]}')
+        print(f'Recommendation: {summary[\"recommendation_summary\"]}')
         print()
         
-        if report['recommendations']['best_matrix_combinations']:
-            print('🏆 TOP PERFORMING COMBINATIONS:')
-            for i, combo in enumerate(report['recommendations']['best_matrix_combinations'], 1):
-                print(f'  {i}. {combo[\"combination\"]}: {combo[\"avg_quality\"]:.3f} avg quality ({combo[\"pair_count\"]} pairs)')
+        # Show key metrics comparison
+        differences = report['metrics_comparison']['differences']
+        print('📈 Key Performance Differences:')
+        for metric in ['quality_retention_rate', 'avg_bert_score', 'avg_context_relevance']:
+            if metric in differences:
+                diff = differences[metric]
+                improvement = diff['improvement_percent']
+                better = diff['better_approach']
+                print(f'  {metric.replace(\"_\", \" \").title()}: {improvement:+.1f}% ({better} wins)')
           "
         else
-          echo "❌ AutoRAG pipeline failed"
+          echo "⚠️ RAG comparison report not found"
         fi
         
         echo ""

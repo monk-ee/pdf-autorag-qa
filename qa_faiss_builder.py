@@ -27,14 +27,23 @@ except ImportError:
 
 def build_qa_vector_store(qa_pairs_file: Path, 
                          output_dir: Path,
-                         embedding_model: str = 'all-MiniLM-L6-v2') -> None:
+                         embedding_model: str = 'all-MiniLM-L6-v2',
+                         build_adaptive: bool = True) -> None:
     """
-    Build FAISS vector store from selected Q&A pairs.
+    Build FAISS vector stores from selected Q&A pairs.
+    Creates both Standard and Adaptive RAG indices for CPU/GPU.
     
     Args:
         qa_pairs_file: JSON file with selected Q&A pairs
-        output_dir: Directory to save FAISS index and metadata
+        output_dir: Directory to save FAISS indices and metadata
         embedding_model: SentenceTransformer model name
+        build_adaptive: Whether to build adaptive RAG indices (default: True)
+    
+    Outputs:
+        - qa_faiss_index_standard_cpu.bin (Standard RAG - CPU)
+        - qa_faiss_index_standard_gpu.bin (Standard RAG - GPU) 
+        - qa_faiss_index_adaptive_cpu.bin (Adaptive RAG - CPU)
+        - qa_faiss_index_adaptive_gpu.bin (Adaptive RAG - GPU)
     """
     if not FAISS_AVAILABLE:
         raise RuntimeError("FAISS not available. Install with: pip install faiss-cpu")
@@ -98,49 +107,126 @@ def build_qa_vector_store(qa_pairs_file: Path,
     # Add embeddings to CPU index first
     cpu_index.add(embeddings.astype(np.float32))
     
-    print(f'🏗️ Built FAISS index with {cpu_index.ntotal} vectors')
+    print(f'🏗️ Built base FAISS index with {cpu_index.ntotal} vectors')
     
-    # Save CPU index for compatibility
-    cpu_index_path = output_dir / 'qa_faiss_index_cpu.bin'
-    faiss.write_index(cpu_index, str(cpu_index_path))
-    print(f'💾 Saved CPU FAISS index: {cpu_index_path}')
+    # Initialize tracking of created indices
+    created_indices = {}
     
-    # Initialize model info
+    # 1. Standard RAG Indices (traditional approach)
+    print('\n🔹 Building Standard RAG indices...')
+    
+    # Standard CPU index (copy of original)
+    standard_cpu_index = faiss.IndexFlatIP(dimension)
+    standard_cpu_index.add(embeddings.astype(np.float32))
+    
+    standard_cpu_path = output_dir / 'qa_faiss_index_standard_cpu.bin'
+    faiss.write_index(standard_cpu_index, str(standard_cpu_path))
+    print(f'💾 Standard CPU index: {standard_cpu_path}')
+    created_indices['standard_cpu'] = str(standard_cpu_path)
+    
+    # Standard GPU index
+    gpu_available = False
+    try:
+        if faiss.get_num_gpus() > 0:
+            print('🚀 Creating Standard GPU index...')
+            res = faiss.StandardGpuResources()
+            standard_gpu_index = faiss.index_cpu_to_gpu(res, 0, standard_cpu_index)
+            
+            standard_gpu_path = output_dir / 'qa_faiss_index_standard_gpu.bin'
+            cpu_from_gpu = faiss.index_gpu_to_cpu(standard_gpu_index)
+            faiss.write_index(cpu_from_gpu, str(standard_gpu_path))
+            print(f'💾 Standard GPU index: {standard_gpu_path}')
+            created_indices['standard_gpu'] = str(standard_gpu_path)
+            gpu_available = True
+        else:
+            print('⚠️ No GPU detected for standard indices')
+    except Exception as e:
+        print(f'⚠️ Standard GPU index creation failed: {e}')
+    
+    # 2. Adaptive RAG Indices (enhanced approach)  
+    if build_adaptive:
+        print('\n🔸 Building Adaptive RAG indices...')
+        
+        # For adaptive RAG, we create embeddings that combine Q&A for better context matching
+        adaptive_texts = []
+        for pair in qa_pairs:
+            question = pair.get('instruction', pair.get('question', ''))
+            answer = pair.get('output', pair.get('answer', ''))
+            # Combine Q&A for richer semantic understanding
+            combined_text = f"Q: {question} A: {answer}"
+            adaptive_texts.append(combined_text)
+        
+        # Generate adaptive embeddings
+        print('🔍 Generating adaptive embeddings (Q+A combined)...')
+        adaptive_embeddings = model.encode(adaptive_texts, show_progress_bar=True, convert_to_numpy=True)
+        faiss.normalize_L2(adaptive_embeddings)
+        
+        # Adaptive CPU index
+        adaptive_cpu_index = faiss.IndexFlatIP(dimension)
+        adaptive_cpu_index.add(adaptive_embeddings.astype(np.float32))
+        
+        adaptive_cpu_path = output_dir / 'qa_faiss_index_adaptive_cpu.bin'
+        faiss.write_index(adaptive_cpu_index, str(adaptive_cpu_path))
+        print(f'💾 Adaptive CPU index: {adaptive_cpu_path}')
+        created_indices['adaptive_cpu'] = str(adaptive_cpu_path)
+        
+        # Adaptive GPU index
+        try:
+            if gpu_available:
+                print('🚀 Creating Adaptive GPU index...')
+                res = faiss.StandardGpuResources() 
+                adaptive_gpu_index = faiss.index_cpu_to_gpu(res, 0, adaptive_cpu_index)
+                
+                adaptive_gpu_path = output_dir / 'qa_faiss_index_adaptive_gpu.bin'
+                cpu_from_gpu = faiss.index_gpu_to_cpu(adaptive_gpu_index)
+                faiss.write_index(cpu_from_gpu, str(adaptive_gpu_path))
+                print(f'💾 Adaptive GPU index: {adaptive_gpu_path}')
+                created_indices['adaptive_gpu'] = str(adaptive_gpu_path)
+        except Exception as e:
+            print(f'⚠️ Adaptive GPU index creation failed: {e}')
+    
+    # Initialize comprehensive model info
     model_info = {
         'embedding_model': embedding_model,
         'dimension': int(dimension),
-        'total_vectors': int(cpu_index.ntotal),
+        'total_vectors': int(standard_cpu_index.ntotal),
         'index_type': 'IndexFlatIP',
         'similarity_metric': 'cosine',
         'normalized': True,
-        'gpu_available': False  # Will be updated if GPU index created
+        'gpu_available': gpu_available,
+        'adaptive_enabled': build_adaptive,
+        'created_indices': created_indices,
+        'rag_approaches': {
+            'standard': {
+                'description': 'Traditional RAG using answer embeddings only',
+                'embedding_strategy': 'answer_text_only',
+                'use_case': 'Fast retrieval, direct answer matching'
+            },
+            'adaptive': {
+                'description': 'Enhanced RAG using combined Q+A embeddings', 
+                'embedding_strategy': 'question_answer_combined',
+                'use_case': 'Context-aware retrieval, better semantic matching'
+            }
+        }
     }
     
-    # Try to create GPU index if available
+    # Legacy compatibility - create symlinks to standard indices
+    legacy_cpu_path = output_dir / 'qa_faiss_index_cpu.bin'
+    legacy_gpu_path = output_dir / 'qa_faiss_index_gpu.bin'
+    
     try:
-        if faiss.get_num_gpus() > 0:
-            print('🚀 GPU detected - creating GPU-optimized FAISS index')
-            
-            # Move to GPU
-            res = faiss.StandardGpuResources()
-            gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
-            
-            # Save GPU index
-            gpu_index_path = output_dir / 'qa_faiss_index_gpu.bin'
-            # Convert back to CPU for saving (GPU indices need to be serialized differently)
-            cpu_from_gpu = faiss.index_gpu_to_cpu(gpu_index)
-            faiss.write_index(cpu_from_gpu, str(gpu_index_path))
-            print(f'💾 Saved GPU FAISS index: {gpu_index_path}')
-            
-            # Update model info to indicate GPU availability
-            model_info['gpu_available'] = True
-            model_info['gpu_index_path'] = str(gpu_index_path)
-        else:
-            print('⚠️ No GPU detected - using CPU-only index')
-            model_info['gpu_available'] = False
+        if legacy_cpu_path.exists():
+            legacy_cpu_path.unlink()
+        legacy_cpu_path.symlink_to('qa_faiss_index_standard_cpu.bin')
+        print(f'🔗 Legacy compatibility: {legacy_cpu_path} -> standard_cpu')
+        
+        if gpu_available and 'standard_gpu' in created_indices:
+            if legacy_gpu_path.exists():
+                legacy_gpu_path.unlink()  
+            legacy_gpu_path.symlink_to('qa_faiss_index_standard_gpu.bin')
+            print(f'🔗 Legacy compatibility: {legacy_gpu_path} -> standard_gpu')
     except Exception as e:
-        print(f'⚠️ GPU index creation failed: {e} - falling back to CPU index')
-        model_info['gpu_available'] = False
+        print(f'⚠️ Could not create legacy symlinks: {e}')
     
     # Save metadata
     metadata_path = output_dir / 'qa_metadata.json'
@@ -160,26 +246,51 @@ def build_qa_vector_store(qa_pairs_file: Path,
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Build Q&A-based FAISS vector store')
+    parser = argparse.ArgumentParser(description='Build Q&A-based FAISS vector stores (Standard + Adaptive RAG)')
     parser.add_argument('--qa-pairs-file', type=Path, required=True,
                        help='JSON file with selected Q&A pairs')
     parser.add_argument('--output-dir', type=Path, required=True,
-                       help='Output directory for FAISS index')
+                       help='Output directory for FAISS indices')
     parser.add_argument('--embedding-model', default='all-MiniLM-L6-v2',
                        help='SentenceTransformer model name')
+    parser.add_argument('--no-adaptive', action='store_true',
+                       help='Skip building adaptive RAG indices (build standard only)')
     parser.add_argument('--verbose', action='store_true',
                        help='Enable verbose output')
     
     args = parser.parse_args()
     
+    print('🏗️ Q&A FAISS Vector Store Builder')
+    print('=' * 50)
+    print(f'Q&A Pairs: {args.qa_pairs_file}')
+    print(f'Output Dir: {args.output_dir}')
+    print(f'Embedding Model: {args.embedding_model}')
+    print(f'Build Adaptive: {not args.no_adaptive}')
+    print()
+    
     try:
         build_qa_vector_store(
             qa_pairs_file=args.qa_pairs_file,
             output_dir=args.output_dir,
-            embedding_model=args.embedding_model
+            embedding_model=args.embedding_model,
+            build_adaptive=not args.no_adaptive
         )
+        
+        print('\n🎉 SUCCESS: Vector store(s) built successfully!')
+        print(f'📁 Output directory: {args.output_dir}')
+        
+        # Show what was created
+        output_files = list(args.output_dir.glob('*.bin'))
+        if output_files:
+            print('\n📦 Created FAISS indices:')
+            for file in sorted(output_files):
+                print(f'   • {file.name}')
+    
     except Exception as e:
         print(f'❌ Error building Q&A vector store: {e}')
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
         return 1
     
     return 0

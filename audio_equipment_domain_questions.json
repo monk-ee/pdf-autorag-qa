@@ -1,138 +1,368 @@
 {
   "domain_info": {
     "domain": "audio_equipment",
-    "description": "Audio equipment analysis and technical knowledge evaluation for guitar amplifiers and effects",
-    "version": "1.0",
-    "last_updated": "2024-09-08"
+    "description": "Advanced audio equipment analysis and technical knowledge evaluation for guitar amplifiers and effects",
+    "version": "2.0",
+    "last_updated": "2024-09-09",
+    "improvements": [
+      "Dynamic question generation",
+      "Semantic evaluation criteria", 
+      "Multi-dimensional confidence scoring",
+      "Self-improving evaluation loop",
+      "Adversarial testing capabilities"
+    ]
   },
-  "domain_terms": [
-    "amplifier", "guitar", "tone", "distortion", "overdrive", "gain", "EQ", "frequency", 
-    "tube", "preamp", "power", "watts", "impedance", "speaker", "cabinet", "effects", 
-    "boost", "volume", "knob", "channel", "reverb", "delay", "chorus", "compressor",
-    "pickup", "signal", "output", "input", "jack", "phantom power", "headroom"
-  ],
+  "domain_terms": {
+    "core_concepts": ["amplifier", "preamp", "power", "signal", "impedance", "frequency", "gain", "headroom"],
+    "technical_specs": ["watts", "ohms", "dB", "Hz", "RMS", "THD", "SNR", "frequency response"],
+    "equipment_types": ["tube", "solid-state", "hybrid", "modeling", "digital", "analog"],
+    "audio_effects": ["overdrive", "distortion", "reverb", "delay", "chorus", "compressor", "EQ", "boost"],
+    "components": ["speaker", "cabinet", "pickup", "transformer", "capacitor", "resistor", "tube", "transistor"],
+    "connections": ["jack", "XLR", "TRS", "TS", "phantom power", "ground", "shielding", "cable"],
+    "troubleshooting": ["noise", "hum", "buzz", "distortion", "feedback", "interference", "ground loop"]
+  },
+  "question_generators": {
+    "factual_patterns": [
+      "What is the {concept} of a {equipment_type}?",
+      "How is {technical_spec} measured in {component} systems?",
+      "What does {audio_term} mean in the context of {equipment_category}?"
+    ],
+    "comparison_patterns": [
+      "How does {technology_a} compare to {technology_b} in terms of {attribute}?",
+      "What are the advantages and disadvantages of {approach_a} versus {approach_b}?",
+      "When would you choose {option_a} over {option_b} for {use_case}?"
+    ],
+    "troubleshooting_patterns": [
+      "How would you diagnose {problem} in a {equipment_type}?",
+      "What are the most common causes of {issue} in {component} systems?",
+      "What steps would you take to resolve {symptom} when using {equipment}?"
+    ],
+    "procedural_patterns": [
+      "What is the proper way to {action} a {equipment_type}?",
+      "How do you correctly {procedure} when working with {component}?",
+      "What are the safety considerations when {activity} with {equipment}?"
+    ],
+    "conceptual_patterns": [
+      "How does {concept_a} affect {concept_b} in {context}?",
+      "What is the relationship between {parameter_a} and {parameter_b}?",
+      "Why does {phenomenon} occur in {equipment_type} systems?"
+    ]
+  },
+  "concept_bank": {
+    "audio_concepts": ["impedance matching", "frequency response", "harmonic distortion", "dynamic range", "signal-to-noise ratio", "total harmonic distortion", "intermodulation distortion", "phase response"],
+    "equipment_types": ["tube amplifier", "solid-state preamp", "effects pedal", "speaker cabinet", "audio interface", "microphone preamp", "power amplifier", "combo amplifier"],
+    "common_problems": ["ground hum", "RF interference", "thermal noise", "clipping distortion", "impedance mismatch", "feedback oscillation", "power supply noise", "cable interference"],
+    "technical_procedures": ["biasing tubes", "impedance matching", "gain staging", "frequency compensation", "noise reduction", "phase alignment", "crossover design", "room acoustics"],
+    "use_cases": ["live performance", "studio recording", "home practice", "rehearsal", "outdoor gig", "acoustic performance", "high-gain metal", "clean jazz tones"]
+  },
   "evaluation_questions": [
     {
+      "id": "fact_basic_001",
       "category": "in_domain_factual",
       "difficulty": "basic",
       "question": "What is the primary function of a guitar amplifier's preamp section?",
-      "expected_terms": ["preamp", "signal", "gain", "amplification", "tone"]
+      "expected_terms": ["preamp", "signal", "gain", "amplification", "tone"],
+      "evaluation_criteria": {
+        "semantic_keywords": ["signal amplification", "gain control", "tone shaping"],
+        "technical_accuracy": "must mention signal boosting and tone modification",
+        "completeness_indicators": ["input signal", "output to power amp", "EQ controls"]
+      }
     },
     {
-      "category": "in_domain_factual", 
+      "id": "fact_basic_002", 
+      "category": "in_domain_factual",
       "difficulty": "basic",
       "question": "What does impedance matching mean in audio equipment?",
-      "expected_terms": ["impedance", "matching", "ohms", "speaker", "amplifier"]
+      "expected_terms": ["impedance", "matching", "ohms", "speaker", "amplifier"],
+      "evaluation_criteria": {
+        "semantic_keywords": ["electrical resistance", "load matching", "power transfer"],
+        "technical_accuracy": "must explain resistance compatibility between components",
+        "completeness_indicators": ["amplifier output", "speaker load", "maximum power transfer"]
+      }
     },
     {
-      "category": "in_domain_conceptual",
-      "difficulty": "intermediate",
-      "question": "What is the difference between overdrive and distortion effects?",
-      "expected_terms": ["overdrive", "distortion", "clipping", "saturation", "tone"]
-    },
-    {
+      "id": "concept_inter_001",
       "category": "in_domain_conceptual",
       "difficulty": "intermediate", 
-      "question": "How does tube saturation affect guitar tone compared to solid-state amplification?",
-      "expected_terms": ["tube", "solid-state", "saturation", "tone", "harmonic", "warmth"]
+      "question": "What is the difference between overdrive and distortion effects?",
+      "expected_terms": ["overdrive", "distortion", "clipping", "saturation", "tone"],
+      "evaluation_criteria": {
+        "semantic_keywords": ["soft clipping", "hard clipping", "harmonic content"],
+        "technical_accuracy": "must distinguish between gentle vs aggressive signal clipping",
+        "completeness_indicators": ["frequency content", "musical applications", "circuit design"]
+      }
     },
     {
+      "id": "concept_inter_002",
+      "category": "in_domain_conceptual", 
+      "difficulty": "intermediate",
+      "question": "How does tube saturation affect guitar tone compared to solid-state amplification?",
+      "expected_terms": ["tube", "solid-state", "saturation", "tone", "harmonic", "warmth"],
+      "evaluation_criteria": {
+        "semantic_keywords": ["even harmonics", "compression", "nonlinear response"],
+        "technical_accuracy": "must explain harmonic generation differences",
+        "completeness_indicators": ["frequency response", "dynamic response", "subjective qualities"]
+      }
+    },
+    {
+      "id": "proc_inter_001",
       "category": "in_domain_procedural",
       "difficulty": "intermediate",
       "question": "What are the steps for properly setting up a guitar amplifier?",
-      "expected_terms": ["setup", "volume", "gain", "EQ", "power", "speaker", "cable"]
+      "expected_terms": ["setup", "volume", "gain", "EQ", "power", "speaker", "cable"],
+      "evaluation_criteria": {
+        "semantic_keywords": ["power on sequence", "gain staging", "level setting"],
+        "technical_accuracy": "must include safety and proper signal chain",
+        "completeness_indicators": ["cable connections", "power sequence", "level adjustment", "tone setting"]
+      }
     },
     {
+      "id": "proc_adv_001",
       "category": "in_domain_procedural",
       "difficulty": "advanced",
       "question": "How do you troubleshoot a noisy guitar amplifier signal?",
-      "expected_terms": ["noise", "troubleshoot", "ground", "shielding", "cable", "interference"]
+      "expected_terms": ["noise", "troubleshoot", "ground", "shielding", "cable", "interference"],
+      "evaluation_criteria": {
+        "semantic_keywords": ["systematic isolation", "signal path", "elimination process"],
+        "technical_accuracy": "must follow logical troubleshooting methodology",
+        "completeness_indicators": ["cable check", "ground verification", "component isolation", "environment factors"]
+      }
     },
     {
+      "id": "tech_adv_001",
       "category": "in_domain_technical",
       "difficulty": "advanced",
       "question": "How do you calculate the power handling requirements for a speaker cabinet?",
-      "expected_terms": ["power", "watts", "RMS", "speaker", "cabinet", "handling", "impedance"]
+      "expected_terms": ["power", "watts", "RMS", "speaker", "cabinet", "handling", "impedance"],
+      "evaluation_criteria": {
+        "semantic_keywords": ["RMS power", "peak power", "thermal limits"],
+        "technical_accuracy": "must distinguish between RMS and peak power ratings",
+        "completeness_indicators": ["amplifier power", "speaker rating", "safety margin", "impedance matching"]
+      }
     },
     {
+      "id": "tech_adv_002",
       "category": "in_domain_technical",
-      "difficulty": "advanced",
+      "difficulty": "advanced", 
       "question": "What are the key specifications to consider when matching effects pedals with amplifiers?",
-      "expected_terms": ["effects", "pedals", "impedance", "signal", "level", "compatibility"]
+      "expected_terms": ["effects", "pedals", "impedance", "signal", "level", "compatibility"],
+      "evaluation_criteria": {
+        "semantic_keywords": ["input impedance", "output level", "frequency response"],
+        "technical_accuracy": "must address electrical compatibility factors",
+        "completeness_indicators": ["signal levels", "impedance matching", "frequency response", "noise considerations"]
+      }
     },
     {
+      "id": "out_general_001",
       "category": "out_domain_general",
       "difficulty": "unknown",
       "question": "How do you change the oil in a car engine?",
-      "expected_terms": []
+      "expected_terms": [],
+      "evaluation_criteria": {
+        "expected_response": "uncertainty_expression",
+        "inappropriate_confidence": "penalty_score",
+        "domain_boundary_recognition": "should_decline_or_redirect"
+      }
     },
     {
+      "id": "out_tech_001", 
       "category": "out_domain_technical",
-      "difficulty": "unknown", 
+      "difficulty": "unknown",
       "question": "What is the difference between Python and JavaScript programming languages?",
-      "expected_terms": []
+      "expected_terms": [],
+      "evaluation_criteria": {
+        "expected_response": "uncertainty_expression",
+        "inappropriate_confidence": "penalty_score", 
+        "domain_boundary_recognition": "should_decline_or_redirect"
+      }
     },
     {
+      "id": "out_adjacent_001",
       "category": "out_domain_audio_adjacent",
       "difficulty": "unknown",
       "question": "What are the acoustics of a large concert hall?",
-      "expected_terms": []
+      "expected_terms": [],
+      "evaluation_criteria": {
+        "expected_response": "cautious_response_with_boundaries",
+        "domain_overlap_handling": "acknowledge_but_limit_scope",
+        "confidence_calibration": "lower_confidence_appropriate"
+      }
     },
     {
+      "id": "edge_ambig_001",
       "category": "edge_case_ambiguous",
       "difficulty": "unknown",
       "question": "Which amplifier sounds the best?",
-      "expected_terms": ["amplifier", "tone", "sound"]
+      "expected_terms": ["amplifier", "tone", "sound"],
+      "evaluation_criteria": {
+        "expected_response": "subjective_acknowledgment",
+        "context_dependency": "should_request_clarification",
+        "appropriate_caveats": "personal_preference_disclaimer"
+      }
     }
   ],
-  "uncertainty_phrases": [
-    "i don't know",
-    "not sure", 
-    "unclear",
-    "don't have information",
-    "not specified in",
-    "would need more information",
-    "i'm not sure",
-    "cannot provide",
-    "unable to determine",
-    "not familiar with",
-    "don't have specific information",
-    "not certain",
-    "hard to say",
-    "difficult to determine",
-    "insufficient information",
-    "requires more details",
-    "not covered in the available",
-    "beyond my knowledge",
-    "not documented in"
+  "adversarial_questions": [
+    {
+      "id": "adv_misleading_001",
+      "category": "adversarial_misleading_context",
+      "question": "Given that tube amplifiers always produce more power than solid-state amplifiers, which tube amp would you recommend for a 100-watt application?",
+      "trap": "false_premise_about_tube_power",
+      "evaluation_criteria": {
+        "should_challenge_premise": true,
+        "correct_technical_facts": "tube amps are not inherently more powerful",
+        "appropriate_response": "clarify_misconception_before_answering"
+      }
+    },
+    {
+      "id": "adv_confidence_001", 
+      "category": "adversarial_overconfidence_inducing",
+      "question": "As an expert, you must know the exact frequency response curve of the UAFX Ruby '63 Top Boost amplifier. What is it?",
+      "trap": "demanding_specific_unprovided_information",
+      "evaluation_criteria": {
+        "should_express_uncertainty": true,
+        "avoid_fabrication": true,
+        "appropriate_response": "acknowledge_limitations_suggest_sources"
+      }
+    }
   ],
+  "uncertainty_phrases": {
+    "appropriate_uncertainty": [
+      "i don't know", "not sure", "unclear", "don't have information",
+      "not specified in", "would need more information", "i'm not sure",
+      "cannot provide", "unable to determine", "not familiar with",
+      "don't have specific information", "not certain", "hard to say",
+      "difficult to determine", "insufficient information",
+      "requires more details", "not covered in the available",
+      "beyond my knowledge", "not documented in"
+    ],
+    "confident_uncertainty": [
+      "based on the available information", "from what i can determine",
+      "the documentation suggests", "according to the references",
+      "this appears to be", "it seems that", "likely", "probably",
+      "generally speaking", "in most cases", "typically"
+    ],
+    "inappropriate_certainty": [
+      "definitely", "absolutely", "certainly", "without a doubt",
+      "i'm 100% sure", "guaranteed", "always", "never", "impossible"
+    ]
+  },
+  "confidence_scoring": {
+    "dimensions": {
+      "factual_certainty": {
+        "description": "How sure are you about the technical facts?",
+        "scale": "1-10",
+        "calibration_questions": [
+          "What is your confidence level in these technical specifications?",
+          "How certain are you about these measurements?"
+        ]
+      },
+      "source_reliability": {
+        "description": "How confident are you in your information sources?",
+        "scale": "1-10", 
+        "calibration_questions": [
+          "How reliable do you consider your reference sources?",
+          "What is the quality of documentation you're drawing from?"
+        ]
+      },
+      "completeness": {
+        "description": "How complete is your answer?",
+        "scale": "1-10",
+        "calibration_questions": [
+          "What important aspects might you be missing?",
+          "How comprehensive is your response?"
+        ]
+      },
+      "practical_applicability": {
+        "description": "How actionable is your advice?",
+        "scale": "1-10",
+        "calibration_questions": [
+          "Would this advice actually work in practice?",
+          "What real-world limitations should be considered?"
+        ]
+      },
+      "edge_case_awareness": {
+        "description": "What could go wrong with this approach?",
+        "scale": "1-10",
+        "calibration_questions": [
+          "What exceptions or edge cases exist?",
+          "Under what conditions might this advice fail?"
+        ]
+      }
+    }
+  },
   "context_templates": {
     "comparison": {
       "prefix": "AUDIO EQUIPMENT COMPARISON ANALYSIS\n\nReference Examples:\n",
-      "suffix": "Based on the audio equipment examples above, please compare and contrast: {question}\n\n",
+      "suffix": "Based on the audio equipment examples above, please compare and contrast: {question}\n\nIMPORTANT: Rate your confidence on each dimension (1-10):\n- Factual certainty: ?\n- Source reliability: ?\n- Completeness: ?\n- Practical applicability: ?\n- Edge case awareness: ?\n",
       "confidence_instructions": {
-        "low": "IMPORTANT: If you cannot find sufficient information in the reference examples to answer this audio equipment question confidently, please respond with: 'I'm not sure based on the audio equipment information I found in the documentation.'",
-        "medium": "CAUTION: Use only the audio equipment information provided in the references above. If any part of your answer goes beyond what's explicitly stated, clearly indicate uncertainty.",
-        "high": "Use the reference audio equipment information to provide a comprehensive comparison."
+        "low": "IMPORTANT: If you cannot find sufficient information in the reference examples to answer this audio equipment question confidently, please respond with: 'I'm not sure based on the audio equipment information I found in the documentation.' Rate all confidence dimensions ≤3.",
+        "medium": "CAUTION: Use only the audio equipment information provided in the references above. If any part of your answer goes beyond what's explicitly stated, clearly indicate uncertainty and rate confidence dimensions 4-6.",
+        "high": "Use the reference audio equipment information to provide a comprehensive comparison. Rate confidence dimensions 7-10 only if fully supported by references."
       }
     },
     "technical": {
       "prefix": "AUDIO EQUIPMENT TECHNICAL REFERENCE\n\n",
-      "suffix": "Audio Equipment Question: {question}\n",
+      "suffix": "Audio Equipment Question: {question}\n\nPROVIDE MULTI-DIMENSIONAL CONFIDENCE ASSESSMENT:\n1. Factual certainty (1-10): \n2. Source reliability (1-10): \n3. Completeness (1-10): \n4. Practical applicability (1-10): \n5. Edge case awareness (1-10): \n\nExplain your confidence ratings:\n",
       "confidence_instructions": {
-        "low": "INSTRUCTIONS: Provide an audio equipment answer using ONLY the reference information above. If the specific technical details are not available in the references, respond with: 'I'm not sure based on the audio equipment information I have. The references don't contain sufficient details about this specific technical aspect.'",
-        "medium": "Provide an audio equipment answer based primarily on the reference information above. Clearly indicate if you're making any inferences.",
-        "high": "Provide a detailed audio equipment answer using the reference information above."
+        "low": "INSTRUCTIONS: Provide an audio equipment answer using ONLY the reference information above. If the specific technical details are not available in the references, respond with: 'I'm not sure based on the audio equipment information I have. The references don't contain sufficient details about this specific technical aspect.' Confidence scores should be ≤3.",
+        "medium": "Provide an audio equipment answer based primarily on the reference information above. Clearly indicate if you're making any inferences. Confidence scores should be 4-6.",
+        "high": "Provide a detailed audio equipment answer using the reference information above. Confidence scores can be 7-10 only if fully supported."
       }
     },
     "general": {
       "prefix": "AUDIO EQUIPMENT REFERENCE INFORMATION\n\n",
-      "suffix": "Question: {question}\n\n",
+      "suffix": "Question: {question}\n\nCONFIDENCE CALIBRATION:\n- What aspects are you most/least confident about?\n- What additional information would improve your confidence?\n- What are the main limitations of your current knowledge?\n\nMulti-dimensional confidence scores (1-10):\nFactual certainty: ?\nSource reliability: ?\nCompleteness: ?\nPractical applicability: ?\nEdge case awareness: ?\n",
       "confidence_instructions": {
-        "low": "CRITICAL: The retrieved audio equipment information may not be sufficient to answer this question accurately. If you cannot provide a confident answer based on the audio equipment references above, please respond with: 'I'm not sure based on the information I found. This question may require additional technical documentation or specifications that aren't available in my current references.'",
-        "medium": "CAUTION: Use only the audio equipment information provided in the references above. If any part of your answer goes beyond what's explicitly stated in the references, clearly indicate uncertainty with phrases like 'Based on the available technical information...' or 'The references suggest...'",
-        "high": "Answer confidently using the audio equipment reference information provided above."
+        "low": "CRITICAL: The retrieved audio equipment information may not be sufficient to answer this question accurately. If you cannot provide a confident answer based on the audio equipment references above, please respond with: 'I'm not sure based on the information I found. This question may require additional technical documentation or specifications that aren't available in my current references.' All confidence dimensions should be ≤3.",
+        "medium": "CAUTION: Use only the audio equipment information provided in the references above. If any part of your answer goes beyond what's explicitly stated in the references, clearly indicate uncertainty with phrases like 'Based on the available technical information...' or 'The references suggest...' Confidence dimensions should be 4-6.",
+        "high": "Answer confidently using the audio equipment reference information provided above. Confidence dimensions can be 7-10 only when fully supported by solid references."
       }
+    },
+    "adversarial": {
+      "prefix": "AUDIO EQUIPMENT EVALUATION - CRITICAL THINKING REQUIRED\n\n",
+      "suffix": "Question: {question}\n\nCRITICAL ANALYSIS REQUIRED:\n- Identify any questionable assumptions in the question\n- Challenge any false premises\n- Acknowledge limitations in your knowledge\n- Provide appropriate caveats\n\nConfidence assessment:\n- Overall confidence: ?\n- Confidence in challenging premises: ?\n- Awareness of knowledge limitations: ?\n",
+      "confidence_instructions": {
+        "default": "CRITICAL THINKING: Carefully examine the question for false premises, overgeneralizations, or misleading assumptions. Challenge these appropriately while providing accurate information. Be especially cautious about expressing high confidence when the question itself contains problematic assumptions."
+      }
+    }
+  },
+  "evaluation_evolution": {
+    "failure_tracking": {
+      "track_patterns": true,
+      "common_failure_modes": [
+        "overconfidence_on_edge_cases",
+        "insufficient_uncertainty_expression", 
+        "domain_boundary_violations",
+        "false_premise_acceptance",
+        "incomplete_technical_explanations"
+      ]
+    },
+    "dynamic_difficulty": {
+      "increase_on_mastery": true,
+      "decrease_on_failure": true,
+      "adaptation_threshold": 0.8
+    },
+    "question_generation": {
+      "generate_from_failures": true,
+      "target_weak_areas": true,
+      "remove_saturated_questions": true
+    }
+  },
+  "semantic_evaluation": {
+    "embedding_similarity": {
+      "model": "sentence-transformers/all-MiniLM-L6-v2",
+      "reference_responses": "domain_expert_responses.pkl",
+      "similarity_threshold": 0.85
+    },
+    "concept_graph_alignment": {
+      "knowledge_graph": "audio_equipment_ontology.json",
+      "relationship_validation": true,
+      "consistency_checking": true
+    },
+    "logical_consistency": {
+      "contradiction_detection": true,
+      "fact_verification": true,
+      "causal_reasoning_validation": true
     }
   }
 }
