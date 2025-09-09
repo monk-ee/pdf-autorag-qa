@@ -88,9 +88,9 @@ The **Enhanced Adaptive RAG** implementation includes 4 major improvements over 
 
 ### **📋 Implementation Status**
 - ✅ **Enhanced features implemented**: `adaptive_rag_pipeline.py` contains all 4 improvements
-- ⏳ **Integration pending**: Enhanced pipeline needs integration with existing evaluator
-- 📊 **Current results**: Based on basic Q+A embeddings (81% → 82.4% = +1.4% improvement)
-- 🎯 **Next step**: Integrate enhanced pipeline for projected 10-20% improvement
+- ✅ **Integration completed**: Enhanced pipeline now integrated via `qa_enhanced_adaptive_evaluator.py`
+- 📊 **Previous results**: Basic Q+A embeddings only (81% → 82.4% = +1.4% improvement)
+- 🚀 **Current status**: Enhanced pipeline active - expecting 10-20% improvement in next run
 
 ---
 
@@ -154,12 +154,12 @@ python qa_autorag_evaluator.py \
   --qa-faiss-index rag_store/qa_faiss_index_standard_gpu.bin \
   --output-dir autorag_results/standard_rag
 
-# Adaptive RAG (currently basic Q+A embeddings)
-# Note: Enhanced features implemented in adaptive_rag_pipeline.py - integration pending
-python qa_autorag_evaluator.py \
+# Enhanced Adaptive RAG (4 major improvements active)
+python qa_enhanced_adaptive_evaluator.py \
   --qa-pairs-file rag_input/selected_qa_pairs.json \
-  --qa-faiss-index rag_store/qa_faiss_index_adaptive_gpu.bin \
-  --output-dir autorag_results/adaptive_rag
+  --output-dir autorag_results/adaptive_rag \
+  --model-name meta-llama/Meta-Llama-3-8B-Instruct \
+  --domain-config audio_equipment_domain_questions.json
 
 # 5. Compare RAG approaches
 python rag_comparison_analyzer.py \
@@ -315,10 +315,11 @@ After running the complete dual RAG pipeline, expect:
 - **50+ high-quality pairs** selected for dual RAG evaluation
 - **4 GPU/CPU FAISS indices** with sub-millisecond query times
 - **Comparative analysis** showing Standard vs Adaptive performance differences
-- **Standard RAG performance**: ~81% quality score baseline
-- **Enhanced Adaptive RAG**: Expected 10-20% improvement (90-95% quality score)
+- **Standard RAG performance**: ~81% quality score baseline  
+- **Enhanced Adaptive RAG**: Now active with 4 major improvements
+- **Expected performance**: 90-95% quality score (10-20% improvement over standard)
+- **Enhanced features**: Cross-encoder re-ranking, hybrid dense+sparse retrieval, dynamic context windows, domain ontology
 - **Winner determination** based on quality metrics (timing not measured)
-- **Performance gains**: Cross-encoder re-ranking, hybrid retrieval, dynamic context windows
 - **Training dataset** generated from best-performing approach
 
 ---

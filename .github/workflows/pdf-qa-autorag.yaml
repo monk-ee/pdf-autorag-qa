@@ -80,19 +80,42 @@ jobs:
         # Install all dependencies from pyproject.toml
         uv sync
         
-        # Install platform-specific dependencies
-        uv pip install faiss-gpu || uv pip install faiss-cpu
+        # Install GPU-specific dependencies with better detection
+        echo "🔍 Checking GPU availability..."
+        nvidia-smi || echo "No NVIDIA GPU detected"
+        
+        # Install FAISS-GPU with proper CUDA version detection
+        if nvidia-smi > /dev/null 2>&1; then
+          echo "🚀 GPU detected, installing faiss-gpu..."
+          # Try different FAISS GPU versions
+          uv pip install faiss-gpu>=1.7.4 || \
+          uv pip install faiss-gpu==1.7.4 || \
+          uv pip install "faiss-gpu<1.8.0" || {
+            echo "⚠️ All faiss-gpu installations failed, falling back to faiss-cpu"
+            uv pip install faiss-cpu>=1.7.4
+          }
+        else
+          echo "💻 No GPU detected, installing faiss-cpu..."
+          uv pip install faiss-cpu>=1.7.4
+        fi
         uv pip install bitsandbytes>=0.41.0
         
         # Ensure sentence-transformers is installed (critical dependency)
         uv pip install sentence-transformers>=2.2.0
         
-        # Verify critical imports
+        # Verify critical imports and GPU detection
         uv run python -c "import sentence_transformers; print('✅ sentence-transformers:', sentence_transformers.__version__)"
-        uv run python -c "import faiss; print('✅ faiss installed')"
-        uv run python -c "import torch; print('✅ torch:', torch.__version__)"
+        uv run python -c "import torch; print('✅ torch:', torch.__version__, '| CUDA available:', torch.cuda.is_available(), '| Device count:', torch.cuda.device_count())"
         uv run python -c "import transformers; print('✅ transformers:', transformers.__version__)"
         uv run python -c "import bitsandbytes; print('✅ bitsandbytes available for quantization')"
+        uv run python -c "
+import faiss
+print('✅ faiss installed')
+try:
+    print('🔍 FAISS GPU detection:', faiss.get_num_gpus(), 'GPUs available')
+except Exception as e:
+    print('⚠️ FAISS GPU detection failed:', e)
+"
     
     - name: Login to Hugging Face
       run: |

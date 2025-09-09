@@ -124,10 +124,17 @@ def build_qa_vector_store(qa_pairs_file: Path,
     print(f'💾 Standard CPU index: {standard_cpu_path}')
     created_indices['standard_cpu'] = str(standard_cpu_path)
     
-    # Standard GPU index - Create CPU-optimized version with GPU naming for deployment
+    # Standard GPU index - Create CPU-optimized version with GPU naming for deployment  
     gpu_available = False
     try:
-        if faiss.get_num_gpus() > 0:
+        # Use PyTorch for more reliable GPU detection
+        import torch
+        has_gpu = torch.cuda.is_available() and torch.cuda.device_count() > 0
+        faiss_has_gpu = faiss.get_num_gpus() > 0 if hasattr(faiss, 'get_num_gpus') else False
+        
+        print(f"🔍 GPU Detection: PyTorch CUDA={has_gpu}, FAISS GPUs={faiss_has_gpu}")
+        
+        if has_gpu and faiss_has_gpu:
             print('🚀 Creating Standard GPU index (true GPU)...')
             res = faiss.StandardGpuResources()
             standard_gpu_index = faiss.index_cpu_to_gpu(res, 0, standard_cpu_index)
@@ -193,7 +200,7 @@ def build_qa_vector_store(qa_pairs_file: Path,
         
         # Adaptive GPU index  
         try:
-            if faiss.get_num_gpus() > 0:
+            if has_gpu and faiss_has_gpu:
                 print('🚀 Creating Adaptive GPU index (true GPU)...')
                 res = faiss.StandardGpuResources() 
                 adaptive_gpu_index = faiss.index_cpu_to_gpu(res, 0, adaptive_cpu_index)

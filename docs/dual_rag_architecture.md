@@ -109,8 +109,12 @@ The pipeline now generates **4 FAISS indices** for comprehensive evaluation:
 
 ### 1. Parallel RAG Evaluation
 Both approaches are evaluated simultaneously:
-- **Standard RAG**: Uses answer-only embeddings for retrieval
-- **Adaptive RAG**: Uses Q+A combined embeddings for retrieval
+- **Standard RAG**: Uses `qa_autorag_evaluator.py` with answer-only embeddings
+- **Enhanced Adaptive RAG**: Uses `qa_enhanced_adaptive_evaluator.py` with 4 major improvements:
+  - Cross-encoder re-ranking for better context selection
+  - Hybrid dense+sparse retrieval (BM25 + multiple embedding strategies)
+  - Dynamic context windows based on query complexity
+  - Enhanced query classification with domain ontology
 
 ### 2. Performance Comparison
 The `rag_comparison_analyzer.py` compares approaches across:
@@ -203,15 +207,18 @@ python qa_faiss_builder.py \
 
 ### RAG Evaluation (Parallel)
 ```bash
-# Standard RAG evaluation
+# Standard RAG evaluation (basic FAISS lookup)
 python qa_autorag_evaluator.py \
+  --qa-pairs-file rag_input/selected_qa_pairs.json \
   --qa-faiss-index rag_store/qa_faiss_index_standard_gpu.bin \
   --output-dir autorag_results/standard_rag
 
-# Adaptive RAG evaluation  
-python qa_autorag_evaluator.py \
-  --qa-faiss-index rag_store/qa_faiss_index_adaptive_gpu.bin \
-  --output-dir autorag_results/adaptive_rag
+# Enhanced Adaptive RAG evaluation (4 major improvements)
+python qa_enhanced_adaptive_evaluator.py \
+  --qa-pairs-file rag_input/selected_qa_pairs.json \
+  --output-dir autorag_results/adaptive_rag \
+  --model-name meta-llama/Meta-Llama-3-8B-Instruct \
+  --domain-config audio_equipment_domain_questions.json
 ```
 
 ### Performance Comparison

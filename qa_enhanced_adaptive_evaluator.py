@@ -72,14 +72,17 @@ class EnhancedAdaptiveRAGEvaluator:
         self.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
         
     def _setup_device(self, device: str) -> torch.device:
-        """Setup compute device"""
+        """Setup compute device with better GPU detection"""
         if device == 'auto':
-            if torch.cuda.is_available():
+            if torch.cuda.is_available() and torch.cuda.device_count() > 0:
                 device = 'cuda'
-                logger.info(f"🚀 Using GPU: {torch.cuda.get_device_name()}")
+                gpu_name = torch.cuda.get_device_name() if torch.cuda.is_available() else "Unknown GPU"
+                logger.info(f"🚀 Using GPU: {gpu_name} (CUDA: {torch.version.cuda})")
+                logger.info(f"🔥 GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f}GB")
             else:
                 device = 'cpu'
-                logger.info("💻 Using CPU")
+                logger.info("💻 Using CPU - no CUDA GPU detected")
+                logger.info("⚠️  Note: GPU instance but no CUDA support - check FAISS installation")
         else:
             logger.info(f"🔧 Using specified device: {device}")
             
