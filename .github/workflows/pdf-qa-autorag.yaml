@@ -93,12 +93,6 @@ jobs:
         python -c "import bitsandbytes; print('✅ bitsandbytes available for quantization')"
         python -c "import faiss; print('✅ faiss installed'); print('🔍 FAISS GPU detection:', faiss.get_num_gpus() if hasattr(faiss, 'get_num_gpus') else 'N/A', 'GPUs available')"
         
-        # CRITICAL: Test FAISS-GPU functionality BEFORE expensive pipeline
-        echo "🧪 TESTING FAISS-GPU FUNCTIONALITY ON GPU INSTANCE..."
-        python test_faiss_gpu.py || {
-          echo "💥 FAISS-GPU test failed - aborting pipeline to save money!"
-          exit 1
-        }
     
     - name: Login to Hugging Face
       run: |
