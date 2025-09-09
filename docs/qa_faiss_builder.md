@@ -1,31 +1,53 @@
-# Vector Store Construction (qa_faiss_builder.py)
+# Dual Vector Store Construction (qa_faiss_builder.py)
 
 ## Purpose
-Builds GPU-accelerated FAISS indices from Q&A pairs to enable fast semantic search for RAG (Retrieval-Augmented Generation).
+Builds **4 GPU-accelerated FAISS indices** from Q&A pairs using both Standard and Adaptive RAG approaches for comprehensive evaluation and optimal deployment strategy selection.
 
-## Why FAISS?
-FAISS (Facebook AI Similarity Search) provides millisecond-scale vector search across millions of embeddings, with GPU acceleration for 10-100x speedup over CPU-only solutions.
+## Why Dual RAG?
+The system builds two complementary approaches:
+- **Standard RAG**: Traditional answer-only embeddings (speed-optimized)
+- **Adaptive RAG**: Combined Q+A embeddings (quality-optimized)
 
-## Vector Store Architecture
+This enables scientific A/B testing to determine the best approach for specific use cases.
 
-### Embedding Strategy
+## Dual Vector Store Architecture
+
+### Standard RAG Embedding Strategy
 - **Model**: `all-MiniLM-L6-v2` (384-dimensional embeddings)
-- **Text Representation**: Combines question + answer for richer context
-- **Normalization**: L2 normalization for cosine similarity search
+- **Text Representation**: Answer text only
+- **Optimization**: Speed and memory efficiency
+- **Use Case**: High-volume, direct lookup scenarios
 
-### Index Construction
-1. **Text Preprocessing**: Clean and tokenize Q&A pairs
-2. **Batch Embedding**: Generate vectors in GPU-optimized batches
-3. **Index Building**: Create FAISS flat index for exact search
-4. **GPU Optimization**: Transfer index to GPU memory if available
+### Adaptive RAG Embedding Strategy  
+- **Model**: `all-MiniLM-L6-v2` (384-dimensional embeddings)
+- **Text Representation**: Combined "Q: {question} A: {answer}" format
+- **Optimization**: Semantic understanding and context awareness
+- **Use Case**: Complex domain-specific queries
+
+### Dual Index Construction Process
+1. **Standard RAG Process**:
+   - Extract answer texts from Q&A pairs
+   - Generate answer-only embeddings
+   - Build Standard CPU + GPU FAISS indices
+   
+2. **Adaptive RAG Process**:
+   - Combine questions and answers ("Q: ... A: ...")
+   - Generate combined embeddings for richer context
+   - Build Adaptive CPU + GPU FAISS indices
+
+3. **Legacy Compatibility**: Create symlinks for backward compatibility
 
 ## Technical Implementation
 
-### Dual Index Strategy
+### Four Index Strategy
 ```python
-# Build both CPU and GPU indices for flexibility
-cpu_index = faiss.IndexFlatIP(dimension)  # Inner product (cosine similarity)
-gpu_index = faiss.GpuIndexFlatIP(gpu_resource, dimension)  # GPU acceleration
+# Standard RAG indices (answer-only embeddings)
+standard_cpu_index = faiss.IndexFlatIP(dimension)
+standard_gpu_index = faiss.index_cpu_to_gpu(res, 0, standard_cpu_index)
+
+# Adaptive RAG indices (Q+A combined embeddings)  
+adaptive_cpu_index = faiss.IndexFlatIP(dimension)
+adaptive_gpu_index = faiss.index_cpu_to_gpu(res, 0, adaptive_cpu_index)
 ```
 
 ### Memory Management
@@ -52,27 +74,31 @@ class QAFAISSBuilder:
 ## Configuration Options
 
 ### Performance Tuning
-- `--batch-size`: Embedding batch size (default: 32)
-- `--embedding-model`: SentenceTransformer model choice
-- `--gpu-memory-fraction`: GPU memory allocation limit
-- `--index-type`: FAISS index variant (Flat, IVF, HNSW)
+- `--embedding-model`: SentenceTransformer model choice (default: all-MiniLM-L6-v2)
+- `--no-adaptive`: Skip building adaptive indices (build standard only)
+- `--verbose`: Enable detailed logging and progress tracking
 
-### Output Formats
-- **CPU Index**: `qa_faiss_index_cpu.bin` (universal compatibility)
-- **GPU Index**: `qa_faiss_index_gpu.bin` (CUDA-accelerated)
-- **Metadata**: `qa_metadata.json` (question mapping, quality scores)
+### Output Formats (4 Indices Generated)
+- **Standard CPU**: `qa_faiss_index_standard_cpu.bin` (traditional approach, CPU)
+- **Standard GPU**: `qa_faiss_index_standard_gpu.bin` (traditional approach, GPU)
+- **Adaptive CPU**: `qa_faiss_index_adaptive_cpu.bin` (enhanced approach, CPU)
+- **Adaptive GPU**: `qa_faiss_index_adaptive_gpu.bin` (enhanced approach, GPU)
+- **Legacy Links**: `qa_faiss_index_cpu.bin` → standard_cpu, `qa_faiss_index_gpu.bin` → standard_gpu
+- **Metadata**: `qa_metadata.json` (comprehensive comparison and approach info)
 
 ## Index Performance
 
 ### Search Speed Comparison
-- **CPU (Flat)**: ~1-10ms per query (50 Q&A pairs)
-- **GPU (Flat)**: ~0.1-1ms per query (same dataset)
-- **Scalability**: GPU advantage increases with dataset size
+- **Standard CPU**: ~1-10ms per query (direct answer lookup)
+- **Standard GPU**: ~0.1-1ms per query (GPU-accelerated)
+- **Adaptive CPU**: ~1-10ms per query (Q+A context understanding)
+- **Adaptive GPU**: ~0.1-1ms per query (GPU-accelerated with richer context)
 
-### Memory Requirements
-- **Embeddings**: ~1.5KB per Q&A pair (384 dims × 4 bytes)
-- **CPU Index**: Same as embeddings (in-memory)
-- **GPU Index**: Additional GPU VRAM allocation
+### Memory Requirements (×2 for Dual Approach)
+- **Standard Embeddings**: ~1.5KB per Q&A pair (384 dims × 4 bytes, answer-only)
+- **Adaptive Embeddings**: ~1.5KB per Q&A pair (384 dims × 4 bytes, Q+A combined)
+- **Total Storage**: ~3KB per Q&A pair (both approaches)
+- **GPU VRAM**: Additional allocation for GPU indices
 
 ## Quality Assurance
 
@@ -94,9 +120,10 @@ class QAFAISSBuilder:
 - Expects standardized JSON format
 
 ### Downstream Usage
-- Consumed by `qa_autorag_evaluator.py` for RAG evaluation
-- Enables fast context retrieval during inference
-- Supports hybrid search strategies (dense + sparse)
+- Consumed by `qa_autorag_evaluator.py` for parallel RAG evaluation
+- Enables comparative performance testing (Standard vs Adaptive)
+- Supports dual hybrid search strategies (dense + sparse for both approaches)
+- Used by `rag_comparison_analyzer.py` for A/B testing analysis
 
 ## Advanced Features
 
@@ -111,7 +138,21 @@ class QAFAISSBuilder:
 - **A/B Testing**: Compare different embedding strategies
 
 ## Use Cases
-- RAG system knowledge bases
-- Question answering over technical documents
-- Semantic search for educational content
-- Research into embedding model performance
+
+### Standard RAG Indices
+- High-volume FAQ systems
+- Direct answer lookup scenarios  
+- Speed-critical applications
+- Resource-constrained deployments
+
+### Adaptive RAG Indices
+- Complex technical documentation
+- Domain-specific expert systems
+- Context-aware question answering
+- Quality-critical applications
+
+### Comparative Analysis
+- A/B testing different RAG approaches
+- Performance optimization research
+- Deployment strategy selection
+- Scientific evaluation of retrieval methods
