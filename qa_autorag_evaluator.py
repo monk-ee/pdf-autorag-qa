@@ -73,12 +73,17 @@ class QARAGEvaluator:
         print(f'📥 Loading Q&A FAISS index: {index_path}')
         cpu_index = faiss.read_index(str(index_path))
         
-        # FORCE GPU FAISS - we're on a GPU instance, no fallbacks!
+        # FORCE GPU FAISS - check if GPU functions are available
         if self.device == 'cuda':
-            print('🚀 FORCING FAISS index to GPU - no fallbacks!')
-            res = faiss.StandardGpuResources()
-            self.qa_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
-            print('✅ FAISS index FORCED to GPU')
+            if hasattr(faiss, 'StandardGpuResources'):
+                print('🚀 FORCING FAISS index to GPU - no fallbacks!')
+                res = faiss.StandardGpuResources()
+                self.qa_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
+                print('✅ FAISS index FORCED to GPU')
+            else:
+                print('❌ FAISS-GPU not properly installed - StandardGpuResources missing!')
+                print('💥 CRASHING because we need GPU FAISS on this instance!')
+                raise RuntimeError("FAISS-GPU installation broken - StandardGpuResources not available")
         else:
             print('Using CPU FAISS index')
             self.qa_index = cpu_index

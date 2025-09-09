@@ -94,14 +94,26 @@ jobs:
           cuda_version=$(nvidia-smi | grep "CUDA Version" | awk '{print $9}' | cut -d'.' -f1,2)
           echo "🔍 Detected CUDA version: $cuda_version"
           
-          # Install newer FAISS-GPU version that supports CUDA 12.x
-          echo "🚀 Installing newer FAISS-GPU for CUDA 12.x compatibility..."
-          uv pip install faiss-gpu==1.8.0 || \
-          uv pip install faiss-gpu==1.7.4 || \
-          uv pip install faiss-gpu==1.7.3 || \
-          uv pip install faiss-gpu || {
-            echo "❌ All FAISS-GPU installations failed, using faiss-cpu"
-            uv pip install faiss-cpu>=1.7.4
+          # NUCLEAR OPTION: Force correct FAISS-GPU installation
+          echo "🔥 NUCLEAR FAISS-GPU INSTALLATION..."
+          
+          # Uninstall any existing FAISS
+          uv pip uninstall -y faiss-cpu faiss-gpu || true
+          
+          # Try multiple FAISS-GPU installation strategies
+          echo "🚀 Strategy 1: Install latest faiss-gpu..."
+          uv pip install faiss-gpu==1.8.0 && python -c "import faiss; print(f'FAISS GPU: {hasattr(faiss, \"StandardGpuResources\")}')" || {
+            echo "❌ Strategy 1 failed"
+            
+            echo "🚀 Strategy 2: Install faiss-gpu 1.7.4..."
+            uv pip uninstall -y faiss-gpu || true
+            uv pip install faiss-gpu==1.7.4 && python -c "import faiss; print(f'FAISS GPU: {hasattr(faiss, \"StandardGpuResources\")}')" || {
+              echo "❌ Strategy 2 failed"
+              
+              echo "💥 FAISS-GPU installation completely failed!"
+              echo "Installing faiss-cpu as emergency fallback..."
+              uv pip install faiss-cpu>=1.7.4
+            }
           }
         else
           echo "💻 No GPU detected, installing faiss-cpu..."
