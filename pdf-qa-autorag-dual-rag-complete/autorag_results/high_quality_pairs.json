@@ -1,0 +1,582 @@
+[
+  {
+    "question": "What does the Bass and Treble knobs do on the Ruby '63 Top Boost Amplifier?",
+    "answer": "The Bass and Treble knobs cut bass and treble frequencies as you rotate them clockwise, and work in reverse of most EQ knobs. They are also extremely interactive, and when turned all the way up, create a \"smiley-face\" EQ curve.",
+    "rag_answer": "The Bass and Treble knobs are extremely interactive. When bass and treble are turned all the way up (all the way to the left), the midrange is reduced and the bass and treble are increased in a very extreme “smiley-face” EQ curve.",
+    "quality_score": 0.7157225656509398,
+    "semantic_similarity": 0.8512042760848999,
+    "content_overlap": 0.3333333333333333,
+    "length_ratio": 1.05,
+    "source_matrix": "intermediate_high_creativity_20250909",
+    "pair_id": 0,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.8512042760848999,
+      "content_overlap": 0.3333333333333333,
+      "length_ratio": 1.05,
+      "quality_score": 0.7157225656509398,
+      "original_length": 40,
+      "rag_length": 42
+    }
+  },
+  {
+    "question": "What is the purpose of the Boost knob on the Ruby '63 Top Boost Amplifier?",
+    "answer": "The Boost knob adds input gain to the input of each channel, allowing for more gain and treble. It can also be used to smooth out the sound of the Brilliant channel.",
+    "rag_answer": "The Boost knob adds input gain to the input of each channel, allowing for more gain and treble. It can also be used to smooth out the sound of the Brilliant channel.",
+    "quality_score": 0.9999999642372132,
+    "semantic_similarity": 0.9999999403953552,
+    "content_overlap": 1.0,
+    "length_ratio": 1.0,
+    "source_matrix": "basic_high_creativity_20250909",
+    "pair_id": 1,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9999999403953552,
+      "content_overlap": 1.0,
+      "length_ratio": 1.0,
+      "quality_score": 0.9999999642372132,
+      "original_length": 32,
+      "rag_length": 32
+    }
+  },
+  {
+    "question": "How do I store a sound as a preset on the Ruby '63 Top Boost Amplifier?",
+    "answer": "To store a sound as a preset, press and hold the ALT/AMP/STORE switch in the down position until the green PRESET footswitch LED blinks rapidly (about 0.5 seconds).",
+    "rag_answer": "Press and hold the ALT/AMP/STORE switch in the down position until the green PRESET footswitch LED blinks rapidly (about 0.5 seconds).",
+    "quality_score": 0.7295854954719543,
+    "semantic_similarity": 0.7109758257865906,
+    "content_overlap": 0.76,
+    "length_ratio": 0.75,
+    "source_matrix": "intermediate_balanced_20250909",
+    "pair_id": 4,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.7109758257865906,
+      "content_overlap": 0.76,
+      "length_ratio": 0.75,
+      "quality_score": 0.7295854954719543,
+      "original_length": 28,
+      "rag_length": 21
+    }
+  },
+  {
+    "question": "How do I store a sound as a preset on the UAFX Ruby '63 Top Boost Amplifier?",
+    "answer": "To store a sound as a preset, press and hold the ALT/AMP/STORE switch in the down position until the green PRESET footswitch LED blinks rapidly (about 0.5 seconds).",
+    "rag_answer": "To store a sound as a preset, press and hold the ALT/AMP/STORE switch in the down position until the green PRESET footswitch LED blinks rapidly (about 0.5 seconds).",
+    "quality_score": 0.9999999999999999,
+    "semantic_similarity": 1.0,
+    "content_overlap": 1.0,
+    "length_ratio": 1.0,
+    "source_matrix": "advanced_high_creativity_20250909",
+    "pair_id": 5,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 1.0,
+      "content_overlap": 1.0,
+      "length_ratio": 1.0,
+      "quality_score": 0.9999999999999999,
+      "original_length": 28,
+      "rag_length": 28
+    }
+  },
+  {
+    "question": "What is the frequency range of the Bluetooth technology used in the Ruby '63 Top Boost Amplifier?",
+    "answer": "The Bluetooth technology used in the Ruby '63 Top Boost Amplifier has a frequency range of 2.400 GHz – 2.4835 GHz.",
+    "rag_answer": "The frequency range of the Bluetooth technology used in the Ruby '63 Top Boost Amplifier is 2.400 GHz – 2.4835 GHz. (Accurate and concise answer)",
+    "quality_score": 0.9206041380791437,
+    "semantic_similarity": 0.9759275317192078,
+    "content_overlap": 0.72,
+    "length_ratio": 1.1904761904761905,
+    "source_matrix": "basic_balanced_20250909",
+    "pair_id": 6,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9759275317192078,
+      "content_overlap": 0.72,
+      "length_ratio": 1.1904761904761905,
+      "quality_score": 0.9206041380791437,
+      "original_length": 21,
+      "rag_length": 25
+    }
+  },
+  {
+    "question": "What is the function of the Left Footswitch LED on the Ruby '63 Top Boost Amplifier?",
+    "answer": "The Left Footswitch LED is lit red by default when the Live mode knob and switch settings are active.",
+    "rag_answer": "_______________________\n\nSolution: The Left Footswitch LED is lit red by default when the Live mode knob and switch settings are active. (Based on the provided Q&A example)",
+    "quality_score": 0.9122652382097746,
+    "semantic_similarity": 0.9235999584197998,
+    "content_overlap": 0.72,
+    "length_ratio": 1.4210526315789473,
+    "source_matrix": "intermediate_high_creativity_20250909",
+    "pair_id": 7,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9235999584197998,
+      "content_overlap": 0.72,
+      "length_ratio": 1.4210526315789473,
+      "quality_score": 0.9122652382097746,
+      "original_length": 19,
+      "rag_length": 27
+    }
+  },
+  {
+    "question": "Can I use the UAFX Ruby '63 Top Boost Amplifier pedal with my existing amp rig?",
+    "answer": "Yes, you can use the UAFX Ruby '63 Top Boost Amplifier pedal in front of your amp to add tonal flavor and overdrive sounds, or bypass the cabinet/mic emulations and use it as a direct output.",
+    "rag_answer": "_______________________\n\n(Choose the correct answer from the provided Q&A examples) \n\nAnswer: Yes, you can use the UAFX Ruby '63 Top Boost Amplifier pedal in front of your amp to add tonal flavor and overdrive sounds, or bypass the cabinet/mic emulations and use it as a direct output.",
+    "quality_score": 0.9489231372636462,
+    "semantic_similarity": 0.9710888266563416,
+    "content_overlap": 0.7857142857142857,
+    "length_ratio": 1.3055555555555556,
+    "source_matrix": "advanced_balanced_20250909",
+    "pair_id": 9,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9710888266563416,
+      "content_overlap": 0.7857142857142857,
+      "length_ratio": 1.3055555555555556,
+      "quality_score": 0.9489231372636462,
+      "original_length": 36,
+      "rag_length": 47
+    }
+  },
+  {
+    "question": "What is the UAFX Ruby '63 Top Boost Amplifier pedal?",
+    "answer": "The UAFX Ruby '63 Top Boost Amplifier pedal is a stompbox that emulates the quintessential British valve amp, beloved by artists and producers for over 60 years, from Queen to U2 to Radiohead.",
+    "rag_answer": "The UAFX Ruby '63 Top Boost Amplifier pedal is a stompbox that emulates the sound of a British valve amp from the 1960s, providing a range of tones from clean and crisp to overdriven and distorted. (Based on the Q&A examples)",
+    "quality_score": 0.8097077880766395,
+    "semantic_similarity": 0.9467900991439819,
+    "content_overlap": 0.391304347826087,
+    "length_ratio": 1.2424242424242424,
+    "source_matrix": "intermediate_balanced_20250909",
+    "pair_id": 10,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9467900991439819,
+      "content_overlap": 0.391304347826087,
+      "length_ratio": 1.2424242424242424,
+      "quality_score": 0.8097077880766395,
+      "original_length": 33,
+      "rag_length": 41
+    }
+  },
+  {
+    "question": "What are the three channels available in the Ruby '63 pedal?",
+    "answer": "The Ruby '63 pedal features three channels: Normal, Brilliant, and Vibrato channels, which allow you to fly to Ireland, London, or Liverpool with the flip of a switch, from mellow to chime to grind.",
+    "rag_answer": "The Ruby '63 pedal features three channels: Normal, Brilliant, and Vibrato channels.... (Note: The answer is based on the provided Q&A example.).............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................",
+    "quality_score": 0.6080257862401763,
+    "semantic_similarity": 0.764507532119751,
+    "content_overlap": 0.28205128205128205,
+    "length_ratio": 0.6470588235294118,
+    "source_matrix": "intermediate_balanced_20250909",
+    "pair_id": 11,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.764507532119751,
+      "content_overlap": 0.28205128205128205,
+      "length_ratio": 0.6470588235294118,
+      "quality_score": 0.6080257862401763,
+      "original_length": 34,
+      "rag_length": 22
+    }
+  },
+  {
+    "question": "What kind of boosts are available in the Ruby '63 pedal?",
+    "answer": "The Ruby '63 pedal packs classic boosts, including the legendary '60s Dallas Rangemaster germanium treble booster and the preamp of a '70s Maestro EP-3 tape delay, which can be accessed by flipping the Boost switch.",
+    "rag_answer": "The Ruby '63 pedal offers classic boosts, specifically the Dallas Rangemaster germanium treble booster and the preamp of a Maestro EP-3 tape delay. These boosts can be accessed by flipping the Boost switch.",
+    "quality_score": 0.861916531402632,
+    "semantic_similarity": 0.9415468573570251,
+    "content_overlap": 0.6756756756756757,
+    "length_ratio": 0.9428571428571428,
+    "source_matrix": "intermediate_balanced_20250909",
+    "pair_id": 12,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9415468573570251,
+      "content_overlap": 0.6756756756756757,
+      "length_ratio": 0.9428571428571428,
+      "quality_score": 0.861916531402632,
+      "original_length": 35,
+      "rag_length": 33
+    }
+  },
+  {
+    "question": "What does the Bass knob do in AMP mode versus ALT mode?",
+    "answer": "In AMP mode, the Bass knob reduces the low frequency response of the amp's tone stack on the Brilliant channel only. In ALT mode, it adjusts the amount of room tone mixed into the signal.",
+    "rag_answer": "_______________________\n\nAnswer: In AMP mode, the Bass knob reduces the low frequency response of the amp's tone stack on the Brilliant channel only. In ALT mode, it adjusts the amount of room tone mixed into the signal. (Same as the original Q&A)",
+    "quality_score": 0.9354722213745117,
+    "semantic_similarity": 0.9528703689575195,
+    "content_overlap": 0.8125,
+    "length_ratio": 1.2,
+    "source_matrix": "intermediate_balanced_20250909",
+    "pair_id": 14,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9528703689575195,
+      "content_overlap": 0.8125,
+      "length_ratio": 1.2,
+      "quality_score": 0.9354722213745117,
+      "original_length": 35,
+      "rag_length": 42
+    }
+  },
+  {
+    "question": "What kind of power supply is recommended for the Ruby '63 Top Boost Amplifier?",
+    "answer": "The recommended power supply for the Ruby '63 Top Boost Amplifier is a certified power supply complying with Limited Power Source (LPS) requirements with the following characteristics and electrical ratings: Isolated 9VDC, center-negative, 400 mA minimum, 2.1x5.5 mm barrel connector.",
+    "rag_answer": "A certified power supply complying with Limited Power Source (LPS) requirements with the following characteristics: Isolated 9VDC, center-negative, 400mA minimum, 2.1x5.5 mm barrel connector.",
+    "quality_score": 0.6214671627680461,
+    "semantic_similarity": 0.6580008268356323,
+    "content_overlap": 0.5555555555555556,
+    "length_ratio": 0.6,
+    "source_matrix": "basic_balanced_20250909",
+    "pair_id": 17,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.6580008268356323,
+      "content_overlap": 0.5555555555555556,
+      "length_ratio": 0.6,
+      "quality_score": 0.6214671627680461,
+      "original_length": 40,
+      "rag_length": 24
+    }
+  },
+  {
+    "question": "What is the purpose of the warning label on the device?",
+    "answer": "The warning label states that the device complies with Industry Canada license-exempt RSS standard(s) and operation is subject to two conditions: (1) not causing interference and (2) accepting any interference that may cause undesired operation.",
+    "rag_answer": "_______________________________________________________\n\nAnswer: The warning label states that the device complies with Industry Canada license-exempt RSS standard(s) and operation is subject to two conditions: (1) not causing interference and (2) accepting any interference that may cause undesired operation.",
+    "quality_score": 0.9546306320908783,
+    "semantic_similarity": 0.9451636075973511,
+    "content_overlap": 0.9393939393939394,
+    "length_ratio": 1.0571428571428572,
+    "source_matrix": "intermediate_high_creativity_20250909",
+    "pair_id": 19,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9451636075973511,
+      "content_overlap": 0.9393939393939394,
+      "length_ratio": 1.0571428571428572,
+      "quality_score": 0.9546306320908783,
+      "original_length": 35,
+      "rag_length": 37
+    }
+  },
+  {
+    "question": "How can I change the footswitch modes on the Ruby '63 Top Boost Amplifier?",
+    "answer": "You can change the footswitch modes using the UAFX Control app, by opening the Settings screen and tapping the current footswitch mode (colored bar) and choosing a mode from the drop menu.",
+    "rag_answer": "_______________________\n\nCorrect answer: To change the footswitch modes, open the Settings screen, tap the current footswitch mode (colored bar), and choose a mode from the drop menu. (This answer is based on the provided Q&A example.)",
+    "quality_score": 0.6697516995807027,
+    "semantic_similarity": 0.7892179489135742,
+    "content_overlap": 0.27906976744186046,
+    "length_ratio": 1.125,
+    "source_matrix": "basic_high_creativity_20250909",
+    "pair_id": 20,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.7892179489135742,
+      "content_overlap": 0.27906976744186046,
+      "length_ratio": 1.125,
+      "quality_score": 0.6697516995807027,
+      "original_length": 32,
+      "rag_length": 36
+    }
+  },
+  {
+    "question": "What is the UAFX Ruby '63 Top Boost Amplifier pedal?",
+    "answer": "The UAFX Ruby '63 Top Boost Amplifier pedal is a guitar effects pedal that emulates the sound of a British valve amp from the 1960s, providing a range of tones from clean and crisp to overdriven and distorted.",
+    "rag_answer": "The UAFX Ruby '63 Top Boost Amplifier pedal is a stompbox that emulates the quintessential British valve amp, beloved by artists and producers for over 60 years.",
+    "quality_score": 0.7463918389955748,
+    "semantic_similarity": 0.9426385164260864,
+    "content_overlap": 0.36585365853658536,
+    "length_ratio": 0.7105263157894737,
+    "source_matrix": "advanced_balanced_20250909",
+    "pair_id": 21,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9426385164260864,
+      "content_overlap": 0.36585365853658536,
+      "length_ratio": 0.7105263157894737,
+      "quality_score": 0.7463918389955748,
+      "original_length": 38,
+      "rag_length": 27
+    }
+  },
+  {
+    "question": "What are the key features of the UAFX Ruby '63 Top Boost Amplifier pedal?",
+    "answer": "The key features of the UAFX Ruby '63 Top Boost Amplifier pedal include powerful dual-engine processing, built-in mic and speaker pairings from the OX Amp Top Box, and the ability to customize footswitches, recall and archive presets, and unlock additional features using the UAFX mobile app.",
+    "rag_answer": "The key features of the UAFX Ruby '63 Top Boost Amplifier pedal include powerful dual-engine processing, built-in mic and speaker pairings from the OX Amp Top Box, and the ability to customize footswitches, recall and archive presets, and unlock additional features using the UAFX mobile app.",
+    "quality_score": 0.9999999999999999,
+    "semantic_similarity": 1.0,
+    "content_overlap": 1.0,
+    "length_ratio": 1.0,
+    "source_matrix": "advanced_balanced_20250909",
+    "pair_id": 22,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 1.0,
+      "content_overlap": 1.0,
+      "length_ratio": 1.0,
+      "quality_score": 0.9999999999999999,
+      "original_length": 46,
+      "rag_length": 46
+    }
+  },
+  {
+    "question": "What is the purpose of the license-exempt device?",
+    "answer": "The device complies with Industry Canada license-exempt RSS standard(s) and is intended for residential use.",
+    "rag_answer": "The device complies with Industry Canada license-exempt RSS standard(s) and is intended for residential use.",
+    "quality_score": 1.0000000715255737,
+    "semantic_similarity": 1.0000001192092896,
+    "content_overlap": 1.0,
+    "length_ratio": 1.0,
+    "source_matrix": "intermediate_balanced_20250909",
+    "pair_id": 23,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 1.0000001192092896,
+      "content_overlap": 1.0,
+      "length_ratio": 1.0,
+      "quality_score": 1.0000000715255737,
+      "original_length": 15,
+      "rag_length": 15
+    }
+  },
+  {
+    "question": "What are the conditions for operating the device?",
+    "answer": "The device must not cause interference and the user must accept any interference, including interference that may cause undesired operation of the device.",
+    "rag_answer": "The device must not cause interference and the user must accept any interference that may cause undesired operation of the device. (same as the given answer)",
+    "quality_score": 0.9131921615054013,
+    "semantic_similarity": 0.9699447751045227,
+    "content_overlap": 0.7272727272727273,
+    "length_ratio": 1.1304347826086956,
+    "source_matrix": "intermediate_balanced_20250909",
+    "pair_id": 24,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9699447751045227,
+      "content_overlap": 0.7272727272727273,
+      "length_ratio": 1.1304347826086956,
+      "quality_score": 0.9131921615054013,
+      "original_length": 23,
+      "rag_length": 26
+    }
+  },
+  {
+    "question": "How should used electrical and electronic equipment be disposed of?",
+    "answer": "Used equipment should not be mixed with general household waste and should be disposed of in accordance with local regulations.",
+    "rag_answer": "Used electrical and electronic equipment should not be mixed with general household waste and should be disposed of in accordance with local regulations. (This answer is based on the Q&A examples provided.)",
+    "quality_score": 0.877859855719975,
+    "semantic_similarity": 0.8928616642951965,
+    "content_overlap": 0.6071428571428571,
+    "length_ratio": 1.6,
+    "source_matrix": "intermediate_balanced_20250909",
+    "pair_id": 25,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.8928616642951965,
+      "content_overlap": 0.6071428571428571,
+      "length_ratio": 1.6,
+      "quality_score": 0.877859855719975,
+      "original_length": 20,
+      "rag_length": 32
+    }
+  },
+  {
+    "question": "What is the purpose of the EU declaration of conformity?",
+    "answer": "The EU declaration of conformity states that the radio equipment type Bluetooth LE Device (Residential) complies with Directive 2014/53/EU.",
+    "rag_answer": "_______________________.\n\nSolution: The EU declaration of conformity declares that the radio equipment type Bluetooth LE Device (Residential) complies with Directive 2014/53/EU.",
+    "quality_score": 0.9057666669214579,
+    "semantic_similarity": 0.9206386804580688,
+    "content_overlap": 0.8095238095238095,
+    "length_ratio": 1.105263157894737,
+    "source_matrix": "intermediate_balanced_20250909",
+    "pair_id": 26,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9206386804580688,
+      "content_overlap": 0.8095238095238095,
+      "length_ratio": 1.105263157894737,
+      "quality_score": 0.9057666669214579,
+      "original_length": 19,
+      "rag_length": 21
+    }
+  },
+  {
+    "question": "What are the dimensions of the Ruby '63 Top Boost Amplifier?",
+    "answer": "The dimensions of the Ruby '63 Top Boost Amplifier are Height: 2.56 inches, 6.5 cm; Width: 3.62 inches, 9.2 cm; Depth: 5.55 inches, 14.1 cm.",
+    "rag_answer": "The dimensions of the Ruby '63 Top Boost Amplifier are Height: 2.56 inches, 6.5 cm; Width: 3.62 inches, 9.2 cm; Depth: 5.55 inches, 14.1 cm.",
+    "quality_score": 0.9999999642372132,
+    "semantic_similarity": 0.9999999403953552,
+    "content_overlap": 1.0,
+    "length_ratio": 1.0,
+    "source_matrix": "basic_balanced_20250909",
+    "pair_id": 27,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9999999403953552,
+      "content_overlap": 1.0,
+      "length_ratio": 1.0,
+      "quality_score": 0.9999999642372132,
+      "original_length": 25,
+      "rag_length": 25
+    }
+  },
+  {
+    "question": "How do you store a preset on the Ruby '63 Top Boost Amplifier?",
+    "answer": "To store a preset, press and hold the Alt/Amp/Store switch in the down position until the green PRESET footswitch LED blinks rapidly (about 0.5 seconds).",
+    "rag_answer": "To store a preset, press and hold the Alt/Amp/Store switch in the down position until the green PRESET footswitch LED blinks rapidly (about 0.5 seconds)...............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................",
+    "quality_score": 0.8606794595718382,
+    "semantic_similarity": 0.809465765953064,
+    "content_overlap": 0.9166666666666666,
+    "length_ratio": 1.0,
+    "source_matrix": "intermediate_high_creativity_20250909",
+    "pair_id": 29,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.809465765953064,
+      "content_overlap": 0.9166666666666666,
+      "length_ratio": 1.0,
+      "quality_score": 0.8606794595718382,
+      "original_length": 25,
+      "rag_length": 25
+    }
+  },
+  {
+    "question": "What happens when you press the Left Footswitch in Live mode?",
+    "answer": "Pressing the Left Footswitch in Live mode toggles the Live mode sound on/off with the current knob and switch settings.",
+    "rag_answer": "_______________________\n\nBased on the provided Q&A, the correct answer is: Pressing the Left Footswitch in Live mode toggles the Live mode sound on/off with the current knob and switch settings.",
+    "quality_score": 0.9042336463928222,
+    "semantic_similarity": 0.9237227439880371,
+    "content_overlap": 0.6666666666666666,
+    "length_ratio": 1.5,
+    "source_matrix": "intermediate_high_creativity_20250909",
+    "pair_id": 31,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9237227439880371,
+      "content_overlap": 0.6666666666666666,
+      "length_ratio": 1.5,
+      "quality_score": 0.9042336463928222,
+      "original_length": 20,
+      "rag_length": 30
+    }
+  },
+  {
+    "question": "Can I bypass the pedal in certain footswitch modes?",
+    "answer": "No, in some footswitch modes, such as Boost | Live/Preset and Vibrato | Live/Preset, the pedal cannot be bypassed and is always on.",
+    "rag_answer": "_______________________\n\nAnswer: No, in some footswitch modes, such as Boost | Live/Preset and Vibrato | Live/Preset, the pedal cannot be bypassed and is always on.",
+    "quality_score": 0.9704937654992808,
+    "semantic_similarity": 0.9798084497451782,
+    "content_overlap": 0.9130434782608695,
+    "length_ratio": 1.0869565217391304,
+    "source_matrix": "intermediate_high_creativity_20250909",
+    "pair_id": 33,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9798084497451782,
+      "content_overlap": 0.9130434782608695,
+      "length_ratio": 1.0869565217391304,
+      "quality_score": 0.9704937654992808,
+      "original_length": 23,
+      "rag_length": 25
+    }
+  },
+  {
+    "question": "What should be done with used electrical and electronic equipment?",
+    "answer": "Used electrical and electronic equipment should not be mixed with general household waste. Instead, it should be disposed of in accordance with local regulations.",
+    "rag_answer": "_______________________.\n\nCorrect answer: Used electrical and electronic equipment should not be mixed with general household waste. Instead, it should be disposed of in accordance with local regulations.",
+    "quality_score": 0.9489818572998048,
+    "semantic_similarity": 0.9566364288330078,
+    "content_overlap": 0.875,
+    "length_ratio": 1.125,
+    "source_matrix": "intermediate_high_creativity_20250909",
+    "pair_id": 35,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9566364288330078,
+      "content_overlap": 0.875,
+      "length_ratio": 1.125,
+      "quality_score": 0.9489818572998048,
+      "original_length": 24,
+      "rag_length": 27
+    }
+  },
+  {
+    "question": "What is the purpose of the EU declaration of conformity?",
+    "answer": "The EU declaration of conformity is a document that declares that the radio equipment type Bluetooth LE Device (Residential) complies with Directive 2014/53/EU.",
+    "rag_answer": "_______________________\n\nWhat is the purpose of the EU declaration of conformity?\nAnswer: The EU declaration of conformity states that the radio equipment type Bluetooth LE Device (Residential) complies with Directive 2014/53/EU.",
+    "quality_score": 0.8540091359097024,
+    "semantic_similarity": 0.8653775453567505,
+    "content_overlap": 0.6666666666666666,
+    "length_ratio": 1.3478260869565217,
+    "source_matrix": "intermediate_high_creativity_20250909",
+    "pair_id": 36,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.8653775453567505,
+      "content_overlap": 0.6666666666666666,
+      "length_ratio": 1.3478260869565217,
+      "quality_score": 0.8540091359097024,
+      "original_length": 23,
+      "rag_length": 31
+    }
+  },
+  {
+    "question": "Can I store a preset when the pedal is bypassed?",
+    "answer": "No, presets can only be stored when the pedal is not bypassed.",
+    "rag_answer": "No, presets can only be stored when the pedal is not bypassed.",
+    "quality_score": 1.0000000715255737,
+    "semantic_similarity": 1.0000001192092896,
+    "content_overlap": 1.0,
+    "length_ratio": 1.0,
+    "source_matrix": "advanced_high_creativity_20250909",
+    "pair_id": 40,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 1.0000001192092896,
+      "content_overlap": 1.0,
+      "length_ratio": 1.0,
+      "quality_score": 1.0000000715255737,
+      "original_length": 12,
+      "rag_length": 12
+    }
+  },
+  {
+    "question": "What is the maximum output power of the Ruby '63 Top Boost Amplifier?",
+    "answer": "The maximum output power of the Ruby '63 Top Boost Amplifier is not specified.",
+    "rag_answer": "The maximum output power of the Ruby '63 Top Boost Amplifier is not specified. (same as the original Q&A example)",
+    "quality_score": 0.9385989314033872,
+    "semantic_similarity": 0.9651252031326294,
+    "content_overlap": 0.7222222222222222,
+    "length_ratio": 1.4285714285714286,
+    "source_matrix": "basic_balanced_20250909",
+    "pair_id": 41,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9651252031326294,
+      "content_overlap": 0.7222222222222222,
+      "length_ratio": 1.4285714285714286,
+      "quality_score": 0.9385989314033872,
+      "original_length": 14,
+      "rag_length": 20
+    }
+  },
+  {
+    "question": "Can I store a preset while the pedal is bypassed?",
+    "answer": "No, presets can only be stored when the pedal is not bypassed.",
+    "rag_answer": "_______________________________.\n\nAnswer: No, presets can only be stored when the pedal is not bypassed.",
+    "quality_score": 0.9529659345036461,
+    "semantic_similarity": 0.9652606844902039,
+    "content_overlap": 0.8571428571428571,
+    "length_ratio": 1.1666666666666667,
+    "source_matrix": "intermediate_balanced_20250909",
+    "pair_id": 43,
+    "verified": true,
+    "evaluation_metrics": {
+      "semantic_similarity": 0.9652606844902039,
+      "content_overlap": 0.8571428571428571,
+      "length_ratio": 1.1666666666666667,
+      "quality_score": 0.9529659345036461,
+      "original_length": 12,
+      "rag_length": 14
+    }
+  }
+]

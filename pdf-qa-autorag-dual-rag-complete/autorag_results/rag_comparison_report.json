@@ -1,0 +1,148 @@
+{
+  "metadata": {
+    "analysis_type": "rag_comparison",
+    "standard_results_dir": "autorag_results/standard_rag",
+    "adaptive_results_dir": "autorag_results/adaptive_rag",
+    "timestamp": "2025-09-09T05:51:41.926956"
+  },
+  "metrics_comparison": {
+    "standard_rag": {
+      "approach": "standard",
+      "total_pairs_evaluated": 0,
+      "avg_retrieval_score": 0.0,
+      "avg_similarity_score": 0.0,
+      "avg_bert_score": 0.0,
+      "high_quality_pairs": 0,
+      "quality_retention_rate": 0.0,
+      "avg_context_relevance": 0.0,
+      "retrieval_time_ms": 0.0,
+      "generation_time_ms": 0.0
+    },
+    "adaptive_rag": {
+      "approach": "adaptive",
+      "total_pairs_evaluated": 0,
+      "avg_retrieval_score": 0.0,
+      "avg_similarity_score": 0.0,
+      "avg_bert_score": 0.0,
+      "high_quality_pairs": 0,
+      "quality_retention_rate": 0.0,
+      "avg_context_relevance": 0.0,
+      "retrieval_time_ms": 0.0,
+      "generation_time_ms": 0.0
+    },
+    "differences": {
+      "avg_retrieval_score": {
+        "standard": 0.0,
+        "adaptive": 0.0,
+        "improvement_percent": 0.0,
+        "better_approach": "equal"
+      },
+      "avg_similarity_score": {
+        "standard": 0.0,
+        "adaptive": 0.0,
+        "improvement_percent": 0.0,
+        "better_approach": "equal"
+      },
+      "avg_bert_score": {
+        "standard": 0.0,
+        "adaptive": 0.0,
+        "improvement_percent": 0.0,
+        "better_approach": "equal"
+      },
+      "high_quality_pairs": {
+        "standard": 0,
+        "adaptive": 0,
+        "improvement_percent": 0.0,
+        "better_approach": "equal"
+      },
+      "quality_retention_rate": {
+        "standard": 0.0,
+        "adaptive": 0.0,
+        "improvement_percent": 0.0,
+        "better_approach": "equal"
+      },
+      "avg_context_relevance": {
+        "standard": 0.0,
+        "adaptive": 0.0,
+        "improvement_percent": 0.0,
+        "better_approach": "equal"
+      },
+      "retrieval_time_ms": {
+        "standard": 0.0,
+        "adaptive": 0.0,
+        "improvement_percent": 0.0,
+        "better_approach": "equal"
+      },
+      "generation_time_ms": {
+        "standard": 0.0,
+        "adaptive": 0.0,
+        "improvement_percent": 0.0,
+        "better_approach": "equal"
+      }
+    }
+  },
+  "approach_analysis": {
+    "standard_rag": {
+      "description": "Traditional RAG using answer embeddings only",
+      "strengths": [
+        "Faster retrieval (single embedding lookup)",
+        "Lower computational overhead",
+        "Direct answer matching",
+        "Simple and proven approach"
+      ],
+      "weaknesses": [
+        "May miss contextual relationships",
+        "Less semantic understanding of question-answer pairs",
+        "Fixed retrieval strategy"
+      ],
+      "best_use_cases": [
+        "Direct factual questions",
+        "Resource-constrained environments",
+        "High-throughput scenarios"
+      ]
+    },
+    "adaptive_rag": {
+      "description": "Enhanced RAG using combined Q+A embeddings with dynamic strategies",
+      "strengths": [
+        "Better semantic understanding (Q+A combined)",
+        "Query-aware retrieval strategies",
+        "Confidence-based context gating",
+        "Adaptive to query complexity"
+      ],
+      "weaknesses": [
+        "Higher computational cost",
+        "More complex implementation",
+        "Potential over-engineering for simple queries"
+      ],
+      "best_use_cases": [
+        "Complex conceptual questions",
+        "Domain-specific queries",
+        "Quality-over-speed scenarios"
+      ]
+    }
+  },
+  "recommendations": {
+    "overall_winner": "tie",
+    "use_standard_when": [
+      "Speed is critical and quality is acceptable",
+      "Processing high volumes of simple queries",
+      "Resource constraints limit computational overhead",
+      "Direct factual lookup is sufficient"
+    ],
+    "use_adaptive_when": [
+      "Quality is more important than speed",
+      "Handling complex domain-specific questions",
+      "Context understanding is crucial",
+      "Dealing with out-of-domain queries that need uncertainty"
+    ],
+    "hybrid_approach": null,
+    "key_insights": [
+      "Similar semantic quality between approaches"
+    ]
+  },
+  "summary": {
+    "winner": "tie",
+    "key_finding": "Both approaches show similar performance with minor differences",
+    "recommendation_summary": "Consider hybrid approach based on query complexity"
+  }
+}

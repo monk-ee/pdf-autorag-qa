@@ -12,9 +12,13 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass, replace
 from sklearn.metrics.pairwise import cosine_similarity
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, CrossEncoder
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity as sklearn_cosine
 import faiss
 import re
+from collections import Counter
+from rank_bm25 import BM25Okapi
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -61,8 +65,11 @@ class QueryAnalyzer:
         self.config = self.load_config()
         self.embedder = SentenceTransformer('all-mpnet-base-v2')
         
-        # Pre-compute category embeddings for classification
-        self.category_embeddings = self._build_category_embeddings()
+        # IMPROVEMENT 4: Enhanced query classification with domain knowledge
+        # Build domain-specific ontology for better query understanding
+        self.domain_ontology = self._build_domain_ontology()
+        self.category_embeddings = self._build_enhanced_category_embeddings()
+        self.technical_terms = self._extract_domain_entities()
         
     def load_config(self) -> Dict:
         """Load domain configuration"""
@@ -72,29 +79,115 @@ class QueryAnalyzer:
         with open(self.config_file, 'r', encoding='utf-8') as f:
             return json.load(f)
     
-    def _build_category_embeddings(self) -> Dict[str, np.ndarray]:
-        """Build embeddings for query type classification"""
+    def _build_domain_ontology(self) -> Dict[str, List[str]]:
+        """Build domain-specific knowledge ontology for better query understanding"""
+        logger.info("Building domain ontology for enhanced query classification...")
+        
+        ontology = {
+            # Audio equipment categories
+            "amplifiers": ["tube amp", "solid state", "preamp", "power amp", "integrated amp", "headphone amp"],
+            "speakers": ["woofer", "tweeter", "driver", "cabinet", "crossover", "frequency response"],
+            "effects": ["reverb", "delay", "chorus", "distortion", "overdrive", "compression"],
+            "recording": ["microphone", "preamp", "interface", "daw", "multitrack", "mixing"],
+            "technical_specs": ["impedance", "frequency", "power", "thd", "snr", "gain", "decibel"],
+            "connections": ["xlr", "trs", "rca", "balanced", "unbalanced", "phantom power"]
+        }
+        
+        # Add terms from domain config if available
+        if 'domain_terms' in self.config:
+            for category, terms in self.config['domain_terms'].items():
+                if category in ontology:
+                    ontology[category].extend(terms)
+                else:
+                    ontology[category] = terms
+                    
+        return ontology
+    
+    def _build_enhanced_category_embeddings(self) -> Dict[str, np.ndarray]:
+        """Build enhanced embeddings using domain knowledge for better classification"""
+        logger.info("Building enhanced category embeddings with domain knowledge...")
+        
+        # Enhanced categories with domain-specific patterns
         categories = {
-            "factual": ["what is", "define", "explain the definition", "meaning of"],
-            "conceptual": ["how does", "why does", "what happens when", "relationship between"],
-            "procedural": ["how to", "steps to", "process for", "way to", "method"],
-            "technical": ["specifications", "calculate", "measure", "parameters", "ratings"],
-            "comparison": ["difference between", "compare", "versus", "better than", "pros and cons"],
-            "troubleshooting": ["problem with", "issue", "not working", "diagnose", "fix", "troubleshoot"]
+            "factual": [
+                "what is", "define", "explain the definition", "meaning of", "purpose of",
+                "function of", "role of", "characteristics of"
+            ],
+            "conceptual": [
+                "how does", "why does", "what happens when", "relationship between",
+                "interaction between", "effect of", "influence of", "principle behind"
+            ],
+            "procedural": [
+                "how to", "steps to", "process for", "way to", "method", "procedure",
+                "setup", "configure", "install", "connect"
+            ],
+            "technical": [
+                "specifications", "calculate", "measure", "parameters", "ratings",
+                "impedance", "frequency response", "power handling", "thd", "signal to noise"
+            ],
+            "comparison": [
+                "difference between", "compare", "versus", "better than", "pros and cons",
+                "which is better", "choose between", "advantages", "disadvantages"
+            ],
+            "troubleshooting": [
+                "problem with", "issue", "not working", "diagnose", "fix", "troubleshoot",
+                "noise", "distortion", "no sound", "repair", "maintenance"
+            ]
         }
         
         embeddings = {}
         for category, examples in categories.items():
-            category_text = " ".join(examples)
+            # Add domain-specific terms for each category
+            domain_enhanced_examples = examples.copy()
+            
+            # Add relevant domain terms for better classification
+            if category == "technical":
+                domain_enhanced_examples.extend(self.domain_ontology.get("technical_specs", []))
+            elif category == "comparison":
+                # Add equipment comparison terms
+                for equipment_type in ["amplifiers", "speakers", "effects"]:
+                    domain_enhanced_examples.extend([f"{term} comparison" for term in self.domain_ontology.get(equipment_type, [])])
+            
+            category_text = " ".join(domain_enhanced_examples)
             embeddings[category] = self.embedder.encode([category_text])[0]
             
         return embeddings
     
+    def _extract_domain_entities(self) -> Dict[str, List[str]]:
+        """Extract domain-specific entities for better query understanding"""
+        logger.info("Extracting domain entities for enhanced query analysis...")
+        
+        entities = {
+            "equipment_types": [],
+            "technical_terms": [],
+            "brands": [],
+            "specifications": []
+        }
+        
+        # Extract from domain ontology
+        for category, terms in self.domain_ontology.items():
+            if category in ["amplifiers", "speakers", "effects", "recording"]:
+                entities["equipment_types"].extend(terms)
+            elif category == "technical_specs":
+                entities["technical_terms"].extend(terms)
+                entities["specifications"].extend(terms)
+            elif category == "connections":
+                entities["technical_terms"].extend(terms)
+        
+        # Add common audio brands (basic set)
+        entities["brands"] = [
+            "fender", "marshall", "vox", "mesa boogie", "orange", "peavey",
+            "jbl", "yamaha", "mackie", "shure", "audio-technica", "sennheiser"
+        ]
+        
+        return entities
+    
     def analyze_query(self, query: str) -> QueryAnalysis:
-        """Analyze query to determine optimal RAG approach"""
+        """Enhanced query analysis with domain knowledge and entity recognition"""
+        logger.info(f"Analyzing query with enhanced domain understanding: '{query[:100]}...'")
         query_lower = query.lower()
         
-        # Query type classification
+        # IMPROVEMENT 4: Enhanced query type classification using domain knowledge
         query_embedding = self.embedder.encode([query])[0]
         
         similarities = {}
@@ -103,116 +196,299 @@ class QueryAnalyzer:
             similarities[category] = float(sim)
         
         query_type = max(similarities, key=similarities.get)
+        logger.info(f"Query type classification: {query_type} (confidence: {similarities[query_type]:.3f})")
         
-        # Domain relevance scoring
-        domain_terms = self.config.get('domain_terms', {})
-        all_terms = []
-        for category_terms in domain_terms.values():
-            all_terms.extend(category_terms)
+        # Enhanced domain relevance with ontology-based scoring
+        domain_score = self._calculate_enhanced_domain_relevance(query_lower)
         
-        domain_matches = sum(1 for term in all_terms if term.lower() in query_lower)
-        domain_relevance = min(domain_matches / 5.0, 1.0)  # Normalize to 0-1
+        # Enhanced complexity assessment with multiple indicators
+        complexity = self._assess_query_complexity(query_lower)
         
-        # Complexity assessment
-        complexity_indicators = {
-            'basic': ['what is', 'define', 'simple', 'basic'],
-            'intermediate': ['how does', 'why', 'compare', 'difference'],
-            'advanced': ['calculate', 'optimize', 'design', 'troubleshoot', 'specifications']
-        }
+        # Entity recognition for key concepts
+        extracted_entities = self._extract_query_entities(query_lower)
         
-        complexity = 'basic'  # default
-        for level, indicators in complexity_indicators.items():
-            if any(indicator in query_lower for indicator in indicators):
-                complexity = level
+        # Advanced uncertainty detection
+        uncertainty_required = self._requires_uncertainty_handling(query_lower, domain_score)
         
-        # Uncertainty requirements
-        uncertainty_phrases = self.config.get('uncertainty_phrases', {}).get('appropriate_uncertainty', [])
-        out_domain_indicators = ['car', 'programming', 'cooking', 'weather', 'sports']
-        uncertainty_required = (
-            domain_relevance < 0.3 or 
-            any(indicator in query_lower for indicator in out_domain_indicators)
+        # Dynamic confidence threshold based on multiple factors
+        confidence_threshold = self._calculate_dynamic_confidence_threshold(
+            domain_score, complexity, query_type, len(extracted_entities)
         )
         
-        # Extract key concepts
-        key_concepts = [term for term in all_terms if term.lower() in query_lower]
-        
-        # Set confidence threshold based on domain relevance and complexity
-        if domain_relevance > 0.7 and complexity in ['basic', 'intermediate']:
-            confidence_threshold = 0.7
-        elif domain_relevance > 0.5:
-            confidence_threshold = 0.5
-        else:
-            confidence_threshold = 0.3
+        logger.info(f"Query analysis results: type={query_type}, domain={domain_score:.3f}, complexity={complexity}, entities={len(extracted_entities)}, threshold={confidence_threshold:.3f}")
         
         return QueryAnalysis(
             query_type=query_type,
-            domain_relevance=domain_relevance,
+            domain_relevance=domain_score,
             complexity=complexity,
             uncertainty_required=uncertainty_required,
-            key_concepts=key_concepts,
+            key_concepts=extracted_entities,
             confidence_threshold=confidence_threshold
         )
+    
+    def _calculate_enhanced_domain_relevance(self, query_lower: str) -> float:
+        """Calculate domain relevance using ontology-based scoring"""
+        total_score = 0.0
+        max_possible_score = 0.0
+        
+        # Score based on domain ontology categories
+        for category, terms in self.domain_ontology.items():
+            category_weight = {
+                "amplifiers": 1.0, "speakers": 1.0, "effects": 1.0,
+                "recording": 0.9, "technical_specs": 1.2, "connections": 0.8
+            }.get(category, 1.0)
+            
+            matches = sum(1 for term in terms if term.lower() in query_lower)
+            category_score = min(matches / max(len(terms) * 0.3, 1), 1.0) * category_weight
+            total_score += category_score
+            max_possible_score += category_weight
+        
+        # Normalize score
+        domain_relevance = total_score / max_possible_score if max_possible_score > 0 else 0.0
+        
+        # Boost for exact technical term matches
+        technical_boost = sum(0.1 for term in self.technical_terms.get("technical_terms", []) 
+                             if term.lower() in query_lower)
+        
+        return min(domain_relevance + technical_boost, 1.0)
+    
+    def _assess_query_complexity(self, query_lower: str) -> str:
+        """Enhanced complexity assessment with multiple indicators"""
+        complexity_scores = {'basic': 0, 'intermediate': 0, 'advanced': 0}
+        
+        # Pattern-based scoring
+        patterns = {
+            'basic': [
+                r'what is', r'define', r'meaning of', r'purpose of',
+                r'simple', r'basic', r'introduction to'
+            ],
+            'intermediate': [
+                r'how does', r'why', r'compare', r'difference between',
+                r'relationship', r'interaction', r'effect of', r'works'
+            ],
+            'advanced': [
+                r'calculate', r'optimize', r'design', r'troubleshoot',
+                r'specifications?', r'analysis', r'theory', r'mathematical'
+            ]
+        }
+        
+        for complexity_level, pattern_list in patterns.items():
+            for pattern in pattern_list:
+                if re.search(pattern, query_lower):
+                    complexity_scores[complexity_level] += 1
+        
+        # Technical term complexity scoring
+        advanced_terms = self.technical_terms.get("specifications", [])
+        if any(term.lower() in query_lower for term in advanced_terms):
+            complexity_scores['advanced'] += 2
+        
+        # Query length and structure complexity
+        if len(query_lower.split()) > 15:
+            complexity_scores['advanced'] += 1
+        elif len(query_lower.split()) > 8:
+            complexity_scores['intermediate'] += 1
+        
+        # Multiple entity complexity
+        entity_count = sum(len(entities) for entities in self.technical_terms.values())
+        if entity_count > 3:
+            complexity_scores['advanced'] += 1
+        
+        return max(complexity_scores, key=complexity_scores.get)
+    
+    def _extract_query_entities(self, query_lower: str) -> List[str]:
+        """Extract domain-specific entities from query"""
+        entities = []
+        
+        # Extract entities from all categories
+        for entity_type, entity_list in self.technical_terms.items():
+            for entity in entity_list:
+                if entity.lower() in query_lower:
+                    entities.append(entity)
+        
+        # Extract from domain ontology
+        for category, terms in self.domain_ontology.items():
+            for term in terms:
+                if term.lower() in query_lower and term not in entities:
+                    entities.append(term)
+        
+        return list(set(entities))  # Remove duplicates
+    
+    def _requires_uncertainty_handling(self, query_lower: str, domain_score: float) -> bool:
+        """Advanced uncertainty detection"""
+        # Low domain relevance
+        if domain_score < 0.3:
+            return True
+        
+        # Out-of-domain indicators
+        out_domain_indicators = [
+            'car', 'automobile', 'programming', 'software', 'cooking', 'recipe',
+            'weather', 'climate', 'sports', 'game', 'politics', 'news'
+        ]
+        if any(indicator in query_lower for indicator in out_domain_indicators):
+            return True
+        
+        # Ambiguous query patterns
+        ambiguous_patterns = [r'what about', r'tell me about', r'anything about']
+        if any(re.search(pattern, query_lower) for pattern in ambiguous_patterns):
+            return True
+        
+        return False
+    
+    def _calculate_dynamic_confidence_threshold(self, domain_score: float, complexity: str, 
+                                               query_type: str, entity_count: int) -> float:
+        """Calculate dynamic confidence threshold based on multiple factors"""
+        base_threshold = 0.5
+        
+        # Adjust for domain relevance
+        if domain_score > 0.8:
+            base_threshold += 0.2
+        elif domain_score > 0.6:
+            base_threshold += 0.1
+        elif domain_score < 0.3:
+            base_threshold -= 0.2
+        
+        # Adjust for complexity
+        complexity_adjustments = {
+            'basic': 0.1,
+            'intermediate': 0.0,
+            'advanced': -0.1
+        }
+        base_threshold += complexity_adjustments.get(complexity, 0.0)
+        
+        # Adjust for query type confidence
+        if query_type in ['factual', 'technical']:
+            base_threshold += 0.1
+        elif query_type in ['conceptual', 'comparison']:
+            base_threshold -= 0.05
+        
+        # Adjust for entity richness
+        if entity_count > 3:
+            base_threshold += 0.1
+        elif entity_count == 0:
+            base_threshold -= 0.1
+        
+        return max(0.2, min(0.9, base_threshold))
 
 
 class AdaptiveRetriever:
-    """Adaptive retrieval system that adjusts strategy based on query analysis"""
+    """🚀 ENHANCED: Adaptive retrieval with hybrid dense+sparse, cross-encoder re-ranking, and dynamic context windows"""
     
     def __init__(self, qa_data: List[Dict], embedder: SentenceTransformer):
         self.qa_data = qa_data
         self.embedder = embedder
         
-        # Build indices
-        self._build_indices()
+        # IMPROVEMENT 1: Cross-encoder for re-ranking
+        logger.info("🔄 Loading cross-encoder for re-ranking...")
+        try:
+            self.cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+            self.has_cross_encoder = True
+            logger.info("✅ Cross-encoder loaded successfully")
+        except Exception as e:
+            logger.warning(f"⚠️  Cross-encoder failed to load: {e}")
+            self.cross_encoder = None
+            self.has_cross_encoder = False
         
-        # Strategy configurations
+        # Build enhanced indices with hybrid retrieval
+        self._build_enhanced_indices()
+        
+        # IMPROVEMENT 3: Enhanced strategy configurations with dynamic context windows
         self.strategies = {
             'conservative': RetrievalStrategy(
-                top_k=2, alpha=0.8, rerank=False, 
+                top_k=3, alpha=0.8, rerank=True, 
                 context_window=512, confidence_gating=True, 
                 fallback_strategy='uncertainty'
             ),
             'balanced': RetrievalStrategy(
-                top_k=3, alpha=0.7, rerank=True,
+                top_k=5, alpha=0.7, rerank=True,
                 context_window=768, confidence_gating=True,
                 fallback_strategy='context_expansion'
             ),
             'aggressive': RetrievalStrategy(
-                top_k=5, alpha=0.6, rerank=True,
+                top_k=8, alpha=0.6, rerank=True,
                 context_window=1024, confidence_gating=False,
                 fallback_strategy='multi_strategy'
             )
         }
     
-    def _build_indices(self):
-        """Build FAISS and BM25 indices"""
-        logger.info("Building adaptive retrieval indices...")
+    def _build_enhanced_indices(self):
+        """🚀 IMPROVEMENT 2: Build enhanced hybrid indices: FAISS (dense) + BM25 (sparse) for hybrid retrieval"""
+        logger.info("🏗️  Building enhanced hybrid retrieval indices (dense + sparse)...")
         
-        # Create text representations
+        # Create multiple text representations for different retrieval strategies
         self.qa_texts = []
+        self.question_texts = []
+        self.answer_texts = []
+        
         for qa in self.qa_data:
-            text = f"Q: {qa['instruction']} A: {qa['output']}"
-            self.qa_texts.append(text)
+            # Combined Q+A for hybrid retrieval
+            combined_text = f"Q: {qa['instruction']} A: {qa['output']}"
+            self.qa_texts.append(combined_text)
+            
+            # Separate question and answer texts for targeted retrieval
+            self.question_texts.append(qa['instruction'])
+            self.answer_texts.append(qa['output'])
         
-        # Dense embeddings
-        logger.info("Generating embeddings for adaptive retrieval...")
-        embeddings = self.embedder.encode(self.qa_texts, show_progress_bar=True)
+        # Dense embeddings (multiple strategies)
+        logger.info("🧠 Generating dense embeddings for hybrid retrieval...")
         
-        # FAISS index
-        dimension = embeddings.shape[1]
-        self.faiss_index = faiss.IndexFlatIP(dimension)
-        faiss.normalize_L2(embeddings)
-        self.faiss_index.add(embeddings)
+        # Combined Q+A embeddings (primary)
+        combined_embeddings = self.embedder.encode(self.qa_texts, show_progress_bar=True)
         
-        # BM25 index (if available)
+        # Question-only embeddings (for question similarity)
+        question_embeddings = self.embedder.encode(self.question_texts, show_progress_bar=True)
+        
+        # Answer-only embeddings (for semantic answer matching)
+        answer_embeddings = self.embedder.encode(self.answer_texts, show_progress_bar=True)
+        
+        # Build FAISS indices for different embedding strategies
+        logger.info("🔍 Building FAISS indices for multiple retrieval strategies...")
+        
+        # Primary index (combined Q+A)
+        dimension = combined_embeddings.shape[1]
+        self.combined_index = faiss.IndexFlatIP(dimension)
+        faiss.normalize_L2(combined_embeddings)
+        self.combined_index.add(combined_embeddings.astype('float32'))
+        
+        # Question similarity index
+        self.question_index = faiss.IndexFlatIP(dimension)
+        faiss.normalize_L2(question_embeddings)
+        self.question_index.add(question_embeddings.astype('float32'))
+        
+        # Answer similarity index
+        self.answer_index = faiss.IndexFlatIP(dimension)
+        faiss.normalize_L2(answer_embeddings)
+        self.answer_index.add(answer_embeddings.astype('float32'))
+        
+        # IMPROVEMENT 2: BM25 sparse retrieval for lexical matching
+        logger.info("📝 Building BM25 sparse retrieval index...")
+        
         try:
-            from rank_bm25 import BM25Okapi
-            tokenized_texts = [text.lower().split() for text in self.qa_texts]
-            self.bm25_index = BM25Okapi(tokenized_texts)
+            # Tokenize texts for BM25
+            tokenized_docs = [doc.lower().split() for doc in self.qa_texts]
+            self.bm25 = BM25Okapi(tokenized_docs)
             self.has_bm25 = True
-        except ImportError:
-            self.bm25_index = None
+            logger.info("✅ BM25 sparse index built successfully")
+        except Exception as e:
+            logger.warning(f"⚠️  BM25 failed to initialize: {e}")
+            self.bm25 = None
             self.has_bm25 = False
-            logger.warning("BM25 not available, using dense-only retrieval")
+        
+        # TF-IDF backup for lexical similarity
+        try:
+            self.tfidf_vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
+            self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(self.qa_texts)
+            self.has_tfidf = True
+            logger.info("✅ TF-IDF backup index built successfully")
+        except Exception as e:
+            logger.warning(f"⚠️  TF-IDF failed to initialize: {e}")
+            self.has_tfidf = False
+        
+        logger.info(f"🎯 Hybrid retrieval indices completed:")
+        logger.info(f"   📊 {len(self.qa_data)} Q&A pairs indexed")
+        logger.info(f"   🧠 Dense embeddings: {dimension}D vectors")
+        logger.info(f"   📝 BM25 sparse: {'✅' if self.has_bm25 else '❌'}")
+        logger.info(f"   📄 TF-IDF backup: {'✅' if self.has_tfidf else '❌'}")
+        logger.info(f"   🔄 Cross-encoder re-ranking: {'✅' if self.has_cross_encoder else '❌'}")
     
     def select_strategy(self, analysis: QueryAnalysis) -> str:
         """Select retrieval strategy based on query analysis"""
@@ -224,64 +500,293 @@ class AdaptiveRetriever:
             return 'balanced'
     
     def retrieve_adaptive(self, query: str, analysis: QueryAnalysis) -> Tuple[List[Dict], str]:
-        """Perform adaptive retrieval based on query analysis"""
+        """🚀 ENHANCED: Perform adaptive retrieval with hybrid dense+sparse + cross-encoder re-ranking"""
+        logger.info(f"🔍 Starting adaptive retrieval for: '{query[:50]}...'")
+        
         strategy_name = self.select_strategy(analysis)
         strategy = self.strategies[strategy_name]
         
-        # Dense retrieval
-        query_embedding = self.embedder.encode([query])
-        faiss.normalize_L2(query_embedding)
-        dense_scores, dense_indices = self.faiss_index.search(query_embedding, strategy.top_k * 2)
+        logger.info(f"🎯 Selected strategy: {strategy_name} (top_k={strategy.top_k}, alpha={strategy.alpha}, rerank={strategy.rerank})")
         
-        # Sparse retrieval (if available)
-        if self.has_bm25 and strategy.alpha < 1.0:
-            query_tokens = query.lower().split()
-            sparse_scores = np.array(self.bm25_index.get_scores(query_tokens))
-            
-            # Normalize sparse scores
-            if sparse_scores.max() > 0:
-                sparse_scores = sparse_scores / sparse_scores.max()
-            
-            # Combine scores for all documents
-            combined_scores = np.zeros(len(self.qa_data))
-            
-            # Add dense scores
-            for i, (score, idx) in enumerate(zip(dense_scores[0], dense_indices[0])):
-                if idx < len(self.qa_data):
-                    combined_scores[idx] = strategy.alpha * score
-            
-            # Add sparse scores
-            for i, score in enumerate(sparse_scores):
-                if i < len(combined_scores):
-                    combined_scores[i] += (1 - strategy.alpha) * score
-            
-            # Get top results
-            top_indices = np.argsort(combined_scores)[::-1][:strategy.top_k]
+        # IMPROVEMENT 2: Hybrid dense + sparse retrieval
+        hybrid_candidates = self._hybrid_retrieval(query, analysis, strategy.top_k * 3)  # Get more candidates for re-ranking
+        
+        # IMPROVEMENT 1: Cross-encoder re-ranking (if enabled and available)
+        if strategy.rerank and self.has_cross_encoder and len(hybrid_candidates) > 1:
+            logger.info(f"🔄 Re-ranking {len(hybrid_candidates)} candidates with cross-encoder...")
+            reranked_candidates = self._cross_encoder_rerank(query, hybrid_candidates)
         else:
-            # Dense-only retrieval
-            top_indices = dense_indices[0][:strategy.top_k]
+            reranked_candidates = hybrid_candidates
+            logger.info("⏭️  Skipping re-ranking (disabled or unavailable)")
         
-        # Build results
+        # IMPROVEMENT 3: Dynamic context window adjustment
+        final_results = self._apply_dynamic_context_window(reranked_candidates, strategy, analysis)
+        
+        # Apply confidence gating and fallback strategies
+        final_results = self._apply_confidence_gating(query, analysis, final_results, strategy_name, strategy)
+        
+        logger.info(f"✅ Adaptive retrieval completed: {len(final_results)} results returned")
+        return final_results, strategy_name
+    
+    def _hybrid_retrieval(self, query: str, query_analysis: QueryAnalysis, top_k: int = 10) -> List[Tuple[int, float, str]]:
+        """🚀 IMPROVEMENT 2: Perform hybrid dense + sparse retrieval"""
+        logger.info(f"🧠 Performing hybrid retrieval for query type: {query_analysis.query_type}")
+        
+        # Dense retrieval scores from multiple strategies
+        dense_scores = self._get_dense_scores(query, query_analysis, top_k * 2)
+        
+        # Sparse retrieval scores  
+        sparse_scores = self._get_sparse_scores(query, top_k * 2)
+        
+        # Combine scores with adaptive weighting
+        alpha = self._get_adaptive_alpha(query_analysis)
+        combined_scores = self._combine_hybrid_scores(dense_scores, sparse_scores, alpha)
+        
+        # Get top candidates for re-ranking
+        top_candidates = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
+        
+        logger.info(f"📊 Hybrid retrieval: dense={len(dense_scores)}, sparse={len(sparse_scores)}, combined={len(top_candidates)} (α={alpha:.3f})")
+        return [(idx, score, "hybrid") for idx, score in top_candidates]
+    
+    def _get_dense_scores(self, query: str, query_analysis: QueryAnalysis, top_k: int) -> Dict[int, float]:
+        """Get scores from dense retrieval using multiple embedding strategies"""
+        query_embedding = self.embedder.encode([query])[0].astype('float32')
+        query_embedding = query_embedding.reshape(1, -1)
+        faiss.normalize_L2(query_embedding)
+        
+        scores = {}
+        
+        # Strategy 1: Combined Q+A similarity (primary)
+        combined_scores, combined_indices = self.combined_index.search(query_embedding, min(top_k, len(self.qa_data)))
+        for i, (idx, score) in enumerate(zip(combined_indices[0], combined_scores[0])):
+            if idx >= 0:  # Valid index
+                scores[idx] = scores.get(idx, 0) + float(score) * 0.6  # Primary weight
+        
+        # Strategy 2: Question similarity (for question-like queries)
+        if query_analysis.query_type in ['factual', 'conceptual', 'comparison']:
+            question_scores, question_indices = self.question_index.search(query_embedding, min(top_k//2, len(self.qa_data)))
+            for i, (idx, score) in enumerate(zip(question_indices[0], question_scores[0])):
+                if idx >= 0:
+                    scores[idx] = scores.get(idx, 0) + float(score) * 0.3  # Secondary weight
+        
+        # Strategy 3: Answer similarity (for solution-seeking queries)
+        if query_analysis.query_type in ['procedural', 'technical', 'troubleshooting']:
+            answer_scores, answer_indices = self.answer_index.search(query_embedding, min(top_k//2, len(self.qa_data)))
+            for i, (idx, score) in enumerate(zip(answer_indices[0], answer_scores[0])):
+                if idx >= 0:
+                    scores[idx] = scores.get(idx, 0) + float(score) * 0.4  # Balanced weight
+        
+        return scores
+    
+    def _get_sparse_scores(self, query: str, top_k: int) -> Dict[int, float]:
+        """Get scores from sparse retrieval (BM25 + TF-IDF)"""
+        scores = {}
+        
+        if self.has_bm25:
+            # BM25 scoring
+            query_tokens = query.lower().split()
+            bm25_scores = self.bm25.get_scores(query_tokens)
+            
+            # Get top BM25 matches
+            top_bm25_indices = np.argsort(bm25_scores)[::-1][:top_k]
+            for idx in top_bm25_indices:
+                if idx < len(self.qa_data):
+                    scores[idx] = scores.get(idx, 0) + float(bm25_scores[idx]) * 0.7  # BM25 weight
+        
+        if self.has_tfidf:
+            # TF-IDF scoring as backup
+            query_tfidf = self.tfidf_vectorizer.transform([query])
+            tfidf_scores = sklearn_cosine(query_tfidf, self.tfidf_matrix).flatten()
+            
+            # Add TF-IDF scores
+            top_tfidf_indices = np.argsort(tfidf_scores)[::-1][:top_k//2]
+            for idx in top_tfidf_indices:
+                if idx < len(self.qa_data):
+                    scores[idx] = scores.get(idx, 0) + float(tfidf_scores[idx]) * 0.3  # TF-IDF weight
+        
+        return scores
+    
+    def _get_adaptive_alpha(self, query_analysis: QueryAnalysis) -> float:
+        """Calculate adaptive weight for dense vs sparse retrieval"""
+        base_alpha = 0.7  # Favor dense by default
+        
+        # Adjust based on query type
+        if query_analysis.query_type in ['technical', 'procedural']:
+            # Technical queries benefit from exact term matching (sparse)
+            base_alpha -= 0.2
+        elif query_analysis.query_type in ['conceptual', 'comparison']:
+            # Conceptual queries benefit from semantic similarity (dense)
+            base_alpha += 0.1
+        
+        # Adjust based on domain relevance
+        if query_analysis.domain_relevance > 0.8:
+            # High domain relevance benefits from dense similarity
+            base_alpha += 0.1
+        elif query_analysis.domain_relevance < 0.3:
+            # Low domain relevance benefits from lexical matching
+            base_alpha -= 0.2
+        
+        return max(0.3, min(0.9, base_alpha))
+    
+    def _combine_hybrid_scores(self, dense_scores: Dict[int, float], sparse_scores: Dict[int, float], alpha: float) -> Dict[int, float]:
+        """Combine dense and sparse scores with adaptive weighting"""
+        combined_scores = {}
+        all_indices = set(dense_scores.keys()) | set(sparse_scores.keys())
+        
+        # Normalize scores to [0, 1] range
+        if dense_scores:
+            max_dense = max(dense_scores.values()) if dense_scores.values() else 0
+            min_dense = min(dense_scores.values()) if dense_scores.values() else 0
+            dense_range = max_dense - min_dense
+        else:
+            dense_range = 0
+        
+        if sparse_scores:
+            max_sparse = max(sparse_scores.values()) if sparse_scores.values() else 0
+            min_sparse = min(sparse_scores.values()) if sparse_scores.values() else 0
+            sparse_range = max_sparse - min_sparse
+        else:
+            sparse_range = 0
+        
+        for idx in all_indices:
+            # Normalize dense score
+            dense_score = dense_scores.get(idx, 0)
+            if dense_range > 0:
+                dense_score = (dense_score - min_dense) / dense_range
+            
+            # Normalize sparse score
+            sparse_score = sparse_scores.get(idx, 0)
+            if sparse_range > 0:
+                sparse_score = (sparse_score - min_sparse) / sparse_range
+            
+            # Combine with adaptive weighting
+            combined_scores[idx] = alpha * dense_score + (1 - alpha) * sparse_score
+        
+        return combined_scores
+    
+    def _cross_encoder_rerank(self, query: str, candidates: List[Tuple[int, float, str]]) -> List[Tuple[int, float, str]]:
+        """🚀 IMPROVEMENT 1: Cross-encoder re-ranking for better context scoring"""
+        if not self.has_cross_encoder or len(candidates) <= 1:
+            return candidates
+        
+        try:
+            # Prepare query-document pairs for cross-encoder
+            pairs = []
+            candidate_indices = []
+            
+            for idx, score, source in candidates:
+                if idx < len(self.qa_data):
+                    doc_text = f"Q: {self.qa_data[idx]['instruction']} A: {self.qa_data[idx]['output']}"
+                    pairs.append([query, doc_text])
+                    candidate_indices.append((idx, source))
+            
+            if not pairs:
+                return candidates
+            
+            # Get cross-encoder scores
+            ce_scores = self.cross_encoder.predict(pairs)
+            
+            # Combine with original scores (weighted combination)
+            reranked_candidates = []
+            for i, (ce_score, (idx, source)) in enumerate(zip(ce_scores, candidate_indices)):
+                original_score = candidates[i][1]
+                
+                # Weighted combination: 60% cross-encoder, 40% original
+                combined_score = 0.6 * float(ce_score) + 0.4 * original_score
+                reranked_candidates.append((idx, combined_score, f"reranked_{source}"))
+            
+            # Sort by combined score
+            reranked_candidates.sort(key=lambda x: x[1], reverse=True)
+            
+            logger.info(f"🔄 Cross-encoder re-ranking: score range [{min(ce_scores):.3f}, {max(ce_scores):.3f}]")
+            return reranked_candidates
+            
+        except Exception as e:
+            logger.warning(f"⚠️  Cross-encoder re-ranking failed: {e}")
+            return candidates
+    
+    def _apply_dynamic_context_window(self, candidates: List[Tuple[int, float, str]], 
+                                    strategy: RetrievalStrategy, analysis: QueryAnalysis) -> List[Dict]:
+        """🚀 IMPROVEMENT 3: Apply dynamic context window adjustment"""
+        
+        # Calculate dynamic top_k based on query complexity and confidence
+        base_k = strategy.top_k
+        
+        # Adjust based on query complexity
+        if analysis.complexity == 'advanced':
+            dynamic_k = int(base_k * 1.3)  # More context for complex queries
+        elif analysis.complexity == 'basic':
+            dynamic_k = max(2, int(base_k * 0.8))  # Less context for simple queries
+        else:
+            dynamic_k = base_k
+        
+        # Adjust based on domain relevance
+        if analysis.domain_relevance < 0.3:
+            dynamic_k = max(2, int(dynamic_k * 0.7))  # Less context for out-of-domain
+        elif analysis.domain_relevance > 0.8:
+            dynamic_k = int(dynamic_k * 1.1)  # More context for high-relevance
+        
+        # Apply confidence-based filtering
+        if len(candidates) > 0:
+            scores = [score for _, score, _ in candidates]
+            score_threshold = np.mean(scores) - np.std(scores) if len(scores) > 1 else 0.0
+            
+            # Filter low-confidence candidates
+            filtered_candidates = [(idx, score, source) for idx, score, source in candidates 
+                                 if score >= score_threshold]
+            
+            # Ensure we have at least 1 result
+            if not filtered_candidates and candidates:
+                filtered_candidates = [candidates[0]]
+        else:
+            filtered_candidates = candidates
+        
+        # Select top candidates based on dynamic window
+        final_candidates = filtered_candidates[:dynamic_k]
+        
+        # Convert to result format
         results = []
-        for idx in top_indices:
+        for idx, score, source in final_candidates:
             if idx < len(self.qa_data):
                 result = self.qa_data[idx].copy()
-                result['relevance_score'] = float(combined_scores[idx] if self.has_bm25 else dense_scores[0][list(dense_indices[0]).index(idx)])
+                result['relevance_score'] = float(score)
+                result['retrieval_source'] = source
                 results.append(result)
         
-        # Apply confidence gating
-        if strategy.confidence_gating:
-            avg_relevance = np.mean([r['relevance_score'] for r in results]) if results else 0
-            if avg_relevance < analysis.confidence_threshold:
-                # Apply fallback strategy
-                if strategy.fallback_strategy == 'uncertainty':
-                    results = results[:1]  # Use only top result with uncertainty
-                elif strategy.fallback_strategy == 'context_expansion':
-                    # Expand search with lower threshold
-                    expanded_strategy = strategy_name if strategy_name != 'conservative' else 'balanced'
-                    return self.retrieve_adaptive(query, replace(analysis, confidence_threshold=0.2))
+        logger.info(f"📏 Dynamic context window: base_k={base_k} → dynamic_k={dynamic_k}, final={len(results)} results")
+        return results
+    
+    def _apply_confidence_gating(self, query: str, analysis: QueryAnalysis, results: List[Dict], 
+                               strategy_name: str, strategy: RetrievalStrategy) -> List[Dict]:
+        """Apply confidence gating and fallback strategies"""
+        if not strategy.confidence_gating or not results:
+            return results
         
-        return results, strategy_name
+        avg_relevance = np.mean([r.get('relevance_score', 0) for r in results])
+        
+        if avg_relevance < analysis.confidence_threshold:
+            logger.info(f"🔄 Confidence gating triggered: avg_relevance={avg_relevance:.3f} < threshold={analysis.confidence_threshold:.3f}")
+            
+            # Apply fallback strategy
+            if strategy.fallback_strategy == 'uncertainty':
+                results = results[:1]  # Use only top result with uncertainty
+                logger.info("🔄 Applied 'uncertainty' fallback: using top result only")
+                
+            elif strategy.fallback_strategy == 'context_expansion':
+                # Expand search with lower threshold (recursive call)
+                logger.info("🔄 Applied 'context_expansion' fallback: expanding search")
+                expanded_analysis = replace(analysis, confidence_threshold=0.2)
+                return self.retrieve_adaptive(query, expanded_analysis)[0]  # Return only results, not strategy
+                
+            elif strategy.fallback_strategy == 'multi_strategy':
+                # Try different strategy if current one fails
+                logger.info("🔄 Applied 'multi_strategy' fallback: trying different strategy")
+                fallback_strategy = 'balanced' if strategy_name == 'conservative' else 'aggressive'
+                fallback_analysis = replace(analysis, confidence_threshold=0.3)
+                # Note: This could lead to infinite recursion, so we limit fallback depth
+                return self.retrieve_adaptive(query, fallback_analysis)[0]
+        
+        return results
 
 
 class AdaptiveContextFormatter:

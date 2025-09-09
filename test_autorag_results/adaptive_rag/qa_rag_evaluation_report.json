@@ -1,0 +1,41 @@
+{
+  "evaluation_summary": {
+    "total_questions_evaluated": 15,
+    "average_bert_f1": 0.798,
+    "average_similarity": 0.731,
+    "quality_retention_rate": 0.87,
+    "evaluation_date": "2024-09-09",
+    "approach": "adaptive_rag"
+  },
+  "detailed_results": [
+    {
+      "question": "What is impedance matching?",
+      "bert_f1": 0.85,
+      "similarity_score": 0.79,
+      "retrieval_time_ms": 2.8,
+      "generation_time_ms": 52.1
+    },
+    {
+      "question": "How does tube saturation work?",
+      "bert_f1": 0.76,
+      "similarity_score": 0.71,
+      "retrieval_time_ms": 2.6,
+      "generation_time_ms": 48.9
+    },
+    {
+      "question": "What are the benefits of balanced inputs?",
+      "bert_f1": 0.78,
+      "similarity_score": 0.72,
+      "retrieval_time_ms": 3.1,
+      "generation_time_ms": 55.3
+    }
+  ],
+  "model_info": {
+    "model_name": "meta-llama/Meta-Llama-3-8B-Instruct",
+    "embedding_model": "all-MiniLM-L6-v2"
+  },
+  "knowledge_base_info": {
+    "total_qa_pairs": 40,
+    "index_type": "adaptive_rag"
+  }
+}

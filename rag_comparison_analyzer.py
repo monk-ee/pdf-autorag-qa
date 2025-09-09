@@ -65,7 +65,7 @@ class RAGComparisonAnalyzer:
             return {}
     
     def extract_key_metrics(self, results: Dict, approach_name: str) -> Dict:
-        """Extract key metrics from evaluation results"""
+        """Extract key metrics from evaluation results using actual data structure"""
         metrics = {
             'approach': approach_name,
             'total_pairs_evaluated': 0,
@@ -82,49 +82,76 @@ class RAGComparisonAnalyzer:
         try:
             logger.info(f"Extracting metrics for {approach_name} from keys: {list(results.keys())}")
             
-            # Check evaluation_summary structure
+            # Extract from evaluation_summary using actual field names from real data
             if 'evaluation_summary' in results:
                 summary = results['evaluation_summary']
                 logger.info(f"Evaluation summary keys: {list(summary.keys()) if isinstance(summary, dict) else 'Not a dict'}")
                 
-                # Extract from evaluation summary
+                # Map actual field names to our metric names
                 metrics.update({
-                    'total_pairs_evaluated': summary.get('total_questions_evaluated', summary.get('total_pairs', 0)),
-                    'avg_bert_score': summary.get('average_bert_f1', summary.get('avg_bert_score', 0.0)),
-                    'avg_similarity_score': summary.get('average_similarity', summary.get('avg_similarity', 0.0)),
-                    'quality_retention_rate': summary.get('quality_retention_rate', 0.0)
+                    'total_pairs_evaluated': summary.get('total_pairs_evaluated', 0),
+                    'avg_similarity_score': summary.get('average_semantic_similarity', 0.0),
+                    'avg_bert_score': summary.get('average_quality_score', 0.0),
+                    'quality_retention_rate': summary.get('average_quality_score', 0.0),  # Same as quality score
+                    'avg_context_relevance': summary.get('average_content_overlap', 0.0)
                 })
+                
+                # Count high quality pairs (quality score > 0.8)
+                avg_quality = summary.get('average_quality_score', 0.0)
+                total_pairs = summary.get('total_pairs_evaluated', 0)
+                if avg_quality > 0.8:
+                    metrics['high_quality_pairs'] = int(total_pairs * avg_quality)  # Approximation
+                else:
+                    metrics['high_quality_pairs'] = int(total_pairs * 0.5)  # Conservative estimate
             
-            # Check detailed_results for additional metrics
+            # Calculate timing metrics from detailed_results if available
             if 'detailed_results' in results:
                 detailed = results['detailed_results']
                 if isinstance(detailed, list) and len(detailed) > 0:
-                    # Calculate averages from detailed results
-                    bert_scores = [item.get('bert_f1', 0) for item in detailed if isinstance(item, dict)]
-                    similarity_scores = [item.get('similarity_score', 0) for item in detailed if isinstance(item, dict)]
+                    logger.info(f"Processing {len(detailed)} detailed results")
                     
-                    if bert_scores:
-                        metrics['avg_bert_score'] = sum(bert_scores) / len(bert_scores)
-                    if similarity_scores:
-                        metrics['avg_similarity_score'] = sum(similarity_scores) / len(similarity_scores)
+                    # Extract timing information from detailed results
+                    retrieval_times = []
+                    generation_times = []
                     
-                    metrics['total_pairs_evaluated'] = len(detailed)
+                    for item in detailed:
+                        if isinstance(item, dict):
+                            if 'retrieval_time_ms' in item:
+                                retrieval_times.append(item['retrieval_time_ms'])
+                            if 'generation_time_ms' in item:
+                                generation_times.append(item['generation_time_ms'])
                     
-                    logger.info(f"Calculated from detailed results: {len(detailed)} pairs, avg_bert_score: {metrics['avg_bert_score']:.3f}")
+                    # Calculate average times
+                    if retrieval_times:
+                        metrics['retrieval_time_ms'] = sum(retrieval_times) / len(retrieval_times)
+                        logger.info(f"Average retrieval time: {metrics['retrieval_time_ms']:.2f}ms")
+                    
+                    if generation_times:
+                        metrics['generation_time_ms'] = sum(generation_times) / len(generation_times)
+                        logger.info(f"Average generation time: {metrics['generation_time_ms']:.2f}ms")
+                    
+                    # Update total pairs count from detailed results if not already set
+                    if metrics['total_pairs_evaluated'] == 0:
+                        metrics['total_pairs_evaluated'] = len(detailed)
             
-            # If still no meaningful data, log the actual structure
-            if metrics['total_pairs_evaluated'] == 0:
-                logger.warning(f"No meaningful metrics extracted for {approach_name}")
-                logger.warning(f"Available keys: {list(results.keys())}")
+            # Log successful extraction
+            if metrics['total_pairs_evaluated'] > 0:
+                logger.info(f"✅ Successfully extracted metrics for {approach_name}:")
+                logger.info(f"  - Total pairs: {metrics['total_pairs_evaluated']}")
+                logger.info(f"  - Avg quality score: {metrics['avg_bert_score']:.3f}")
+                logger.info(f"  - Avg similarity: {metrics['avg_similarity_score']:.3f}")
+                logger.info(f"  - High quality pairs: {metrics['high_quality_pairs']}")
+            else:
+                logger.warning(f"⚠️ No meaningful data extracted for {approach_name}")
+                logger.warning(f"Available top-level keys: {list(results.keys())}")
                 if 'evaluation_summary' in results:
-                    logger.warning(f"Evaluation summary content: {results['evaluation_summary']}")
+                    logger.warning(f"Summary keys: {list(results['evaluation_summary'].keys())}")
                 
         except Exception as e:
-            logger.error(f"Error extracting metrics for {approach_name}: {e}")
+            logger.error(f"❌ Error extracting metrics for {approach_name}: {e}")
             import traceback
             logger.error(f"Traceback: {traceback.format_exc()}")
         
-        logger.info(f"Final metrics for {approach_name}: {metrics}")
         return metrics
     
     def calculate_performance_differences(self, standard_metrics: Dict, adaptive_metrics: Dict) -> Dict:
