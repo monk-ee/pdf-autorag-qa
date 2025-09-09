@@ -84,28 +84,41 @@ jobs:
         echo "🔍 Checking GPU availability..."
         nvidia-smi || echo "No NVIDIA GPU detected"
         
-        # Install FAISS with proper Python version and GPU detection
-        echo "🐍 Python version: $(python --version)"
+        # Install FAISS-GPU aggressively - MUST HAVE GPU SUPPORT
+        echo "🚀 FORCING FAISS-GPU INSTALLATION FOR MAXIMUM PERFORMANCE"
         
         if nvidia-smi > /dev/null 2>&1; then
-          echo "🚀 GPU detected, checking Python compatibility..."
+          echo "💪 GPU detected - installing FAISS-GPU by any means necessary..."
           
-          # Check Python version compatibility for faiss-gpu
-          python_version=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-          echo "🐍 Python version: $python_version"
+          # Strategy 1: Try conda-forge FAISS (supports newer Python)
+          echo "🔥 Strategy 1: Installing via conda-forge (supports Python 3.11+)"
+          uv pip install --find-links https://download.pytorch.org/whl/cu118 faiss-gpu || \
           
-          if [[ "$python_version" == "3.11" ]] || [[ "$python_version" == "3.12" ]]; then
-            echo "⚠️ Python $python_version detected - faiss-gpu not available, using faiss-cpu"
+          # Strategy 2: Force install from specific index
+          echo "🔥 Strategy 2: Installing from pytorch index"
+          uv pip install faiss-gpu --index-url https://download.pytorch.org/whl/cu118 || \
+          
+          # Strategy 3: Install specific CUDA version
+          echo "🔥 Strategy 3: Installing CUDA 11.8 version"
+          uv pip install faiss-gpu-cu118 || \
+          
+          # Strategy 4: Build from source if all else fails
+          echo "🔥 Strategy 4: Installing from GitHub source"
+          uv pip install git+https://github.com/facebookresearch/faiss.git || \
+          
+          # Strategy 5: Install via conda if available
+          echo "🔥 Strategy 5: Attempting conda installation"
+          (command -v conda >/dev/null 2>&1 && conda install -c conda-forge faiss-gpu -y) || \
+          
+          # Final fallback but WARN LOUDLY
+          {
+            echo "❌❌❌ ALL FAISS-GPU STRATEGIES FAILED ❌❌❌"
+            echo "⚠️⚠️⚠️  FALLING BACK TO FAISS-CPU - PERFORMANCE WILL BE DEGRADED ⚠️⚠️⚠️"
             uv pip install faiss-cpu>=1.7.4
-          else
-            echo "✅ Python $python_version compatible with faiss-gpu, installing..."
-            uv pip install faiss-gpu>=1.7.4 || {
-              echo "❌ faiss-gpu installation failed, falling back to faiss-cpu"
-              uv pip install faiss-cpu>=1.7.4
-            }
-          fi
+          }
         else
-          echo "💻 No GPU detected, installing faiss-cpu..."
+          echo "❌ NO GPU DETECTED - THIS IS NOT ACCEPTABLE FOR PERFORMANCE"
+          echo "💻 Installing faiss-cpu but performance will be terrible..."
           uv pip install faiss-cpu>=1.7.4
         fi
         uv pip install bitsandbytes>=0.41.0
