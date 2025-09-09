@@ -68,21 +68,19 @@ class EnhancedAdaptiveRAGEvaluator:
         logger.info(f"Loading generation model: {model_name}")
         self._setup_generation_model(model_name, use_quantization)
         
-        # Initialize evaluation metrics
+        # Initialize evaluation metrics - FORCE GPU
         self.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+        self.embedding_model.to(self.device)  # Force embedding model to GPU
         
     def _setup_device(self, device: str) -> torch.device:
-        """Setup compute device with better GPU detection"""
+        """Setup compute device - FORCE GPU on dedicated GPU instance"""
         if device == 'auto':
-            if torch.cuda.is_available() and torch.cuda.device_count() > 0:
-                device = 'cuda'
-                gpu_name = torch.cuda.get_device_name() if torch.cuda.is_available() else "Unknown GPU"
-                logger.info(f"🚀 Using GPU: {gpu_name} (CUDA: {torch.version.cuda})")
-                logger.info(f"🔥 GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f}GB")
-            else:
-                device = 'cpu'
-                logger.info("💻 Using CPU - no CUDA GPU detected")
-                logger.info("⚠️  Note: GPU instance but no CUDA support - check FAISS installation")
+            # FORCE CUDA on GPU instance - no CPU fallbacks!
+            device = 'cuda'
+            gpu_name = torch.cuda.get_device_name() if torch.cuda.is_available() else "Unknown GPU"
+            logger.info(f"🚀 FORCING GPU: {gpu_name} (CUDA: {torch.version.cuda})")
+            logger.info(f"🔥 GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f}GB")
+            logger.info("💪 Dedicated GPU instance - no CPU fallbacks!")
         else:
             logger.info(f"🔧 Using specified device: {device}")
             

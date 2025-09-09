@@ -134,8 +134,9 @@ def build_qa_vector_store(qa_pairs_file: Path,
         
         print(f"🔍 GPU Detection: PyTorch CUDA={has_gpu}, FAISS GPUs={faiss_has_gpu}")
         
-        if has_gpu and faiss_has_gpu:
-            print('🚀 Creating Standard GPU index (true GPU)...')
+        # FORCE GPU FAISS - dedicated GPU instance, no fallbacks!
+        if has_gpu:
+            print('🚀 FORCING Standard GPU index creation - no fallbacks!')
             res = faiss.StandardGpuResources()
             standard_gpu_index = faiss.index_cpu_to_gpu(res, 0, standard_cpu_index)
             
@@ -200,8 +201,8 @@ def build_qa_vector_store(qa_pairs_file: Path,
         
         # Adaptive GPU index  
         try:
-            if has_gpu and faiss_has_gpu:
-                print('🚀 Creating Adaptive GPU index (true GPU)...')
+            if has_gpu:
+                print('🚀 FORCING Adaptive GPU index creation - no fallbacks!')
                 res = faiss.StandardGpuResources() 
                 adaptive_gpu_index = faiss.index_cpu_to_gpu(res, 0, adaptive_cpu_index)
                 

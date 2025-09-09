@@ -94,10 +94,11 @@ jobs:
           cuda_version=$(nvidia-smi | grep "CUDA Version" | awk '{print $9}' | cut -d'.' -f1,2)
           echo "🔍 Detected CUDA version: $cuda_version"
           
-          # Try CUDA 12.x compatible versions first
-          echo "🚀 Installing FAISS-GPU for CUDA 12.x..."
-          pip install faiss-gpu --index-url https://download.pytorch.org/whl/cu121 || \
-          pip install faiss-gpu --index-url https://download.pytorch.org/whl/cu118 || \
+          # Install newer FAISS-GPU version that supports CUDA 12.x
+          echo "🚀 Installing newer FAISS-GPU for CUDA 12.x compatibility..."
+          uv pip install faiss-gpu==1.8.0 || \
+          uv pip install faiss-gpu==1.7.4 || \
+          uv pip install faiss-gpu==1.7.3 || \
           uv pip install faiss-gpu || {
             echo "❌ All FAISS-GPU installations failed, using faiss-cpu"
             uv pip install faiss-cpu>=1.7.4
@@ -454,6 +455,23 @@ jobs:
           domain_eval_results.csv
           domain_eval_analysis.json
         retention-days: 30
+        
+    - name: List Available FAISS Indices for Download
+      run: |
+        echo "📦 ============================================"
+        echo "   AVAILABLE FAISS INDICES IN ARTIFACTS"
+        echo "============================================"
+        echo "🔥 GPU Indices (created on L40S):"
+        ls -la rag_store/*_gpu.bin 2>/dev/null || echo "   No GPU indices found"
+        echo ""
+        echo "💻 CPU Indices (for local testing):"
+        ls -la rag_store/*_cpu.bin 2>/dev/null || echo "   No CPU indices found"
+        echo ""
+        echo "📁 Download from GitHub Actions artifacts:"
+        echo "   - rag_store/qa_faiss_index_standard_cpu.bin"
+        echo "   - rag_store/qa_faiss_index_adaptive_cpu.bin"
+        echo "   - rag_store/qa_metadata.json"
+        echo "   - rag_store/model_info.json"
 
     - name: Display Pipeline Summary
       run: |
