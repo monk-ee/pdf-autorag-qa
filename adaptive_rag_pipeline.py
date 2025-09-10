@@ -457,21 +457,29 @@ class AdaptiveRetriever:
         # Build FAISS indices for different embedding strategies
         logger.info("🔍 Building FAISS indices for multiple retrieval strategies...")
         
+        # 🚀 FIX: Convert FP16 embeddings to FP32 for FAISS compatibility
+        if combined_embeddings.dtype != np.float32:
+            combined_embeddings = combined_embeddings.astype(np.float32)
+        if question_embeddings.dtype != np.float32:
+            question_embeddings = question_embeddings.astype(np.float32) 
+        if answer_embeddings.dtype != np.float32:
+            answer_embeddings = answer_embeddings.astype(np.float32)
+        
         # Primary index (combined Q+A)
         dimension = combined_embeddings.shape[1]
         self.combined_index = faiss.IndexFlatIP(dimension)
         faiss.normalize_L2(combined_embeddings)
-        self.combined_index.add(combined_embeddings.astype('float32'))
+        self.combined_index.add(combined_embeddings)
         
         # Question similarity index
         self.question_index = faiss.IndexFlatIP(dimension)
         faiss.normalize_L2(question_embeddings)
-        self.question_index.add(question_embeddings.astype('float32'))
+        self.question_index.add(question_embeddings)
         
         # Answer similarity index
         self.answer_index = faiss.IndexFlatIP(dimension)
         faiss.normalize_L2(answer_embeddings)
-        self.answer_index.add(answer_embeddings.astype('float32'))
+        self.answer_index.add(answer_embeddings)
         
         # IMPROVEMENT 2: SPLADE sparse retrieval for technical domain - SEMANTIC EXPANSION
         logger.info("🚀 BUILDING SPLADE-style sparse retrieval with term expansion...")
