@@ -377,10 +377,16 @@ class AdaptiveRetriever:
         self.qa_data = qa_data
         self.embedder = embedder
         
-        # IMPROVEMENT 1: Cross-encoder for re-ranking - TEMPORARILY DISABLED for debugging
-        logger.info("🔧 Cross-encoder temporarily disabled for performance testing...")
-        self.cross_encoder = None
-        self.has_cross_encoder = False
+        # IMPROVEMENT 1: Cross-encoder for re-ranking - ENABLED
+        try:
+            logger.info("🚀 Loading cross-encoder for re-ranking improvement...")
+            self.cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-2-v2')
+            self.has_cross_encoder = True
+            logger.info("✅ Cross-encoder loaded successfully")
+        except Exception as e:
+            logger.warning(f"⚠️ Cross-encoder loading failed: {e}")
+            self.cross_encoder = None
+            self.has_cross_encoder = False
         
         # Build enhanced indices with hybrid retrieval
         self._build_enhanced_indices()
@@ -453,13 +459,31 @@ class AdaptiveRetriever:
         faiss.normalize_L2(answer_embeddings)
         self.answer_index.add(answer_embeddings.astype('float32'))
         
-        # IMPROVEMENT 2: BM25 sparse retrieval - TEMPORARILY DISABLED for debugging
-        logger.info("🔧 BM25 and TF-IDF temporarily disabled for performance testing...")
-        self.bm25 = None
-        self.has_bm25 = False
-        self.tfidf_vectorizer = None
-        self.tfidf_matrix = None
-        self.has_tfidf = False
+        # IMPROVEMENT 2: BM25 sparse retrieval - ENABLED
+        try:
+            logger.info("🚀 Building BM25 sparse retrieval index...")
+            # Tokenize for BM25
+            tokenized_texts = [text.lower().split() for text in self.qa_texts]
+            self.bm25 = BM25Okapi(tokenized_texts)
+            self.has_bm25 = True
+            logger.info("✅ BM25 index built successfully")
+        except Exception as e:
+            logger.warning(f"⚠️ BM25 initialization failed: {e}")
+            self.bm25 = None
+            self.has_bm25 = False
+        
+        # TF-IDF backup sparse retrieval
+        try:
+            logger.info("🚀 Building TF-IDF backup sparse retrieval...")
+            self.tfidf_vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
+            self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(self.qa_texts)
+            self.has_tfidf = True
+            logger.info("✅ TF-IDF backup built successfully")
+        except Exception as e:
+            logger.warning(f"⚠️ TF-IDF initialization failed: {e}")
+            self.tfidf_vectorizer = None
+            self.tfidf_matrix = None
+            self.has_tfidf = False
         
         logger.info(f"🎯 Hybrid retrieval indices completed:")
         logger.info(f"   📊 {len(self.qa_data)} Q&A pairs indexed")
