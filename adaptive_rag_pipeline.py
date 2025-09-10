@@ -72,10 +72,12 @@ class QueryAnalyzer:
         torch.backends.cuda.matmul.allow_tf32 = True
         device = 'cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu'
         
-        self.embedder = SentenceTransformer('all-MiniLM-L6-v2', device=device)
+        # 🚀 BETTER EMBEDDINGS: BGE-Large for quality
+        model_name = 'BAAI/bge-large-en-v1.5'  # Much better than MiniLM
+        self.embedder = SentenceTransformer(model_name, device=device)
         if device == 'cuda':
             self.embedder = self.embedder.half()  # Use FP16 for speed
-            logger.info(f"🚀 GPU ACCELERATED: {device} with FP16")
+            logger.info(f"🚀 QUALITY EMBEDDINGS: {model_name} on {device} with FP16")
         
         # IMPROVEMENT 4: Enhanced query classification with configurable categories
         self.domain_ontology = self._build_domain_ontology()
@@ -385,20 +387,20 @@ class AdaptiveRetriever:
         self.embedder = embedder
         self.category_config = category_config or {}
         
-        # IMPROVEMENT 1: Better cross-encoder for technical domains - BGE reranker
-        logger.info("🚀 LOADING BGE reranker for technical domain re-ranking...")
+        # IMPROVEMENT 1: QUALITY cross-encoder for better re-ranking
+        logger.info("🚀 LOADING BGE-Reranker-Large for precision re-ranking...")
         try:
-            self.cross_encoder = CrossEncoder('BAAI/bge-reranker-base')
+            self.cross_encoder = CrossEncoder('BAAI/bge-reranker-large')  # Large model for quality
             self.has_cross_encoder = True
-            logger.info("✅ BGE reranker LOADED successfully - TECHNICAL DOMAIN OPTIMIZED!")
+            logger.info("✅ BGE-Reranker-Large LOADED - PRECISION RE-RANKING ACTIVE!")
         except Exception as e:
-            logger.warning(f"⚠️ BGE reranker failed, trying ms-marco fallback: {e}")
+            logger.warning(f"⚠️ BGE-Large failed, trying base: {e}")
             try:
-                self.cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2') # Larger model
+                self.cross_encoder = CrossEncoder('BAAI/bge-reranker-base')
                 self.has_cross_encoder = True
-                logger.info("✅ MS-MARCO fallback loaded - IMPROVEMENT 1 ACTIVE")
+                logger.info("✅ BGE-Reranker-Base fallback loaded")
             except Exception as e2:
-                logger.error(f"❌ All cross-encoders FAILED: {e2}")
+                logger.error(f"❌ All rerankers FAILED: {e2}")
                 self.cross_encoder = None
                 self.has_cross_encoder = False
         
@@ -481,36 +483,20 @@ class AdaptiveRetriever:
         faiss.normalize_L2(answer_embeddings)
         self.answer_index.add(answer_embeddings)
         
-        # IMPROVEMENT 2: SPLADE sparse retrieval for technical domain - SEMANTIC EXPANSION
-        logger.info("🚀 BUILDING SPLADE-style sparse retrieval with term expansion...")
+        # IMPROVEMENT 2: Proper BM25 + Dense with RRF (0.5/0.5 mix)
+        logger.info("🚀 BUILDING BM25 + Dense hybrid with RRF...")
         try:
-            # Build technical term expansion dictionary for better sparse matching
-            self.term_expansion = self._build_technical_term_expansion()
+            from rank_bm25 import BM25Okapi
             
-            # Enhanced TF-IDF with technical term weighting (replaces BM25)
-            self.sparse_vectorizer = TfidfVectorizer(
-                max_features=8000,
-                stop_words='english', 
-                ngram_range=(1, 3),  # Include technical phrases
-                min_df=1,  # Keep technical terms even if rare
-                vocabulary=self._build_technical_vocabulary()
-            )
-            self.sparse_matrix = self.sparse_vectorizer.fit_transform(self.qa_texts)
-            
-            self.has_sparse = True
-            logger.info("✅ SPLADE-style sparse index BUILT - TECHNICAL DOMAIN OPTIMIZED!")
+            # Tokenize for BM25
+            tokenized_corpus = [text.lower().split() for text in self.qa_texts]
+            self.bm25 = BM25Okapi(tokenized_corpus)
+            self.has_bm25 = True
+            logger.info("✅ BM25 index BUILT for hybrid retrieval!")
         except Exception as e:
-            logger.error(f"❌ SPLADE sparse initialization FAILED: {e}")
-            # Fallback to basic TF-IDF
-            try:
-                self.sparse_vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
-                self.sparse_matrix = self.sparse_vectorizer.fit_transform(self.qa_texts)
-                self.has_sparse = True
-                logger.info("✅ Basic TF-IDF fallback loaded")
-            except:
-                self.sparse_vectorizer = None
-                self.sparse_matrix = None
-                self.has_sparse = False
+            logger.error(f"❌ BM25 initialization FAILED: {e}")
+            self.bm25 = None
+            self.has_bm25 = False
         
         # TF-IDF backup sparse retrieval - FORCE ENABLED
         logger.info("🚀 FORCING TF-IDF backup sparse retrieval...")
@@ -595,15 +581,34 @@ class AdaptiveRetriever:
         return list(vocab)
 
     def select_strategy(self, analysis: QueryAnalysis) -> str:
-        """Select retrieval strategy based on audio-specific query analysis"""
-        if analysis.domain_relevance < 0.3:
-            return 'conservative'
-        elif analysis.query_type in ['troubleshooting', 'specifications'] or analysis.complexity == 'advanced':
-            return 'aggressive'  # Need more context for technical problems
-        elif analysis.query_type in ['comparison', 'compatibility']:
-            return 'balanced'    # Need multiple examples for comparisons  
+        """🚀 SAFE ADAPTIVE: Default to Standard, escalate only on low confidence"""
+        # Always start with conservative (Standard-like) approach
+        return 'conservative'
+    
+    def should_escalate_to_adaptive(self, query: str, initial_results: List[Dict]) -> bool:
+        """🚀 GUARDRAILS: Only escalate when confidence is low"""
+        if not initial_results:
+            return True  # No results, try adaptive
+        
+        # Check top-1 dense score
+        top_1_score = initial_results[0].get('score', 0.0) if initial_results else 0.0
+        
+        # Check score gap between top-1 and top-5
+        if len(initial_results) >= 5:
+            top_5_score = initial_results[4].get('score', 0.0)
+            score_gap = top_1_score - top_5_score
         else:
-            return 'balanced'    # Default for setup/operation
+            score_gap = 1.0  # Large gap if we have < 5 results
+        
+        # Escalation criteria
+        low_confidence = top_1_score < 0.30
+        small_gap = score_gap < 0.02
+        
+        escalate = low_confidence and small_gap
+        if escalate:
+            logger.info(f"🚨 ESCALATING to adaptive: top_1={top_1_score:.3f}, gap={score_gap:.3f}")
+        
+        return escalate
     
     def retrieve_adaptive(self, query: str, analysis: QueryAnalysis) -> Tuple[List[Dict], str]:
         """🚀 ENHANCED: Perform adaptive retrieval with hybrid dense+sparse + cross-encoder re-ranking"""
@@ -696,36 +701,58 @@ class AdaptiveRetriever:
         
         return scores
     
-    def _get_sparse_scores(self, query: str, top_k: int) -> Dict[int, float]:
-        """Get scores from SPLADE-style sparse retrieval with term expansion"""
+    def _get_bm25_scores(self, query: str, top_k: int) -> Dict[int, float]:
+        """Get BM25 sparse retrieval scores"""
         scores = {}
         
-        if self.has_sparse:
-            # SPLADE-style retrieval with term expansion
-            expanded_query = self._expand_query_terms(query)
-            logger.info(f"🔍 Query expansion: '{query}' → '{expanded_query}'")
+        if self.has_bm25:
+            # BM25 scoring
+            query_tokens = query.lower().split()
+            bm25_scores = self.bm25.get_scores(query_tokens)
             
-            # Score against technical vocabulary-enhanced sparse matrix
-            query_sparse = self.sparse_vectorizer.transform([expanded_query])
-            sparse_scores = sklearn_cosine(query_sparse, self.sparse_matrix).flatten()
-            
-            # Get top sparse matches
-            top_sparse_indices = np.argsort(sparse_scores)[::-1][:top_k]
-            for idx in top_sparse_indices:
-                if idx < len(self.qa_data) and sparse_scores[idx] > 0:
-                    scores[idx] = scores.get(idx, 0) + float(sparse_scores[idx]) * 1.0  # Primary sparse
-        
-        if self.has_tfidf and len(scores) < top_k//2:
-            # TF-IDF backup only if sparse didn't find enough
-            query_tfidf = self.tfidf_vectorizer.transform([query])
-            tfidf_scores = sklearn_cosine(query_tfidf, self.tfidf_matrix).flatten()
-            
-            top_tfidf_indices = np.argsort(tfidf_scores)[::-1][:top_k//2]
-            for idx in top_tfidf_indices:
-                if idx < len(self.qa_data) and idx not in scores:
-                    scores[idx] = scores.get(idx, 0) + float(tfidf_scores[idx]) * 0.3  # Backup weight
+            # Get top BM25 matches
+            top_bm25_indices = np.argsort(bm25_scores)[::-1][:top_k]
+            for idx in top_bm25_indices:
+                if idx < len(self.qa_data):
+                    scores[idx] = float(bm25_scores[idx])
         
         return scores
+    
+    def _rrf_fusion(self, dense_results: List[Tuple], bm25_results: List[Tuple], k: int = 60) -> List[Tuple]:
+        """🚀 Reciprocal Rank Fusion (RRF) for combining dense + BM25"""
+        rrf_scores = {}
+        
+        # Add dense scores with RRF
+        for rank, (idx, score, source) in enumerate(dense_results):
+            rrf_scores[idx] = rrf_scores.get(idx, 0) + 1 / (k + rank + 1)
+        
+        # Add BM25 scores with RRF  
+        for rank, (idx, score, source) in enumerate(bm25_results):
+            rrf_scores[idx] = rrf_scores.get(idx, 0) + 1 / (k + rank + 1)
+        
+        # Sort by RRF score
+        sorted_items = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)
+        
+        # Convert back to expected format
+        rrf_results = []
+        for idx, rrf_score in sorted_items:
+            rrf_results.append((idx, rrf_score, "rrf_hybrid"))
+        
+        return rrf_results
+    
+    def _get_dense_results(self, query: str, query_analysis: QueryAnalysis, top_k: int) -> List[Tuple]:
+        """Get dense retrieval results in (idx, score, source) format"""
+        dense_scores = self._get_dense_scores(query, query_analysis, top_k)
+        results = [(idx, score, "dense") for idx, score in dense_scores.items()]
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results[:top_k]
+    
+    def _get_bm25_results(self, query: str, top_k: int) -> List[Tuple]:
+        """Get BM25 results in (idx, score, source) format"""
+        bm25_scores = self._get_bm25_scores(query, top_k)
+        results = [(idx, score, "bm25") for idx, score in bm25_scores.items()]
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results[:top_k]
     
     def _expand_query_terms(self, query: str) -> str:
         """Expand query with technical synonyms for better sparse matching"""
