@@ -96,17 +96,23 @@ def build_qa_vector_store(qa_pairs_file: Path,
         raise ValueError("No embeddings generated - all answers may be too short or empty")
     
     # Build FAISS index
+    print('🔧 Starting FAISS index construction...')
     dimension = embeddings.shape[1]
+    print(f'📐 Embedding dimension: {dimension}')
     
     # Use IndexFlatIP for inner product similarity (good for sentence embeddings)
+    print('🔧 Creating IndexFlatIP...')
     cpu_index = faiss.IndexFlatIP(dimension)
+    print('✅ IndexFlatIP created successfully')
     
     # Normalize embeddings for cosine similarity
+    print('🔧 Normalizing embeddings with L2...')
     faiss.normalize_L2(embeddings)
+    print('✅ Embeddings normalized successfully')
     
     # Add embeddings to CPU index first
+    print('🔧 Adding embeddings to CPU index...')
     cpu_index.add(embeddings.astype(np.float32))
-    
     print(f'🏗️ Built base FAISS index with {cpu_index.ntotal} vectors')
     
     # Initialize tracking of created indices
@@ -116,12 +122,16 @@ def build_qa_vector_store(qa_pairs_file: Path,
     print('\n🔹 Building Standard RAG indices...')
     
     # Standard CPU index (copy of original)
+    print('🔧 Creating standard CPU index...')
     standard_cpu_index = faiss.IndexFlatIP(dimension)
+    print('🔧 Adding embeddings to standard CPU index...')
     standard_cpu_index.add(embeddings.astype(np.float32))
+    print('✅ Standard CPU index completed')
     
     standard_cpu_path = output_dir / 'qa_faiss_index_standard_cpu.bin'
+    print(f'🔧 Writing standard CPU index to: {standard_cpu_path}')
     faiss.write_index(standard_cpu_index, str(standard_cpu_path))
-    print(f'💾 Standard CPU index: {standard_cpu_path}')
+    print(f'💾 Standard CPU index saved: {standard_cpu_path}')
     created_indices['standard_cpu'] = str(standard_cpu_path)
     
     # Standard GPU index - Create CPU-optimized version with GPU naming for deployment  
