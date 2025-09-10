@@ -119,6 +119,11 @@ def build_qa_vector_store(qa_pairs_file: Path,
     if len(embeddings) == 0:
         raise ValueError("No embeddings generated - all answers may be too short or empty")
     
+    # 🚀 FIX: Convert FP16 embeddings to FP32 for FAISS compatibility
+    if embeddings.dtype != np.float32:
+        print(f'🔧 Converting embeddings from {embeddings.dtype} to float32 for FAISS...')
+        embeddings = embeddings.astype(np.float32)
+    
     # Build FAISS index
     print('🔧 Starting FAISS index construction...')
     dimension = embeddings.shape[1]
@@ -136,7 +141,7 @@ def build_qa_vector_store(qa_pairs_file: Path,
     
     # Add embeddings to CPU index first
     print('🔧 Adding embeddings to CPU index...')
-    cpu_index.add(embeddings.astype(np.float32))
+    cpu_index.add(embeddings)  # Already float32
     print(f'🏗️ Built base FAISS index with {cpu_index.ntotal} vectors')
     
     # Initialize tracking of created indices
@@ -149,7 +154,7 @@ def build_qa_vector_store(qa_pairs_file: Path,
     print('🔧 Creating standard CPU index...')
     standard_cpu_index = faiss.IndexFlatIP(dimension)
     print('🔧 Adding embeddings to standard CPU index...')
-    standard_cpu_index.add(embeddings.astype(np.float32))
+    standard_cpu_index.add(embeddings)  # Already float32
     print('✅ Standard CPU index completed')
     
     standard_cpu_path = output_dir / 'qa_faiss_index_standard_cpu.bin'
@@ -184,7 +189,7 @@ def build_qa_vector_store(qa_pairs_file: Path,
             print('⚠️ No GPU detected, creating CPU-optimized version with GPU naming...')
             # Create a CPU index but save it with GPU naming for deployment compatibility
             standard_gpu_index = faiss.IndexFlatIP(dimension)
-            standard_gpu_index.add(embeddings.astype(np.float32))
+            standard_gpu_index.add(embeddings)  # Already float32
             
             standard_gpu_path = output_dir / 'qa_faiss_index_standard_gpu.bin'
             faiss.write_index(standard_gpu_index, str(standard_gpu_path))
@@ -196,7 +201,7 @@ def build_qa_vector_store(qa_pairs_file: Path,
         # Fallback: create CPU-compatible version
         try:
             standard_gpu_index = faiss.IndexFlatIP(dimension)
-            standard_gpu_index.add(embeddings.astype(np.float32))
+            standard_gpu_index.add(embeddings)  # Already float32
             
             standard_gpu_path = output_dir / 'qa_faiss_index_standard_gpu.bin'
             faiss.write_index(standard_gpu_index, str(standard_gpu_path))
@@ -241,6 +246,11 @@ def build_qa_vector_store(qa_pairs_file: Path,
             print(f'⚡ Adaptive embedding throughput: {adaptive_throughput:.1f} embeddings/sec')
             print(f'✅ Adaptive embeddings generated: shape {adaptive_embeddings.shape}')
             
+            # 🚀 FIX: Convert FP16 to FP32 for FAISS
+            if adaptive_embeddings.dtype != np.float32:
+                print(f'🔧 Converting adaptive embeddings from {adaptive_embeddings.dtype} to float32...')
+                adaptive_embeddings = adaptive_embeddings.astype(np.float32)
+            
             print('🔧 Normalizing adaptive embeddings...')
             faiss.normalize_L2(adaptive_embeddings)
             print('✅ Adaptive embeddings normalized')
@@ -252,7 +262,7 @@ def build_qa_vector_store(qa_pairs_file: Path,
         
         # Adaptive CPU index
         adaptive_cpu_index = faiss.IndexFlatIP(dimension)
-        adaptive_cpu_index.add(adaptive_embeddings.astype(np.float32))
+        adaptive_cpu_index.add(adaptive_embeddings)  # Already float32
         
         adaptive_cpu_path = output_dir / 'qa_faiss_index_adaptive_cpu.bin'
         faiss.write_index(adaptive_cpu_index, str(adaptive_cpu_path))
@@ -275,7 +285,7 @@ def build_qa_vector_store(qa_pairs_file: Path,
                 print('⚠️ No GPU detected, creating CPU-optimized adaptive version with GPU naming...')
                 # Create a CPU index but save it with GPU naming for deployment compatibility
                 adaptive_gpu_index = faiss.IndexFlatIP(dimension)
-                adaptive_gpu_index.add(adaptive_embeddings.astype(np.float32))
+                adaptive_gpu_index.add(adaptive_embeddings)  # Already float32
                 
                 adaptive_gpu_path = output_dir / 'qa_faiss_index_adaptive_gpu.bin'
                 faiss.write_index(adaptive_gpu_index, str(adaptive_gpu_path))
@@ -286,7 +296,7 @@ def build_qa_vector_store(qa_pairs_file: Path,
             # Fallback: create CPU-compatible version
             try:
                 adaptive_gpu_index = faiss.IndexFlatIP(dimension)
-                adaptive_gpu_index.add(adaptive_embeddings.astype(np.float32))
+                adaptive_gpu_index.add(adaptive_embeddings)  # Already float32
                 
                 adaptive_gpu_path = output_dir / 'qa_faiss_index_adaptive_gpu.bin'
                 faiss.write_index(adaptive_gpu_index, str(adaptive_gpu_path))
