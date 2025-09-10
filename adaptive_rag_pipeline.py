@@ -624,22 +624,28 @@ class AdaptiveRetriever:
             query_tokens = query.lower().split()
             bm25_scores = self.bm25.get_scores(query_tokens)
             
-            # Get top BM25 matches
+            # Get top BM25 matches - FIX: Normalize BM25 scores properly
+            max_bm25 = max(bm25_scores) if len(bm25_scores) > 0 else 1.0
+            min_bm25 = min(bm25_scores) if len(bm25_scores) > 0 else 0.0
+            bm25_range = max_bm25 - min_bm25 + 1e-8
+            
             top_bm25_indices = np.argsort(bm25_scores)[::-1][:top_k]
             for idx in top_bm25_indices:
                 if idx < len(self.qa_data):
-                    scores[idx] = scores.get(idx, 0) + float(bm25_scores[idx]) * 0.7  # BM25 weight
+                    # FIX: Normalize BM25 score to [0,1] range and use consistent weight
+                    normalized_bm25 = (float(bm25_scores[idx]) - min_bm25) / bm25_range
+                    scores[idx] = scores.get(idx, 0) + normalized_bm25 * 1.0  # Equal weight to dense
         
         if self.has_tfidf:
             # TF-IDF scoring as backup
             query_tfidf = self.tfidf_vectorizer.transform([query])
             tfidf_scores = sklearn_cosine(query_tfidf, self.tfidf_matrix).flatten()
             
-            # Add TF-IDF scores
+            # Add TF-IDF scores - FIX: Use consistent weight (TF-IDF scores are already normalized)
             top_tfidf_indices = np.argsort(tfidf_scores)[::-1][:top_k//2]
             for idx in top_tfidf_indices:
                 if idx < len(self.qa_data):
-                    scores[idx] = scores.get(idx, 0) + float(tfidf_scores[idx]) * 0.3  # TF-IDF weight
+                    scores[idx] = scores.get(idx, 0) + float(tfidf_scores[idx]) * 0.5  # TF-IDF backup weight
         
         return scores
     
@@ -666,37 +672,19 @@ class AdaptiveRetriever:
         return max(0.3, min(0.9, base_alpha))
     
     def _combine_hybrid_scores(self, dense_scores: Dict[int, float], sparse_scores: Dict[int, float], alpha: float) -> Dict[int, float]:
-        """Combine dense and sparse scores with adaptive weighting"""
+        """FIX: Combine dense and sparse scores WITHOUT double normalization"""
         combined_scores = {}
         all_indices = set(dense_scores.keys()) | set(sparse_scores.keys())
         
-        # Normalize scores to [0, 1] range
-        if dense_scores:
-            max_dense = max(dense_scores.values()) if dense_scores.values() else 0
-            min_dense = min(dense_scores.values()) if dense_scores.values() else 0
-            dense_range = max_dense - min_dense
-        else:
-            dense_range = 0
-        
-        if sparse_scores:
-            max_sparse = max(sparse_scores.values()) if sparse_scores.values() else 0
-            min_sparse = min(sparse_scores.values()) if sparse_scores.values() else 0
-            sparse_range = max_sparse - min_sparse
-        else:
-            sparse_range = 0
+        # FIX: Dense scores from FAISS are already cosine similarity (0-1 range)
+        # FIX: Sparse scores are now pre-normalized in _get_sparse_scores()
+        # NO additional normalization needed - this was causing score corruption!
         
         for idx in all_indices:
-            # Normalize dense score
-            dense_score = dense_scores.get(idx, 0)
-            if dense_range > 0:
-                dense_score = (dense_score - min_dense) / dense_range
+            dense_score = dense_scores.get(idx, 0.0)  # Already normalized
+            sparse_score = sparse_scores.get(idx, 0.0)  # Already normalized
             
-            # Normalize sparse score
-            sparse_score = sparse_scores.get(idx, 0)
-            if sparse_range > 0:
-                sparse_score = (sparse_score - min_sparse) / sparse_range
-            
-            # Combine with adaptive weighting
+            # Simple weighted combination - NO double normalization!
             combined_scores[idx] = alpha * dense_score + (1 - alpha) * sparse_score
         
         return combined_scores
@@ -724,23 +712,23 @@ class AdaptiveRetriever:
             # Get cross-encoder scores
             ce_scores = self.cross_encoder.predict(pairs)
             
-            # FIX: Normalize cross-encoder scores to [0,1] range and fix score combination
+            # FIX: Use cross-encoder scores directly - they're already meaningful
             ce_scores = np.array(ce_scores)
-            ce_scores_normalized = (ce_scores - ce_scores.min()) / (ce_scores.max() - ce_scores.min() + 1e-8)
             
-            # Combine with original scores (fixed weighting)
+            # Combine with original scores using CORRECT approach
             reranked_candidates = []
-            for i, (ce_score, (idx, source)) in enumerate(zip(ce_scores_normalized, candidate_indices)):
-                original_score = candidates[i][1]
+            for i, (ce_score, (idx, source)) in enumerate(zip(ce_scores, candidate_indices)):
+                original_score = candidates[i][1] 
                 
-                # FIX: Balanced combination with normalized scores
-                combined_score = 0.7 * float(ce_score) + 0.3 * max(0, original_score)  # Ensure positive scores
+                # FIX: Use cross-encoder score as primary with original as tie-breaker
+                # Cross-encoder provides better relevance assessment than initial retrieval
+                combined_score = float(ce_score) + 0.1 * original_score  # CE primary, original as boost
                 reranked_candidates.append((idx, combined_score, f"reranked_{source}"))
             
             # Sort by combined score
             reranked_candidates.sort(key=lambda x: x[1], reverse=True)
             
-            logger.info(f"🔄 Cross-encoder re-ranking: normalized score range [{min(ce_scores_normalized):.3f}, {max(ce_scores_normalized):.3f}]")
+            logger.info(f"🔄 Cross-encoder re-ranking: CE score range [{min(ce_scores):.3f}, {max(ce_scores):.3f}]")
             return reranked_candidates
             
         except Exception as e:
