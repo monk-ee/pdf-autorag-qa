@@ -56,9 +56,17 @@ def build_qa_vector_store(qa_pairs_file: Path,
     
     print(f'📊 Loaded {len(qa_pairs)} Q&A pairs for vector store')
     
-    # Load embedding model
-    print(f'🔧 Loading embedding model: {embedding_model}')
-    model = SentenceTransformer(embedding_model)
+    # 🚀 GPU OPTIMIZATION: Force GPU + performance optimizations  
+    import torch
+    torch.backends.cuda.matmul.allow_tf32 = True
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    
+    print(f'🔧 Loading embedding model: {embedding_model} on {device}')
+    model = SentenceTransformer(embedding_model, device=device)
+    
+    if device == 'cuda':
+        model = model.half()  # Use FP16 for speed on GPU
+        print(f'🚀 GPU ACCELERATED: {device} with FP16 - expecting 1000s embeddings/sec')
     
     # Prepare texts for embedding (we'll embed the answers as our knowledge base)
     texts = []
@@ -86,9 +94,25 @@ def build_qa_vector_store(qa_pairs_file: Path,
     
     print(f'📊 Building vector store with {len(texts)} answer embeddings')
     
-    # Generate embeddings
-    print('🔍 Generating embeddings...')
-    embeddings = model.encode(texts, show_progress_bar=True, convert_to_numpy=True)
+    # Generate embeddings with optimal batch size for L40S GPU
+    batch_size = 512 if device == 'cuda' else 32  # Large batches for GPU
+    print(f'🔍 Generating embeddings (batch_size={batch_size})...')
+    
+    import time
+    start_time = time.time()
+    
+    with torch.inference_mode():  # Fast inference mode
+        embeddings = model.encode(
+            texts, 
+            batch_size=batch_size,
+            show_progress_bar=True, 
+            convert_to_numpy=True
+        )
+    
+    end_time = time.time()
+    elapsed = end_time - start_time
+    throughput = len(texts) / elapsed if elapsed > 0 else 0
+    print(f'⚡ Embedding throughput: {throughput:.1f} embeddings/sec ({elapsed:.2f}s total)')
     
     print(f'✅ Generated embeddings shape: {embeddings.shape}')
     
@@ -200,14 +224,21 @@ def build_qa_vector_store(qa_pairs_file: Path,
         print(f'   📊 Processing {len(adaptive_texts)} combined Q&A texts...')
         
         try:
-            # Use smaller batch sizes to prevent GPU memory issues
-            batch_size = 16  # Smaller batch size for longer Q+A texts
-            adaptive_embeddings = model.encode(
-                adaptive_texts, 
-                show_progress_bar=True, 
-                convert_to_numpy=True,
-                batch_size=batch_size
-            )
+            # GPU-optimized batch size for combined Q+A texts 
+            adaptive_batch_size = 256 if device == 'cuda' else 16
+            start_adaptive = time.time()
+            
+            with torch.inference_mode():
+                adaptive_embeddings = model.encode(
+                    adaptive_texts, 
+                    batch_size=adaptive_batch_size,
+                    show_progress_bar=True, 
+                    convert_to_numpy=True
+                )
+            
+            elapsed_adaptive = time.time() - start_adaptive
+            adaptive_throughput = len(adaptive_texts) / elapsed_adaptive if elapsed_adaptive > 0 else 0
+            print(f'⚡ Adaptive embedding throughput: {adaptive_throughput:.1f} embeddings/sec')
             print(f'✅ Adaptive embeddings generated: shape {adaptive_embeddings.shape}')
             
             print('🔧 Normalizing adaptive embeddings...')
@@ -368,6 +399,9 @@ def main():
             print('\n📦 Created FAISS indices:')
             for file in sorted(output_files):
                 print(f'   • {file.name}')
+        
+        # Performance note for L40S users
+        print(f"\n💡 Performance tip: On L40S GPU, expect 500-2000 embeddings/sec with proper GPU utilization")
     
     except Exception as e:
         print(f'❌ Error building Q&A vector store: {e}')

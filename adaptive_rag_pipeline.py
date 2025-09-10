@@ -66,7 +66,16 @@ class QueryAnalyzer:
         self.category_config_file = Path(category_config_file)
         self.config = self.load_config()
         self.category_config = self.load_category_config()
-        self.embedder = SentenceTransformer('all-MiniLM-L6-v2')
+        
+        # 🚀 GPU OPTIMIZATION: Force GPU + performance optimizations
+        import torch
+        torch.backends.cuda.matmul.allow_tf32 = True
+        device = 'cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu'
+        
+        self.embedder = SentenceTransformer('all-MiniLM-L6-v2', device=device)
+        if device == 'cuda':
+            self.embedder = self.embedder.half()  # Use FP16 for speed
+            logger.info(f"🚀 GPU ACCELERATED: {device} with FP16")
         
         # IMPROVEMENT 4: Enhanced query classification with configurable categories
         self.domain_ontology = self._build_domain_ontology()
