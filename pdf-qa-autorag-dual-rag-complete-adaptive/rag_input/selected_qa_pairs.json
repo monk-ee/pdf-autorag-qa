@@ -1,802 +1,802 @@
 [
   {
-    "instruction": "What should you do if you experience harmful interference with radio or television reception when using the Ruby '63 Top Boost Amplifier?",
+    "instruction": "What are the key features of the UAFX Ruby '63 Top Boost Amplifier, and how do they enable you to achieve authentic '60s British tube combo sounds?",
     "input": "",
-    "output": "You should try and correct the interference by one or more of the following measures: Reorient or relocate the receiving antenna. Increase the separation between the equipment and the receiver. Connect the equipment into an outlet on a circuit different from that to which the receiver is connected. Consult the dealer or an experienced radio/TV technician for help.",
+    "output": "The UAFX Ruby '63 Top Boost Amplifier features a powerful dual-engine design that delivers authentic '60s British tube combo sounds. The pedal includes speaker cabinet, mic, and room tone emulations derived from the award-winning OX Amp Top Box, as well as a \"hot rod\" treble booster, preamp boost, and speaker swaps. These features allow you to tailor your tone to your liking and achieve a wide range of classic British amp sounds.",
     "metadata": {
-      "question_length": 137,
-      "answer_length": 366,
-      "question_words": 22,
-      "answer_words": 58,
+      "question_length": 147,
+      "answer_length": 433,
+      "question_words": 27,
+      "answer_words": 72,
       "source_type": "pdfqagenerator"
     },
-    "source_file": "pdf_qa_basic_balanced_20250909_072406.jsonl",
-    "line_number": 11,
-    "matrix_combination": "basic_balanced_20250909",
+    "source_file": "pdf_qa_intermediate_high_creativity_20250910_054105.jsonl",
+    "line_number": 1,
+    "matrix_combination": "intermediate_high_creativity_20250910",
     "quality_score": 1.0
   },
   {
-    "instruction": "What are the two primary modes of operation for the UAFX Ruby '63 Top Boost Amplifier pedal?",
+    "instruction": "What is the difference between Live Mode and Preset Mode on the UAFX Ruby '63 Top Boost Amplifier, and how do you switch between them?",
     "input": "",
-    "output": "The two primary modes of operation for the UAFX Ruby '63 Top Boost Amplifier pedal are Live Mode and Preset Mode. Live Mode reflects the current positions of the knobs, switches, and LEDs on the pedal, while Preset Mode stores settings and allows for recall of presets.",
+    "output": "Live Mode and Preset Mode are two operating modes on the UAFX Ruby '63 Top Boost Amplifier. In Live Mode, the pedal reflects the current positions of the knobs, switches, and LEDs on the pedal, and the left footswitch toggles the Live mode effect on/off. In Preset Mode, the pedal recalls the settings stored as a preset, and the right footswitch toggles the preset on/off. To switch between modes, press the left footswitch to enter Live Mode or the right footswitch to enter Preset Mode.",
     "metadata": {
-      "question_length": 92,
-      "answer_length": 269,
-      "question_words": 17,
-      "answer_words": 47,
+      "question_length": 134,
+      "answer_length": 489,
+      "question_words": 25,
+      "answer_words": 85,
       "source_type": "pdfqagenerator"
     },
-    "source_file": "pdf_qa_basic_high_creativity_20250909_072226.jsonl",
-    "line_number": 7,
-    "matrix_combination": "basic_high_creativity_20250909",
+    "source_file": "pdf_qa_intermediate_high_creativity_20250910_054105.jsonl",
+    "line_number": 2,
+    "matrix_combination": "intermediate_high_creativity_20250910",
     "quality_score": 1.0
   },
   {
-    "instruction": "How do I store a preset on the UAFX Ruby '63 Top Boost Amplifier pedal?",
+    "instruction": "How do you store a preset on the UAFX Ruby '63 Top Boost Amplifier, and what information is saved when you store a preset?",
     "input": "",
-    "output": "To store a preset on the UAFX Ruby '63 Top Boost Amplifier pedal, hold down the ALT/AMP/STORE switch until the green PRESET footswitch LED blinks rapidly (about 0.5 seconds). This saves the current settings of the pedal as a preset, which can be recalled later using the UAFX Control mobile app.",
+    "output": "To store a preset on the UAFX Ruby '63 Top Boost Amplifier, press and hold the ALT/AMP/STORE switch until the green PRESET footswitch LED blinks rapidly (about 0.5 seconds). When you store a preset while in Live Mode, the position of all knobs and switches on the pedal are saved, as well as the alternate settings for the vibrato circuit. When you store a preset while in Preset Mode, only those knobs and switches that have changed since you loaded the preset are saved.",
     "metadata": {
-      "question_length": 71,
-      "answer_length": 295,
-      "question_words": 15,
-      "answer_words": 51,
+      "question_length": 122,
+      "answer_length": 472,
+      "question_words": 24,
+      "answer_words": 84,
       "source_type": "pdfqagenerator"
     },
-    "source_file": "pdf_qa_basic_high_creativity_20250909_072226.jsonl",
-    "line_number": 8,
-    "matrix_combination": "basic_high_creativity_20250909",
-    "quality_score": 1.0
-  },
-  {
-    "instruction": "What should you do if the Ruby '63 Top Boost Amplifier does not operate normally or has been damaged in any way?",
-    "input": "",
-    "output": "If the Ruby '63 Top Boost Amplifier does not operate normally or has been damaged in any way, it should be serviced by qualified service personnel. Do not attempt to repair or modify the device yourself.",
-    "metadata": {
-      "question_length": 112,
-      "answer_length": 203,
-      "question_words": 22,
-      "answer_words": 36,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_intermediate_balanced_20250909_072644.jsonl",
-    "line_number": 8,
-    "matrix_combination": "intermediate_balanced_20250909",
-    "quality_score": 1.0
-  },
-  {
-    "instruction": "How can I store and recall my presets on the UAFX Ruby '63 Top Boost Amplifier pedal?",
-    "input": "",
-    "output": "You can store a preset on the pedal by holding down the ALT/AMP/STORE switch until the green PRESET footswitch LED blinks rapidly (about 0.5 seconds). You can then recall the preset using the right footswitch.",
-    "metadata": {
-      "question_length": 85,
-      "answer_length": 209,
-      "question_words": 17,
-      "answer_words": 35,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
+    "source_file": "pdf_qa_intermediate_high_creativity_20250910_054105.jsonl",
     "line_number": 3,
-    "matrix_combination": "advanced_high_creativity_20250909",
+    "matrix_combination": "intermediate_high_creativity_20250910",
     "quality_score": 1.0
   },
   {
-    "instruction": "How should you dispose of used electrical and electronic equipment, such as the Ruby '63 Top Boost Amplifier?",
+    "instruction": "How does the boost circuitry in the Ruby '63 Top Boost Amplifier work, and what effect does it have on the sound of each channel?",
     "input": "",
-    "output": "You should not mix used electrical and electronic equipment with general household waste. Instead, please dispose of it in accordance with local regulations.",
+    "output": "The boost circuitry in the Ruby '63 Top Boost Amplifier is designed to increase the amount of gain to the input of each channel. When the boost knob is turned clockwise, it adds gain to the input of each channel, resulting in a brighter and more trebly sound. However, when the boost knob is turned all the way down to OFF, the boost circuitry is disabled and has no effect on the amp's color and gain.",
+    "metadata": {
+      "question_length": 129,
+      "answer_length": 402,
+      "question_words": 25,
+      "answer_words": 76,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_intermediate_high_creativity_20250910_054105.jsonl",
+    "line_number": 5,
+    "matrix_combination": "intermediate_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What is the difference between the Brilliant and Normal channels in the Ruby '63 Top Boost Amplifier, and how do their EQ controls work?",
+    "input": "",
+    "output": "The Brilliant channel is based on a '63 \"top-boost\" amplifier, with an extra tube for more gain and more treble. This channel has less headroom before breakup, and more gain overall. The Cut, Bass, and Treble knobs provide EQ for the Brilliant channel. The Normal channel, on the other hand, is based on a '61 \"non-top-boost\" amplifier, with more headroom and lower overall gain. The Cut knob provides EQ for the Normal channel, while the Bass and Treble knobs do not change the sound.",
+    "metadata": {
+      "question_length": 136,
+      "answer_length": 485,
+      "question_words": 24,
+      "answer_words": 84,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_intermediate_high_creativity_20250910_054105.jsonl",
+    "line_number": 6,
+    "matrix_combination": "intermediate_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How does the Vibrato circuit work in the Ruby '63 Top Boost Amplifier, and what are its effects on the sound?",
+    "input": "",
+    "output": "The Vibrato circuit in the Ruby '63 Top Boost Amplifier is based on a '63 \"top-boost\" amplifier and is a uniquely-voiced channel with its own set of inputs and a unique sound. The Vibrato circuit is active, with Vibrato Speed and Depth controls available in ALT mode. The Cut knob provides EQ for the normal channel, while the Bass and Treble knobs do not change the sound. The Boost knob adds clean gain without added distortion, with midrange and treble increasing slightly and bass decreasing slightly as the boost level increases.",
     "metadata": {
       "question_length": 109,
-      "answer_length": 157,
-      "question_words": 18,
-      "answer_words": 23,
+      "answer_length": 534,
+      "question_words": 21,
+      "answer_words": 91,
       "source_type": "pdfqagenerator"
     },
-    "source_file": "pdf_qa_basic_balanced_20250909_072406.jsonl",
-    "line_number": 12,
-    "matrix_combination": "basic_balanced_20250909",
-    "quality_score": 0.9
+    "source_file": "pdf_qa_intermediate_high_creativity_20250910_054105.jsonl",
+    "line_number": 7,
+    "matrix_combination": "intermediate_high_creativity_20250910",
+    "quality_score": 1.0
   },
   {
-    "instruction": "How do I access additional speaker cabinets and mics for the UAFX Ruby '63 Top Boost Amplifier pedal?",
+    "instruction": "How do the UAFX Control app and footswitch modes work, and what benefits do they offer?",
     "input": "",
-    "output": "You can access additional speaker cabinets and mics by registering your pedal with UAFX Control software and downloading the free bonus speaker cabinets and mics.",
-    "metadata": {
-      "question_length": 101,
-      "answer_length": 162,
-      "question_words": 18,
-      "answer_words": 25,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_high_creativity_20250909_072226.jsonl",
-    "line_number": 6,
-    "matrix_combination": "basic_high_creativity_20250909",
-    "quality_score": 0.9
-  },
-  {
-    "instruction": "What is the purpose of the boost knob on the Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "The boost knob adds clean boost to the amp's input, allowing you to increase the amount of gain to the input of each channel.",
-    "metadata": {
-      "question_length": 74,
-      "answer_length": 125,
-      "question_words": 15,
-      "answer_words": 24,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_high_creativity_20250909_072226.jsonl",
-    "line_number": 9,
-    "matrix_combination": "basic_high_creativity_20250909",
-    "quality_score": 0.9
-  },
-  {
-    "instruction": "What are the three free bonus speaker cabinets that you get when you register your pedal with UAFX Control software?",
-    "input": "",
-    "output": "You get three free bonus speaker cabinets (green LEDs) when you register your pedal with UAFX Control software.",
-    "metadata": {
-      "question_length": 116,
-      "answer_length": 111,
-      "question_words": 20,
-      "answer_words": 18,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_high_creativity_20250909_072226.jsonl",
-    "line_number": 11,
-    "matrix_combination": "basic_high_creativity_20250909",
-    "quality_score": 0.9
-  },
-  {
-    "instruction": "What is the frequency range of the Bluetooth technology used in the Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "The Bluetooth technology used in the Ruby '63 Top Boost Amplifier operates in the frequency range of 2.400 GHz – 2.4835 GHz.",
-    "metadata": {
-      "question_length": 97,
-      "answer_length": 124,
-      "question_words": 17,
-      "answer_words": 22,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_intermediate_balanced_20250909_072644.jsonl",
-    "line_number": 5,
-    "matrix_combination": "intermediate_balanced_20250909",
-    "quality_score": 0.9
-  },
-  {
-    "instruction": "Is it safe to use the Ruby '63 Top Boost Amplifier near water or in humid environments?",
-    "input": "",
-    "output": "No, it is not recommended to use the Ruby '63 Top Boost Amplifier near water or in humid environments. According to the safety instructions, it should be kept away from water and cleaned only with a dry cloth.",
+    "output": "The UAFX Control app allows users to change the operation of their pedal and pedal's footswitches for their amplifier setup and performance preferences. Footswitch modes can be changed to suit preferences, allowing users to toggle live mode and preset mode, toggle between their amp's preamp and the pedal",
     "metadata": {
       "question_length": 87,
-      "answer_length": 209,
-      "question_words": 17,
-      "answer_words": 38,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_intermediate_balanced_20250909_072644.jsonl",
-    "line_number": 7,
-    "matrix_combination": "intermediate_balanced_20250909",
-    "quality_score": 0.9
-  },
-  {
-    "instruction": "How do I store a sound as a preset on the UAFX Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "To store a sound as a preset, press and hold the ALT/AMP/STORE switch in the down position until the green PRESET footswitch LED blinks rapidly (about 0.5 seconds).",
-    "metadata": {
-      "question_length": 76,
-      "answer_length": 164,
-      "question_words": 17,
-      "answer_words": 28,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
-    "line_number": 5,
-    "matrix_combination": "advanced_high_creativity_20250909",
-    "quality_score": 0.9
-  },
-  {
-    "instruction": "Can I adjust the bass and treble frequencies in the UAFX Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "Yes, you can adjust the bass and treble frequencies, but they work in reverse of most EQ knobs. As you rotate the knobs clockwise, the bass and treble frequencies are reduced.",
-    "metadata": {
-      "question_length": 86,
-      "answer_length": 175,
+      "answer_length": 305,
       "question_words": 16,
-      "answer_words": 31,
+      "answer_words": 48,
       "source_type": "pdfqagenerator"
     },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
-    "line_number": 7,
-    "matrix_combination": "advanced_high_creativity_20250909",
-    "quality_score": 0.9
-  },
-  {
-    "instruction": "How do I adjust the output level of the UAFX Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "You can adjust the output level by using the Output control, which allows you to set the level for your setup.",
-    "metadata": {
-      "question_length": 74,
-      "answer_length": 110,
-      "question_words": 15,
-      "answer_words": 21,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
+    "source_file": "pdf_qa_intermediate_high_creativity_20250910_054105.jsonl",
     "line_number": 8,
-    "matrix_combination": "advanced_high_creativity_20250909",
-    "quality_score": 0.9
+    "matrix_combination": "intermediate_high_creativity_20250910",
+    "quality_score": 1.0
   },
   {
-    "instruction": "What are the three free bonus speaker cabinets that you get when you register your pedal with UAFX Control software?",
+    "instruction": "What are the two conditions under which the device may be operated, according to the Industry Canada license-exempt standard?",
     "input": "",
-    "output": "You get three free bonus speaker cabinets (green LEDs) when you register your pedal with UAFX Control software.",
+    "output": "According to the Industry Canada license-exempt standard, the device may be operated under the conditions that it does not cause interference and that it accepts any interference, including interference that may cause undesired operation of the device.",
     "metadata": {
-      "question_length": 116,
-      "answer_length": 111,
-      "question_words": 20,
-      "answer_words": 18,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
-    "line_number": 10,
-    "matrix_combination": "advanced_high_creativity_20250909",
-    "quality_score": 0.9
-  },
-  {
-    "instruction": "What is the purpose of the Boost knob on the Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "The Boost knob adds clean boost to the amp's input, allowing you to increase the amount of gain to the input of each channel.",
-    "metadata": {
-      "question_length": 74,
-      "answer_length": 125,
-      "question_words": 15,
-      "answer_words": 24,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
-    "line_number": 11,
-    "matrix_combination": "advanced_high_creativity_20250909",
-    "quality_score": 0.9
-  },
-  {
-    "instruction": "What is the purpose of the Boost knob in the Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "The Boost knob adds clean boost to the amp's input and can be used to increase the amount of gain to the input of each channel.",
-    "metadata": {
-      "question_length": 74,
-      "answer_length": 127,
-      "question_words": 15,
-      "answer_words": 26,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_intermediate_high_creativity_20250909_072549.jsonl",
-    "line_number": 2,
-    "matrix_combination": "intermediate_high_creativity_20250909",
-    "quality_score": 0.9
-  },
-  {
-    "instruction": "What happens when I store a preset in Preset mode?",
-    "input": "",
-    "output": "When storing a preset in Preset mode, only the knobs and switches that have changed since you loaded the preset are saved. What you hear is what is saved, not the current positions of the knobs and switches.",
-    "metadata": {
-      "question_length": 50,
-      "answer_length": 207,
-      "question_words": 10,
-      "answer_words": 38,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_balanced_20250909_072406.jsonl",
-    "line_number": 2,
-    "matrix_combination": "basic_balanced_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "What type of power supply is required for the Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "A certified power supply complying with Limited Power Source (LPS) requirements with the following characteristics and electrical ratings is required: Isolated 9VDC, center-negative, 400 mA minimum, 2.1x5.5 mm barrel connector.",
-    "metadata": {
-      "question_length": 75,
-      "answer_length": 227,
-      "question_words": 14,
-      "answer_words": 30,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_balanced_20250909_072406.jsonl",
-    "line_number": 10,
-    "matrix_combination": "basic_balanced_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "What is the UAFX Ruby '63 Top Boost Amplifier pedal?",
-    "input": "",
-    "output": "The UAFX Ruby '63 Top Boost Amplifier pedal is a guitar amp emulator that gives you the quintessential British valve amp tones, from Queen to U2 to Radiohead, in a stompbox format.",
-    "metadata": {
-      "question_length": 52,
-      "answer_length": 180,
-      "question_words": 10,
-      "answer_words": 32,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_high_creativity_20250909_072226.jsonl",
-    "line_number": 1,
-    "matrix_combination": "basic_high_creativity_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "What features does the Ruby '63 pedal offer?",
-    "input": "",
-    "output": "The Ruby '63 pedal offers powerful dual-engine processing, UAD modeling expertise, Normal, Brilliant, and Vibrato channels, and classic boosts, including the '60s Dallas Rangemaster germanium treble booster and the preamp of a '70s Maestro EP-3 tape delay.",
-    "metadata": {
-      "question_length": 44,
-      "answer_length": 256,
-      "question_words": 8,
+      "question_length": 125,
+      "answer_length": 252,
+      "question_words": 19,
       "answer_words": 37,
       "source_type": "pdfqagenerator"
     },
-    "source_file": "pdf_qa_basic_high_creativity_20250909_072226.jsonl",
-    "line_number": 2,
-    "matrix_combination": "basic_high_creativity_20250909",
-    "quality_score": 0.8999999999999999
+    "source_file": "pdf_qa_intermediate_high_creativity_20250910_054105.jsonl",
+    "line_number": 9,
+    "matrix_combination": "intermediate_high_creativity_20250910",
+    "quality_score": 1.0
   },
   {
-    "instruction": "How do I update the firmware on my Ruby '63 pedal?",
+    "instruction": "What is the purpose of the EU declaration of conformity, and where can it be found?",
     "input": "",
-    "output": "You can update the firmware on your Ruby '63 pedal using the UAFX Control desktop app, which is available for download on the Universal Audio website. Firmware updates can be installed over a USB connection to a computer, using a USB-C cable (not included).",
+    "output": "The EU declaration of conformity is a document that declares that the radio equipment type Bluetooth LE Device (Residential) is in compliance with Directive 2014/53/EU. The full text of the EU declaration of conformity is available at the following internet address: Signed EU Declaration of Conformity.pdf.",
     "metadata": {
-      "question_length": 50,
-      "answer_length": 257,
-      "question_words": 11,
-      "answer_words": 44,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_high_creativity_20250909_072226.jsonl",
-    "line_number": 4,
-    "matrix_combination": "basic_high_creativity_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "What is the UAFX Ruby '63 Top Boost Amplifier pedal designed to emulate?",
-    "input": "",
-    "output": "The UAFX Ruby '63 Top Boost Amplifier pedal is designed to emulate a British valve amp that powered the British Invasion, specifically the quintessential British tube amp beloved by artists and producers for over 60 years.",
-    "metadata": {
-      "question_length": 72,
-      "answer_length": 222,
-      "question_words": 13,
-      "answer_words": 36,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_advanced_balanced_20250909_072930.jsonl",
-    "line_number": 1,
-    "matrix_combination": "advanced_balanced_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "What are the three channels available on the Ruby '63 pedal?",
-    "input": "",
-    "output": "The Ruby '63 pedal features Normal, Brilliant, and Vibrato channels, which allow you to fly to Ireland, London, or Liverpool with the flip of a switch, offering a range of tones from mellow to chime to grind.",
-    "metadata": {
-      "question_length": 60,
-      "answer_length": 208,
-      "question_words": 11,
-      "answer_words": 37,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_advanced_balanced_20250909_072930.jsonl",
-    "line_number": 2,
-    "matrix_combination": "advanced_balanced_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "What additional features are included on the Ruby '63 pedal?",
-    "input": "",
-    "output": "The Ruby '63 pedal includes built-in mic and speaker pairings from the award-winning OX Amp Top Box, as well as a \"hot rod\" treble booster, preamp boost, and speaker swaps, allowing you to tailor your classic Brit amp tones like you took them to Savile Row.",
-    "metadata": {
-      "question_length": 60,
-      "answer_length": 257,
-      "question_words": 10,
+      "question_length": 83,
+      "answer_length": 307,
+      "question_words": 16,
       "answer_words": 46,
       "source_type": "pdfqagenerator"
     },
-    "source_file": "pdf_qa_advanced_balanced_20250909_072930.jsonl",
-    "line_number": 3,
-    "matrix_combination": "advanced_balanced_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "How can I customize and control my Ruby '63 pedal?",
-    "input": "",
-    "output": "You can customize and control your Ruby '63 pedal using the UAFX mobile app, which allows you to customize footswitches, recall and archive presets, unlock additional features, download artist presets, and more.",
-    "metadata": {
-      "question_length": 50,
-      "answer_length": 211,
-      "question_words": 10,
-      "answer_words": 32,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_advanced_balanced_20250909_072930.jsonl",
-    "line_number": 4,
-    "matrix_combination": "advanced_balanced_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "What is the UAFX Ruby '63 Top Boost Amplifier pedal?",
-    "input": "",
-    "output": "The UAFX Ruby '63 Top Boost Amplifier pedal is a guitar amp emulator that delivers the quintessential British valve amp tones of the 1960s, featuring a dual-engine processing and UAD modeling expertise.",
-    "metadata": {
-      "question_length": 52,
-      "answer_length": 202,
-      "question_words": 10,
-      "answer_words": 32,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_intermediate_balanced_20250909_072644.jsonl",
-    "line_number": 1,
-    "matrix_combination": "intermediate_balanced_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "What are the three channels available on the Ruby '63 pedal?",
-    "input": "",
-    "output": "The Ruby '63 pedal has Normal, Brilliant, and Vibrato channels, allowing you to fly to Ireland, London, or Liverpool with the flip of a switch and access a range of tones from mellow to chime to grind.",
-    "metadata": {
-      "question_length": 60,
-      "answer_length": 201,
-      "question_words": 11,
-      "answer_words": 37,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_intermediate_balanced_20250909_072644.jsonl",
-    "line_number": 2,
-    "matrix_combination": "intermediate_balanced_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "How can I customize my Ruby '63 pedal?",
-    "input": "",
-    "output": "You can customize your Ruby '63 pedal using the UAFX mobile app, which allows you to download artist presets, customize footswitches, recall and archive your presets, unlock additional features, and more.",
-    "metadata": {
-      "question_length": 38,
-      "answer_length": 204,
-      "question_words": 8,
-      "answer_words": 31,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_intermediate_balanced_20250909_072644.jsonl",
-    "line_number": 4,
-    "matrix_combination": "intermediate_balanced_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "What type of power supply is required for the Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "The Ruby '63 Top Boost Amplifier requires a certified power supply complying with Limited Power Source (LPS) requirements, with the following characteristics: Isolated 9VDC, center-negative, 400 mA minimum, 2.1x5.5 mm barrel connector.",
-    "metadata": {
-      "question_length": 75,
-      "answer_length": 235,
-      "question_words": 14,
-      "answer_words": 32,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_intermediate_balanced_20250909_072644.jsonl",
-    "line_number": 6,
-    "matrix_combination": "intermediate_balanced_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "What happens when I store a preset while in Preset mode?",
-    "input": "",
-    "output": "When you store a preset while in Preset mode, only those knobs and switches that have changed since you loaded the preset are saved. So, what you hear is what is saved, and not the current positions of the knobs and switches.",
-    "metadata": {
-      "question_length": 56,
-      "answer_length": 225,
-      "question_words": 11,
-      "answer_words": 42,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
-    "line_number": 6,
-    "matrix_combination": "advanced_high_creativity_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "What does the Speaker LED color indicate on the Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "The Speaker LED color indicates the active speaker, cabinet, and mic setting. The LED color will be red when the speaker cabinet labels on the pedal apply, and green when the active speaker name is visible in the UAFX Control mobile app.",
-    "metadata": {
-      "question_length": 77,
-      "answer_length": 237,
-      "question_words": 14,
-      "answer_words": 42,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
-    "line_number": 12,
-    "matrix_combination": "advanced_high_creativity_20250909",
-    "quality_score": 0.8999999999999999
-  },
-  {
-    "instruction": "Can I use the UAFX Ruby '63 Top Boost Amplifier pedal in front of my amp for added tonal flavor and overdrive sounds?",
-    "input": "",
-    "output": "Yes, you can bypass cabinet/mic emulations and use the pedal in front of your amp for added tonal flavor and overdrive sounds.",
-    "metadata": {
-      "question_length": 117,
-      "answer_length": 126,
-      "question_words": 23,
-      "answer_words": 22,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
-    "line_number": 2,
-    "matrix_combination": "advanced_high_creativity_20250909",
-    "quality_score": 0.8
-  },
-  {
-    "instruction": "How do I store a preset on the Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "To store a preset, hold down the ALT/AMP/STORE switch until the green PRESET footswitch LED blinks rapidly (about 0.5 seconds).",
-    "metadata": {
-      "question_length": 60,
-      "answer_length": 127,
-      "question_words": 13,
-      "answer_words": 20,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_balanced_20250909_072406.jsonl",
-    "line_number": 1,
-    "matrix_combination": "basic_balanced_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "How do I adjust the output level of the Ruby '63 Top Boost Amplifier?",
-    "input": "",
-    "output": "The Output control adjusts the output level from the pedal. When set to noon, the output volume will be roughly the same as your bypassed volume.",
-    "metadata": {
-      "question_length": 69,
-      "answer_length": 145,
-      "question_words": 14,
-      "answer_words": 26,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_balanced_20250909_072406.jsonl",
-    "line_number": 3,
-    "matrix_combination": "basic_balanced_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "What does the Bass/Room control do in AMP mode?",
-    "input": "",
-    "output": "In AMP mode, the Bass/Room control reduces the low frequency response of the amp's tone stack on the Brilliant channel only.",
-    "metadata": {
-      "question_length": 47,
-      "answer_length": 124,
-      "question_words": 9,
-      "answer_words": 21,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_balanced_20250909_072406.jsonl",
-    "line_number": 4,
-    "matrix_combination": "basic_balanced_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "What does the left footswitch LED light up by default?",
-    "input": "",
-    "output": "The left footswitch LED is lit red by default when the Live mode knob and switch settings are active.",
-    "metadata": {
-      "question_length": 54,
-      "answer_length": 101,
-      "question_words": 10,
-      "answer_words": 19,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_balanced_20250909_072406.jsonl",
-    "line_number": 5,
-    "matrix_combination": "basic_balanced_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "What is the purpose of the Ruby '63 Speaker Cabinets?",
-    "input": "",
-    "output": "Each speaker, cabinet, and mic setting has a unique sound, and you can toggle through the list using the Speaker switch.",
-    "metadata": {
-      "question_length": 53,
-      "answer_length": 120,
-      "question_words": 10,
-      "answer_words": 21,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_balanced_20250909_072406.jsonl",
-    "line_number": 6,
-    "matrix_combination": "basic_balanced_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "What does the Boost knob do in the Brilliant channel?",
-    "input": "",
-    "output": "The Boost knob adds input gain from an EP-III preamp and increases the amount of gain to the input of the channel when rotated clockwise.",
-    "metadata": {
-      "question_length": 53,
-      "answer_length": 137,
-      "question_words": 10,
-      "answer_words": 25,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_balanced_20250909_072406.jsonl",
-    "line_number": 7,
-    "matrix_combination": "basic_balanced_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "What happens when the boost knob is turned all the way down to OFF?",
-    "input": "",
-    "output": "The boost circuitry is disabled and has no effect on amp color and gain when the boost knob is turned all the way down to OFF.",
-    "metadata": {
-      "question_length": 67,
-      "answer_length": 126,
-      "question_words": 14,
-      "answer_words": 26,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_balanced_20250909_072406.jsonl",
-    "line_number": 8,
-    "matrix_combination": "basic_balanced_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "Can I customize my Ruby '63 pedal's settings?",
-    "input": "",
-    "output": "Yes, you can customize your Ruby '63 pedal's settings using the UAFX mobile app. The app lets you download artist presets, customize footswitches, recall and archive your presets, unlock additional features, and more.",
-    "metadata": {
-      "question_length": 45,
-      "answer_length": 217,
-      "question_words": 8,
-      "answer_words": 33,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_high_creativity_20250909_072226.jsonl",
-    "line_number": 3,
-    "matrix_combination": "basic_high_creativity_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "What is the primary feature of the UAFX Ruby '63 Top Boost Amplifier pedal?",
-    "input": "",
-    "output": "The primary feature of the UAFX Ruby '63 Top Boost Amplifier pedal is its ability to deliver authentic '60s British tube combo sound with powerful UAFX dual-engine technology.",
-    "metadata": {
-      "question_length": 75,
-      "answer_length": 175,
-      "question_words": 14,
-      "answer_words": 28,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_high_creativity_20250909_072226.jsonl",
-    "line_number": 5,
-    "matrix_combination": "basic_high_creativity_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "What does the Left Footswitch LED light up by default?",
-    "input": "",
-    "output": "The Left Footswitch LED lights up red when Live mode knob and switch settings are active.",
-    "metadata": {
-      "question_length": 54,
-      "answer_length": 89,
-      "question_words": 10,
-      "answer_words": 16,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_basic_high_creativity_20250909_072226.jsonl",
-    "line_number": 10,
-    "matrix_combination": "basic_high_creativity_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "What kind of boosts are available on the Ruby '63 pedal?",
-    "input": "",
-    "output": "The Ruby '63 pedal packs classic boosts, including the legendary '60s Dallas Rangemaster germanium treble booster and the preamp of a '70s Maestro EP-3 tape delay.",
-    "metadata": {
-      "question_length": 56,
-      "answer_length": 163,
-      "question_words": 11,
-      "answer_words": 26,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_intermediate_balanced_20250909_072644.jsonl",
-    "line_number": 3,
-    "matrix_combination": "intermediate_balanced_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "What is the purpose of the device's operation condition 2?",
-    "input": "",
-    "output": "The device's operation condition 2 is to ensure that it accepts any interference, including interference that may cause undesired operation of the device.",
-    "metadata": {
-      "question_length": 58,
-      "answer_length": 154,
-      "question_words": 10,
-      "answer_words": 23,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_intermediate_balanced_20250909_072644.jsonl",
-    "line_number": 10,
-    "matrix_combination": "intermediate_balanced_20250909",
-    "quality_score": 0.7999999999999999
-  },
-  {
-    "instruction": "What should you do with used electrical and electronic equipment?",
-    "input": "",
-    "output": "You should not mix used electrical and electronic equipment with general household waste. Instead, dispose of it in accordance with local regulations.",
-    "metadata": {
-      "question_length": 65,
-      "answer_length": 150,
-      "question_words": 10,
-      "answer_words": 22,
-      "source_type": "pdfqagenerator"
-    },
-    "source_file": "pdf_qa_intermediate_balanced_20250909_072644.jsonl",
+    "source_file": "pdf_qa_intermediate_high_creativity_20250910_054105.jsonl",
     "line_number": 11,
-    "matrix_combination": "intermediate_balanced_20250909",
-    "quality_score": 0.7999999999999999
+    "matrix_combination": "intermediate_high_creativity_20250910",
+    "quality_score": 1.0
   },
   {
-    "instruction": "What is the purpose of the EU Declaration of Conformity?",
+    "instruction": "What are the implications of not accepting any interference, including interference that may cause undesired operation of the device?",
     "input": "",
-    "output": "The EU Declaration of Conformity is a document that declares that the device is in compliance with Directive 2014/53/EU.",
+    "output": "If the device does not accept any interference, including interference that may cause undesired operation of the device, it may not be able to operate correctly or at all, potentially leading to compromised performance or malfunction.",
     "metadata": {
-      "question_length": 56,
-      "answer_length": 120,
-      "question_words": 10,
-      "answer_words": 19,
+      "question_length": 133,
+      "answer_length": 234,
+      "question_words": 19,
+      "answer_words": 36,
       "source_type": "pdfqagenerator"
     },
-    "source_file": "pdf_qa_intermediate_balanced_20250909_072644.jsonl",
+    "source_file": "pdf_qa_intermediate_high_creativity_20250910_054105.jsonl",
     "line_number": 12,
-    "matrix_combination": "intermediate_balanced_20250909",
-    "quality_score": 0.7999999999999999
+    "matrix_combination": "intermediate_high_creativity_20250910",
+    "quality_score": 1.0
   },
   {
-    "instruction": "What is the key feature of the UAFX Ruby '63 Top Boost Amplifier pedal?",
+    "instruction": "What is the effect of adjusting the Bass and Treble knobs on the Brilliant channel, and how does it differ from most EQ knobs?",
     "input": "",
-    "output": "The key feature is its powerful UAFX dual-engine that delivers the most authentic '60s British tube combo sound ever placed into a stompbox.",
+    "output": "The Bass and Treble knobs on the Brilliant channel cut bass and treble frequencies as you rotate them clockwise, working in reverse of most EQ knobs. This creates an extreme \"smiley-face\" EQ curve when turned all the way up, reducing midrange and increasing bass and treble.",
     "metadata": {
-      "question_length": 71,
-      "answer_length": 140,
-      "question_words": 14,
-      "answer_words": 23,
+      "question_length": 126,
+      "answer_length": 274,
+      "question_words": 24,
+      "answer_words": 46,
       "source_type": "pdfqagenerator"
     },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
+    "source_file": "pdf_qa_intermediate_conservative_20250910_054344.jsonl",
+    "line_number": 1,
+    "matrix_combination": "intermediate_conservative_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How does the Boost knob function in ALT mode, and what is the difference between the Boost knob in ALT mode and the Boost knob in AMP mode?",
+    "input": "",
+    "output": "In ALT mode, the Boost knob adjusts the amp's vibrato intensity, whereas in AMP mode, it adjusts the amount of boost applied to the amp circuitry. This highlights the dual functionality of the Boost knob, depending on the mode selected.",
+    "metadata": {
+      "question_length": 139,
+      "answer_length": 236,
+      "question_words": 28,
+      "answer_words": 40,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_intermediate_conservative_20250910_054344.jsonl",
+    "line_number": 2,
+    "matrix_combination": "intermediate_conservative_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What is the purpose of the Alt / Amp / Store switch, and how does it affect the available controls and functions?",
+    "input": "",
+    "output": "The Alt / Amp / Store switch allows the user to switch between AMP mode, where standard knob controls are available, and ALT mode, where room amount and vibrato speed and intensity",
+    "metadata": {
+      "question_length": 113,
+      "answer_length": 180,
+      "question_words": 22,
+      "answer_words": 32,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_intermediate_conservative_20250910_054344.jsonl",
+    "line_number": 3,
+    "matrix_combination": "intermediate_conservative_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What is the primary difference between the Brilliant and Normal channels on the Ruby '63 Top Boost Amplifier?",
+    "input": "",
+    "output": "The primary difference is that the Brilliant channel has more gain and treble due to the addition of an extra tube, whereas the Normal channel has less gain and lower overall gain. Additionally, the Brilliant channel has a unique EQ circuit with Cut, Bass, and Treble knobs, whereas the Normal channel only has a single Cut knob.",
+    "metadata": {
+      "question_length": 109,
+      "answer_length": 329,
+      "question_words": 18,
+      "answer_words": 57,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_intermediate_conservative_20250910_054344.jsonl",
+    "line_number": 4,
+    "matrix_combination": "intermediate_conservative_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How does the Boost knob affect the sound of the Vibrato channel, and what is the purpose of this feature?",
+    "input": "",
+    "output": "The Boost knob adds clean gain to the Vibrato channel without introducing distortion, and its purpose is to provide a subtle boost to the midrange and treble frequencies to prevent flubby or mushy distortion. This feature is particularly useful when using the Vibrato channel with pedals.",
+    "metadata": {
+      "question_length": 105,
+      "answer_length": 288,
+      "question_words": 20,
+      "answer_words": 46,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_intermediate_conservative_20250910_054344.jsonl",
+    "line_number": 5,
+    "matrix_combination": "intermediate_conservative_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What are the recommended power supply requirements for the Ruby '63 Top Boost Amplifier, and why is it important to follow these guidelines?",
+    "input": "",
+    "output": "The recommended power supply requirements for the Ruby '63 Top Boost Amplifier are an isolated 9VDC, center-negative, 400 mA minimum, 2.1x5.5 mm barrel connector. It is important to follow these guidelines to ensure the safety and proper operation of the device, as specified in the operating instructions and safety suggestions. Failure to comply with these requirements may result in damage to the device or pose a risk to the user.",
+    "metadata": {
+      "question_length": 140,
+      "answer_length": 434,
+      "question_words": 23,
+      "answer_words": 70,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_intermediate_conservative_20250910_054344.jsonl",
+    "line_number": 7,
+    "matrix_combination": "intermediate_conservative_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What are the potential consequences of using a power supply that does not meet the recommended specifications for the Ruby '63 Top Boost Amplifier?",
+    "input": "",
+    "output": "Using a power supply that does not meet the recommended specifications for the Ruby '63 Top Boost Amplifier may result in damage to the device, pose a risk to the user, or compromise the safety and proper operation of the device. This could lead to a range of issues, including reduced performance, malfunction, or even electrical shock.",
+    "metadata": {
+      "question_length": 147,
+      "answer_length": 337,
+      "question_words": 24,
+      "answer_words": 57,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_intermediate_conservative_20250910_054344.jsonl",
+    "line_number": 8,
+    "matrix_combination": "intermediate_conservative_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How do I change the operation of my Ruby '63 pedal and footswitches for my amplifier setup and performance preferences?",
+    "input": "",
+    "output": "You can change the operation of your Ruby '63 pedal and footswitches by using the UAFX Control app. Tap the \"Settings\" button at the bottom right of the screen to access the settings for a pedal.",
+    "metadata": {
+      "question_length": 119,
+      "answer_length": 195,
+      "question_words": 20,
+      "answer_words": 36,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250909_071515.jsonl",
+    "line_number": 5,
+    "matrix_combination": "advanced_balanced_20250909",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What is the purpose of the statement \"Operation is subject to the following two conditions: (1) this device may not cause interference, and (2) this device must accept any interference\"?",
+    "input": "",
+    "output": "This statement indicates that the device is exempt from obtaining a license from Industry Canada and is required to operate within certain guidelines to avoid causing interference with other devices and to accept any interference that may affect its operation.",
+    "metadata": {
+      "question_length": 186,
+      "answer_length": 260,
+      "question_words": 30,
+      "answer_words": 40,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250909_071414.jsonl",
     "line_number": 1,
     "matrix_combination": "advanced_high_creativity_20250909",
-    "quality_score": 0.7999999999999999
+    "quality_score": 1.0
   },
   {
-    "instruction": "What does the Left Switch LED indicate on the Ruby '63 Top Boost Amplifier?",
+    "instruction": "What is the purpose of the Boost switch on the Ruby '63 Top Boost Amplifier pedal?",
     "input": "",
-    "output": "The Left Switch LED is lit red when the Live mode knob and switch settings are active.",
+    "output": "The Boost switch on the Ruby '63 Top Boost Amplifier pedal allows you to access classic boosts, specifically the legendary '60s Dallas Rangemaster germanium treble booster and the preamp of a '70s Maestro EP-3 tape delay.",
     "metadata": {
-      "question_length": 75,
-      "answer_length": 86,
-      "question_words": 14,
-      "answer_words": 17,
+      "question_length": 82,
+      "answer_length": 221,
+      "question_words": 16,
+      "answer_words": 36,
       "source_type": "pdfqagenerator"
     },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
+    "source_file": "pdf_qa_basic_conservative_20250910_054015.jsonl",
+    "line_number": 4,
+    "matrix_combination": "basic_conservative_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What is the difference between Live Mode and Preset Mode on the UAFX Ruby '63 Top Boost Amplifier pedal?",
+    "input": "",
+    "output": "In Live Mode, the sound reflects the current positions of the knobs, switches, and LEDs on the pedal, and the left footswitch toggles the Live mode effect on/off. In Preset Mode, the pedal stores the settings as a preset, and the current positions of the knobs and switches do not reflect the sound, with the right footswitch toggling the preset on/off.",
+    "metadata": {
+      "question_length": 104,
+      "answer_length": 353,
+      "question_words": 19,
+      "answer_words": 61,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_basic_conservative_20250910_054015.jsonl",
+    "line_number": 6,
+    "matrix_combination": "basic_conservative_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What is the 4-cable mode in the Ruby '63 pedal, and what is its purpose?",
+    "input": "",
+    "output": "The 4-cable mode is a special mode that allows you to add another switchable channel to any real guitar amplifier that has an effects loop, allowing you to switch between your guitar amplifier's built-in preamp section and the sounds in your pedal.",
+    "metadata": {
+      "question_length": 72,
+      "answer_length": 248,
+      "question_words": 15,
+      "answer_words": 42,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_basic_conservative_20250910_054015.jsonl",
+    "line_number": 27,
+    "matrix_combination": "basic_conservative_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How do the Bass and Treble knobs interact with each other, and what are the implications for tone shaping?",
+    "input": "",
+    "output": "The Bass and Treble knobs are extremely interactive, meaning that when one is turned up, the other is affected. When both are turned all the way up, the midrange is reduced and the bass and treble are increased in a \"smiley-face\" EQ curve. This interaction allows for a wide range of tone shaping possibilities, but it also means that adjustments to one knob can have unintended consequences on the other. To achieve a more natural, flatter tone, it's recommended to turn both knobs up to around noon, which will reduce the extreme \"smiley-face\" EQ curve and allow for more midrange presence.",
+    "metadata": {
+      "question_length": 106,
+      "answer_length": 592,
+      "question_words": 19,
+      "answer_words": 101,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 1,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How does the Output control differ from the Volume control, and what are the implications for setting your sound?",
+    "input": "",
+    "output": "The Output control adjusts the output level from the pedal, whereas the Volume control adjusts the gain of the amp. This means that the Output control is used to set the overall level of your sound, whereas the Volume control is used to adjust the gain of the amp. When setting your sound, it's important to consider both the Output and Volume controls to achieve the desired level and tone. For example, if you're using the pedal in a live setting, you may want to set the Output control to a higher level to ensure that your sound cuts through the mix, while keeping the Volume control low to avoid distortion.",
+    "metadata": {
+      "question_length": 113,
+      "answer_length": 612,
+      "question_words": 19,
+      "answer_words": 111,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 2,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What are the implications of storing a preset in Preset mode, and how does it differ from storing a preset in Live mode?",
+    "input": "",
+    "output": "When storing a preset in Preset mode, only the knobs and switches that have changed since you loaded the preset are saved. This means that if you make changes to the knobs and switches while in Preset mode, those changes will be saved as part of the preset. In contrast, when storing a preset in Live mode, the entire state of the pedal is saved, including the positions of all knobs and switches. This allows for more flexibility when creating and editing presets, but it also means that you'll need to be careful not to make unintended changes to the pedal while in Live mode.",
+    "metadata": {
+      "question_length": 120,
+      "answer_length": 578,
+      "question_words": 23,
+      "answer_words": 105,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 3,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How do the Bass and Treble knobs on the Ruby '63 Top Boost Amplifier interact with each other, and what effect does this have on the overall tone?",
+    "input": "",
+    "output": "The Bass and Treble knobs on the Ruby '63 Top Boost Amplifier are extremely interactive, meaning that adjusting one knob affects the other. When both knobs are turned all the way up, the midrange is reduced, and the bass and treble are increased in a very extreme \"smiley-face\" EQ curve. This can result in a bright and aggressive tone. However, turning both knobs up to around noon can produce a more natural, flatter, and fuller tone with a balanced midrange. This interaction allows for a wide range of tonal possibilities, and finding the right balance can be a matter of personal preference.",
+    "metadata": {
+      "question_length": 146,
+      "answer_length": 596,
+      "question_words": 28,
+      "answer_words": 102,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 5,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What are the advantages and disadvantages of using the Ruby '63 Top Boost Amplifier's ALT mode, and how does it differ from the standard AMP mode?",
+    "input": "",
+    "output": "ALT mode allows for adjusting the amp's vibrato speed and intensity, which can add a unique texture to the sound. However, this mode is only available when the Vibrato channel is selected, and the Bass and Treble knobs are limited to controlling vibrato intensity. In contrast, AMP mode provides access to the standard knob controls, including the Bass, Treble, and Boost knobs. The choice between ALT and AMP modes depends on the desired tone and the type of music being played. For example, ALT mode might be suitable for adding a vintage vibe to a song, while AMP mode would be better for a more traditional tone.",
+    "metadata": {
+      "question_length": 146,
+      "answer_length": 616,
+      "question_words": 26,
+      "answer_words": 107,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 6,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How can the Ruby '63 Top Boost Amplifier's Boost knob be used to add gain to the signal, and what are the differences between the three channels (NORMAL, BRIL, and VIB)?",
+    "input": "",
+    "output": "The Boost knob can be used to add gain to the signal, and the type of gain depends on the selected channel. In the NORMAL channel, the Boost knob adds gain from a germanium treble booster circuit to the amp's input, while in the BRIL channel, it adds gain from the preamp of an EP-III tape echo. The VIB channel, on the other hand, uses clean boost to add gain to the amp's input. Each channel has its unique character and features, and choosing the right channel depends on the desired tone and the type of music being played.",
+    "metadata": {
+      "question_length": 169,
+      "answer_length": 527,
+      "question_words": 31,
+      "answer_words": 99,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 7,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How do the Ruby '63 Top Boost Amplifier's footswitch modes affect the overall sound and functionality of the pedal?",
+    "input": "",
+    "output": "The Ruby '63 Top Boost Amplifier's footswitch modes allow for customization of the pedal's behavior, enabling users to toggle between different settings and functions, such as Live mode, Preset mode, and Boost mode. This allows for a range of tonal options and flexibility in performance, making it easier to adapt to different musical styles and settings. For example, the Live mode allows for real-time adjustments, while the Preset mode enables storing and recalling custom settings. The Boost mode adds clean boost to the input, providing an extra layer of gain and tonal shaping. By understanding the footswitch modes, users can optimize their tone and performance to suit their specific needs.",
+    "metadata": {
+      "question_length": 115,
+      "answer_length": 699,
+      "question_words": 19,
+      "answer_words": 110,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 8,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What are the key differences between the Brilliant and Ruby '63 channels, and how do they impact the overall sound of the amplifier?",
+    "input": "",
+    "output": "The Brilliant channel is based on a '63 “top-boost” amplifier, featuring an extra tube for more gain and treble. This channel has less headroom before breakup and more gain overall, making it suitable for players who want a more aggressive, overdriven sound. In contrast, the Ruby '63 channel is designed to emulate the classic tone of a 1963 amplifier, with a more balanced EQ and a slightly cleaner sound. The Ruby '63 channel also features a vibrato circuit, which can add a unique, dynamic quality to the sound. By understanding the differences between the channels, players can choose the one that best suits their musical style and preferences.",
+    "metadata": {
+      "question_length": 132,
+      "answer_length": 650,
+      "question_words": 23,
+      "answer_words": 108,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
     "line_number": 9,
-    "matrix_combination": "advanced_high_creativity_20250909",
-    "quality_score": 0.7999999999999999
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
   },
   {
-    "instruction": "What type of power supply is recommended for the Ruby '63 Top Boost Amplifier?",
+    "instruction": "How do the speaker cabinet options in the Ruby '63 Top Boost Amplifier affect the overall sound and tone of the amplifier?",
     "input": "",
-    "output": "A certified power supply complying with Limited Power Source (LPS) requirements with the following characteristics and electrical ratings: Isolated 9VDC, center-negative, 400 mA minimum, 2.1x5.5 mm barrel connector.",
+    "output": "The Ruby '63 Top Boost Amplifier offers a range of speaker cabinet options, each with its own unique characteristics and tonal profile. For example, the Silver and Blue cabinets provide a bright, chimey sound with a lot of high-end clarity, while the Green cabinet offers a warmer, more midrange-forward tone. The Gold cabinet, with its narrower sound and midrange emphasis, is ideal for players who want a more vintage-inspired tone. By selecting the right speaker cabinet, players can tailor their sound to suit their musical style and preferences, whether they're playing rock, blues, or other genres.",
     "metadata": {
-      "question_length": 78,
-      "answer_length": 215,
-      "question_words": 14,
-      "answer_words": 28,
+      "question_length": 122,
+      "answer_length": 604,
+      "question_words": 22,
+      "answer_words": 96,
       "source_type": "pdfqagenerator"
     },
-    "source_file": "pdf_qa_advanced_high_creativity_20250909_072833.jsonl",
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 10,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How do the different footswitch modes in the Ruby '63 pedal affect the user's experience, and what are the advantages and disadvantages of each mode?",
+    "input": "",
+    "output": "The Ruby '63 pedal offers various footswitch modes that cater to different playing styles and preferences. Live | Preset mode allows for seamless switching between live sound and stored preset, while Boost | Live/Preset mode enables the user to toggle boost on and off and switch between live and preset modes. Vibrato | Live/Preset mode allows for simultaneous control of vibrato and live or preset modes. 4-cable mode enables the user to add an additional switchable channel to their guitar amplifier. The advantages of each mode include increased flexibility, convenience, and creative possibilities. However, the disadvantages include the potential for complexity and the need for careful setup and configuration.",
+    "metadata": {
+      "question_length": 149,
+      "answer_length": 717,
+      "question_words": 25,
+      "answer_words": 109,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 11,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What are the key differences between the Ruby '63 pedal and other guitar amplifiers, and how does the UAFX Control app enhance the user's experience?",
+    "input": "",
+    "output": "The Ruby '63 pedal is a high-end guitar amplifier that offers a unique combination of tone, flexibility, and features. Unlike other amplifiers, the Ruby '63 pedal features a built-in effects loop, allowing users to add external effects pedals to their signal chain. The UAFX Control app enhances the user's experience by providing a intuitive interface for configuring the pedal's settings, adjusting the tone, and switching between different modes. The app also allows users to customize the pedal's behavior and create custom presets.",
+    "metadata": {
+      "question_length": 149,
+      "answer_length": 536,
+      "question_words": 25,
+      "answer_words": 82,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 12,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How does the Ruby '63 pedal's 4-cable mode differ from other guitar amplifiers, and what precautions should users take when using this mode?",
+    "input": "",
+    "output": "The Ruby '63 pedal's 4-cable mode allows users to add an additional switchable channel to their guitar amplifier, enabling them to switch between the amplifier's built-in preamp section and the pedal's preamp section. This mode is unique to the Ruby '63 pedal and provides a high level of flexibility and creativity. However, users should take precautions when using this mode, such as turning off the amplifier before wiring the pedal and enabling 4-cable mode, and ensuring that the wiring is correct to avoid feedback and other issues.",
+    "metadata": {
+      "question_length": 140,
+      "answer_length": 538,
+      "question_words": 23,
+      "answer_words": 87,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 13,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How do the two license-exempt standards mentioned in the document (Industry Canada and IEC 62368-1) differ in their approach to radio equipment compliance, and what implications does this have for the user?",
+    "input": "",
+    "output": "Industry Canada's license-exempt standards focus on ensuring that the device does not cause interference, whereas IEC 62368-1 emphasizes the need for devices to accept any interference that may affect their operation. This difference highlights the importance of considering the specific regulatory environment and user needs when designing and using radio equipment. As a user, it is essential to understand the specific requirements and guidelines for the region you are operating in to ensure compliance and safe use.",
+    "metadata": {
+      "question_length": 206,
+      "answer_length": 520,
+      "question_words": 32,
+      "answer_words": 77,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
     "line_number": 15,
-    "matrix_combination": "advanced_high_creativity_20250909",
-    "quality_score": 0.7999999999999999
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What are the potential consequences of not following the guidelines for disposing of used electrical and electronic equipment, and how can this impact the environment and public health?",
+    "input": "",
+    "output": "Failure to properly dispose of used electrical and electronic equipment can lead to environmental pollution, contamination of soil and water, and even human health risks. It is crucial to follow local regulations and guidelines for responsible disposal to minimize the environmental impact and ensure public health and safety.",
+    "metadata": {
+      "question_length": 185,
+      "answer_length": 326,
+      "question_words": 28,
+      "answer_words": 48,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 16,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What are the implications of the EU declaration of conformity for the UAFX Ruby '63 Top Boost Amplifier, and what does it mean for the user in terms of product quality and safety?",
+    "input": "",
+    "output": "The EU declaration of conformity ensures that the UAFX Ruby '63 Top Boost Amplifier meets the essential health and safety requirements of the EU's Radio Equipment Directive (2014/53/EU). This declaration provides assurance to the user that the product has been designed and manufactured to meet strict safety and quality standards, which is critical for ensuring safe and reliable operation.",
+    "metadata": {
+      "question_length": 179,
+      "answer_length": 391,
+      "question_words": 33,
+      "answer_words": 59,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 17,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How does the concept of \"accepting any interference\" in IEC 62368-1 relate to the user's experience with the UAFX Ruby '63 Top Boost Amplifier, and what are the potential consequences of ignoring this requirement?",
+    "input": "",
+    "output": "Accepting any interference means that the device must be designed to operate in a way that allows it to function correctly even when exposed to external interference. For the user, this means that the amplifier may not always perform optimally in environments with high levels of interference. Ignoring this requirement can lead to reduced performance, distortion, or even damage to the device, emphasizing the importance of understanding and addressing potential interference sources in the user's environment.",
+    "metadata": {
+      "question_length": 213,
+      "answer_length": 511,
+      "question_words": 34,
+      "answer_words": 76,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_balanced_20250910_054608.jsonl",
+    "line_number": 18,
+    "matrix_combination": "advanced_balanced_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How does the UAFX Ruby '63 Top Boost Amplifier pedal's dual-engine processing and UAD modeling expertise contribute to its ability to deliver authentic '60s British tube combo tones?",
+    "input": "",
+    "output": "The UAFX Ruby '63 Top Boost Amplifier pedal's dual-engine processing and UAD modeling expertise enable it to accurately replicate the complex interactions between components in vintage British tube combos, resulting in a highly authentic tone that captures the warmth, clarity, and dynamics of the original amplifiers.",
+    "metadata": {
+      "question_length": 182,
+      "answer_length": 318,
+      "question_words": 28,
+      "answer_words": 46,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 1,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "Evaluate the effectiveness of the Ruby '63's built-in mic and speaker pairings from the OX Amp Top Box in tailoring the classic Brit amp tones. How do these features enhance the overall tone-shaping capabilities of the pedal?",
+    "input": "",
+    "output": "The built-in mic and speaker pairings from the OX Amp Top Box are highly effective in tailoring the classic Brit amp tones, allowing users to fine-tune the tone to their liking. The mic and speaker pairings provide a range of options for shaping the tone, from bright and snappy to warm and fat, making it easy to dial in the perfect sound.",
+    "metadata": {
+      "question_length": 225,
+      "answer_length": 340,
+      "question_words": 37,
+      "answer_words": 62,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 2,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How does the Ruby '63's \"hot rod\" treble booster, preamp boost, and speaker swaps feature compare to other amp modelers on the market? What advantages does it offer in terms of tone-shaping and versatility?",
+    "input": "",
+    "output": "The Ruby '63's \"hot rod\" treble booster, preamp boost, and speaker swaps feature sets it apart from other amp modelers on the market. These features offer a level of tone-shaping and versatility that is unmatched by other pedals, allowing users to create a wide range of tones and textures that are highly customizable and responsive to their playing style.",
+    "metadata": {
+      "question_length": 206,
+      "answer_length": 357,
+      "question_words": 34,
+      "answer_words": 59,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 3,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What are the implications of the Ruby '63's firmware updates and UAFX Control software for the user experience and tone-shaping capabilities of the pedal? How do these updates and software features enhance the overall performance of the pedal?",
+    "input": "",
+    "output": "The firmware updates and UAFX Control software for the Ruby '63 pedal offer a range of enhancements to the user experience and tone-shaping capabilities of the pedal. These updates and software features provide additional tone-shaping options, improved performance, and enhanced customization options, making it easier for users to achieve the perfect tone and customize their sound to their liking.",
+    "metadata": {
+      "question_length": 243,
+      "answer_length": 399,
+      "question_words": 38,
+      "answer_words": 59,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 4,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How does the UAFX Ruby '63 Top Boost Amplifier store presets, and what are the implications for saving and recalling sounds?",
+    "input": "",
+    "output": "The UAFX Ruby '63 Top Boost Amplifier stores presets by holding down the ALT/AMP/STORE switch until the green PRESET footswitch LED blinks rapidly. When storing a preset in Preset mode, only the knobs and switches that have changed since the preset was loaded are saved. This means that when recalling a preset, the pedal will return to the exact settings that were saved, not the current positions of the knobs and switches. This approach allows for efficient storage and recall of presets, while also allowing for incremental changes to be made to the sound.",
+    "metadata": {
+      "question_length": 124,
+      "answer_length": 560,
+      "question_words": 21,
+      "answer_words": 94,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 5,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How do the Bass and Treble knobs interact with each other, and what are the implications for shaping the tone of the amplifier?",
+    "input": "",
+    "output": "The Bass and Treble knobs are extremely interactive, and when turned up to extreme positions, they can create a \"smiley-face\" EQ curve that emphasizes bass and treble frequencies. This interaction is reversed compared to typical EQ knobs, where turning them up would typically boost the corresponding frequency range. By adjusting the Bass and Treble knobs to similar positions around noon, users can find a more natural, flatter, and fuller tone. This interplay highlights the importance of considering the relationships between different tone-shaping controls when adjusting the amplifier's tone.",
+    "metadata": {
+      "question_length": 127,
+      "answer_length": 598,
+      "question_words": 23,
+      "answer_words": 88,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 6,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How does the Output control affect the overall level of the amplifier, and what are the implications for using it in different settings?",
+    "input": "",
+    "output": "The Output control adjusts the output level of the pedal, allowing users to set the level for their specific setup. When set to noon, the Output control will produce a level roughly equivalent to the bypassed volume. This control is particularly useful for setting the level for use with other pedals or in different amplifier settings. By adjusting the Output control, users can fine-tune the overall level of their sound to suit their specific needs.",
+    "metadata": {
+      "question_length": 136,
+      "answer_length": 452,
+      "question_words": 23,
+      "answer_words": 75,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 7,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What are the implications of the Ruby '63's design for users who want to experiment with different tone-shaping approaches?",
+    "input": "",
+    "output": "The Ruby '63's design allows for a high degree of flexibility and experimentation. The Bass and Treble knobs offer a unique interaction that can be used to create a wide range of tonal options. The Boost control allows for precise adjustment of the gain, while the Cut control offers a range of tone-shaping options",
+    "metadata": {
+      "question_length": 123,
+      "answer_length": 315,
+      "question_words": 19,
+      "answer_words": 54,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 8,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How does the Ruby '63 Top Boost Amplifier's boost circuitry affect the overall sound of each channel, and what are the implications for the player?",
+    "input": "",
+    "output": "The boost circuitry in the Ruby '63 Top Boost Amplifier adds gain to the input of each channel, which can alter the tone and gain characteristics of each channel. The Brilliant channel, in particular, has more gain overall and less headroom before breakup due to the additional tube used in its circuitry. This means that players who use this channel may need to be more mindful of their playing dynamics and adjust their gain settings accordingly. Furthermore, the boost circuitry can also affect the EQ settings of each channel, making it important for players to experiment with different boost settings to find the tone that works best for their playing style.",
+    "metadata": {
+      "question_length": 147,
+      "answer_length": 664,
+      "question_words": 25,
+      "answer_words": 111,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 9,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "What are the benefits and drawbacks of using the Ruby '63 Top Boost Amplifier's \"Live\" and \"Preset\" modes, and how can a player optimize their use of these modes to achieve their desired sound?",
+    "input": "",
+    "output": "The \"Live\" and \"Preset\" modes on the Ruby '63 Top Boost Amplifier offer two different approaches to tone shaping and control. The \"Live\" mode allows for real-time adjustments to the amp's tone and gain, while the \"Preset\" mode allows for storing and recalling specific tone settings. The benefits of using these modes include increased tonal flexibility and the ability to save and recall complex tone settings. However, the drawbacks include the potential for over-processing and loss of tone clarity if not used carefully. To optimize the use of these modes, players can experiment with different settings to find the tone that works best for their playing style and music genre.",
+    "metadata": {
+      "question_length": 193,
+      "answer_length": 681,
+      "question_words": 34,
+      "answer_words": 110,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 10,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How do the different speaker cabinet options on the Ruby '63 Top Boost Amplifier affect the overall sound and tone of the amp, and what are the implications for the player?",
+    "input": "",
+    "output": "The speaker cabinet options on the Ruby '63 Top Boost Amplifier offer a range of tonal options, each with its own unique characteristics and nuances. The different speakers can affect the amp's tone in terms of brightness, warmth, and clarity, with some speakers providing more high-end sparkle and others providing a fuller, more rounded sound. The implications for the player are that they will need to experiment with different speaker cabinets to find the one that best suits their playing style and music genre. Additionally, players may need to adjust their playing dynamics",
+    "metadata": {
+      "question_length": 172,
+      "answer_length": 580,
+      "question_words": 31,
+      "answer_words": 93,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 11,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
+  },
+  {
+    "instruction": "How do the different channels on the Ruby '63 Top Boost Amplifier contribute to its overall tone and versatility, and what are the key differences between the Brilliant, Normal, and Vibrato channels?",
+    "input": "",
+    "output": "The three channels on the Ruby '63 Top Boost Amplifier - Brilliant, Normal, and Vibrato - offer distinct tonal characteristics that cater to different playing styles and musical genres. The Brilliant channel is designed for high-gain, trebly sounds, with an extra tube for increased gain and more treble. The Normal channel is based on a '61 non-top-boost amplifier, with more headroom and lower overall gain, making it suitable for a wider range of playing styles. The Vibrato channel is unique, with its own set of inputs and a signature midrange-boosted gain sound. The channels' EQ controls, such as Cut, Bass, and Treble, allow for further tonal shaping. By combining these channels and their respective characteristics, guitarists can achieve a wide range of tones, from vintage-inspired sounds to modern, aggressive tones.",
+    "metadata": {
+      "question_length": 199,
+      "answer_length": 829,
+      "question_words": 32,
+      "answer_words": 130,
+      "source_type": "pdfqagenerator"
+    },
+    "source_file": "pdf_qa_advanced_high_creativity_20250910_054436.jsonl",
+    "line_number": 12,
+    "matrix_combination": "advanced_high_creativity_20250910",
+    "quality_score": 1.0
   }
 ]

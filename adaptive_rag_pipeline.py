@@ -527,16 +527,7 @@ class AdaptiveRetriever:
             logger.error(f"   Missing Cross-encoder: {not self.has_cross_encoder}")
             logger.error("❌ THIS WILL CAUSE PERFORMANCE DEGRADATION!")
             
-            # Force enable at least basic functionality if imports failed
-            if not self.has_bm25:
-                logger.info("🔧 ATTEMPTING BM25 RECOVERY...")
-                try:
-                    tokenized_texts = [text.lower().split() for text in self.qa_texts]
-                    self.bm25 = BM25Okapi(tokenized_texts)
-                    self.has_bm25 = True
-                    logger.info("✅ BM25 RECOVERY SUCCESSFUL!")
-                except:
-                    logger.error("❌ BM25 RECOVERY FAILED!")
+            # No recovery needed for new SPLADE system - it either works or fails gracefully
     
     def _build_technical_term_expansion(self) -> Dict[str, List[str]]:
         """Build technical term expansion from config or defaults"""
@@ -608,7 +599,7 @@ class AdaptiveRetriever:
         
         # 🚀 DEBUG: Confirm what retrieval components are active
         logger.info(f"🔧 RETRIEVAL COMPONENTS STATUS:")
-        logger.info(f"   📝 BM25 Sparse: {'ACTIVE' if self.has_bm25 else 'MISSING - USING DENSE ONLY!'}")
+        logger.info(f"   📝 SPLADE Sparse: {'ACTIVE' if self.has_sparse else 'MISSING - USING DENSE ONLY!'}")
         logger.info(f"   🔄 Cross-encoder: {'ACTIVE' if self.has_cross_encoder else 'MISSING - NO RERANKING!'}")
         logger.info(f"   📊 TF-IDF backup: {'ACTIVE' if self.has_tfidf else 'MISSING'}")
         

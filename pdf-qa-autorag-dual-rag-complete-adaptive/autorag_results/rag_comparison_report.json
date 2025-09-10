@@ -3,63 +3,63 @@
     "analysis_type": "rag_comparison",
     "standard_results_dir": "autorag_results/standard_rag",
     "adaptive_results_dir": "autorag_results/adaptive_rag",
-    "timestamp": "2025-09-09T07:41:18.411932"
+    "timestamp": "2025-09-10T06:05:42.223582"
   },
   "metrics_comparison": {
     "standard_rag": {
       "approach": "standard",
       "total_pairs_evaluated": 50,
       "avg_retrieval_score": 0.0,
-      "avg_similarity_score": 0.8185637636482715,
-      "avg_bert_score": 0.8007194071387993,
-      "high_quality_pairs": 40,
-      "quality_retention_rate": 0.8007194071387993,
-      "avg_context_relevance": 0.569225403737604,
+      "avg_similarity_score": 0.927056337594986,
+      "avg_bert_score": 0.8717945242785473,
+      "high_quality_pairs": 43,
+      "quality_retention_rate": 0.8717945242785473,
+      "avg_context_relevance": 0.6821098779279826,
       "retrieval_time_ms": 0.0,
       "generation_time_ms": 0.0
     },
     "adaptive_rag": {
       "approach": "adaptive",
-      "total_pairs_evaluated": 50,
+      "total_pairs_evaluated": 0,
       "avg_retrieval_score": 0.0,
-      "avg_similarity_score": 0.8289258936047554,
-      "avg_bert_score": 0.8142449061416689,
-      "high_quality_pairs": 40,
-      "quality_retention_rate": 0.8142449061416689,
-      "avg_context_relevance": 0.606808781836831,
+      "avg_similarity_score": 0.0,
+      "avg_bert_score": 0.0,
+      "high_quality_pairs": 0,
+      "quality_retention_rate": 0.0,
+      "avg_context_relevance": 0.0,
       "retrieval_time_ms": 0.0,
       "generation_time_ms": 0.0
     },
     "differences": {
       "avg_similarity_score": {
-        "standard": 0.8185637636482715,
-        "adaptive": 0.8289258936047554,
-        "improvement_percent": 1.265891603886877,
-        "better_approach": "adaptive"
+        "standard": 0.927056337594986,
+        "adaptive": 0.0,
+        "improvement_percent": -100.0,
+        "better_approach": "standard"
       },
       "avg_bert_score": {
-        "standard": 0.8007194071387993,
-        "adaptive": 0.8142449061416689,
-        "improvement_percent": 1.6891683756236267,
-        "better_approach": "adaptive"
+        "standard": 0.8717945242785473,
+        "adaptive": 0.0,
+        "improvement_percent": -100.0,
+        "better_approach": "standard"
       },
       "high_quality_pairs": {
-        "standard": 40,
-        "adaptive": 40,
-        "improvement_percent": 0.0,
-        "better_approach": "equal"
+        "standard": 43,
+        "adaptive": 0,
+        "improvement_percent": -100.0,
+        "better_approach": "standard"
       },
       "quality_retention_rate": {
-        "standard": 0.8007194071387993,
-        "adaptive": 0.8142449061416689,
-        "improvement_percent": 1.6891683756236267,
-        "better_approach": "adaptive"
+        "standard": 0.8717945242785473,
+        "adaptive": 0.0,
+        "improvement_percent": -100.0,
+        "better_approach": "standard"
       },
       "avg_context_relevance": {
-        "standard": 0.569225403737604,
-        "adaptive": 0.606808781836831,
-        "improvement_percent": 6.602547576487254,
-        "better_approach": "adaptive"
+        "standard": 0.6821098779279826,
+        "adaptive": 0.0,
+        "improvement_percent": -100.0,
+        "better_approach": "standard"
       }
     }
   },
@@ -104,7 +104,7 @@
     }
   },
   "recommendations": {
-    "overall_winner": "adaptive",
+    "overall_winner": "standard",
     "use_standard_when": [
       "Speed is critical and quality is acceptable",
       "Processing high volumes of simple queries",
@@ -118,13 +118,11 @@
       "Dealing with out-of-domain queries that need uncertainty"
     ],
     "hybrid_approach": null,
-    "key_insights": [
-      "Similar semantic quality between approaches"
-    ]
+    "key_insights": []
   },
   "summary": {
-    "winner": "adaptive",
-    "key_finding": "Both approaches show similar performance with minor differences",
-    "recommendation_summary": "Recommend Adaptive RAG for quality-focused applications"
+    "winner": "standard",
+    "key_finding": "Adaptive RAG shows degradation in: avg similarity score (-100.0%), avg bert score (-100.0%), high quality pairs (-100.0%), quality retention rate (-100.0%), avg context relevance (-100.0%)",
+    "recommendation_summary": "Recommend Standard RAG for speed-focused applications"
   }
 }

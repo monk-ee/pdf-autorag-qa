@@ -1,0 +1,78 @@
+{
+  "model_name": "meta-llama/Meta-Llama-3-8B-Instruct",
+  "input_file": "pdfs/UAFX_Ruby_63_Top_Boost_Amplifier_Manual.pdf",
+  "generation_parameters": {
+    "max_new_tokens": 512,
+    "max_length": 8192,
+    "temperature": 0.9,
+    "top_p": 0.9,
+    "do_sample": true
+  },
+  "run_name": "_intermediate_high_creativity",
+  "pdf_metadata": {
+    "title": "UAFX Ruby '63 Top Boost Amplifier Manual – Universal Audio Support Home",
+    "author": "",
+    "subject": "",
+    "creator": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+    "page_count": 26,
+    "file_size_mb": 1.630478858947754
+  },
+  "processing_stats": {
+    "total_runtime": 67.94403147697449,
+    "model_inference_time": 67.22069358825684,
+    "total_chunks": 9,
+    "batch_size": 8,
+    "total_qa_pairs": 12,
+    "pairs_per_chunk": 1.3333333333333333,
+    "pairs_per_minute": 10.596957294828764
+  },
+  "content_analysis": {
+    "source_pages": 26,
+    "total_words": 5052,
+    "structure_elements": 373
+  },
+  "resource_utilization": {
+    "system_resources": {
+      "cpu_percent": 0.0,
+      "memory_rss_mb": 1879.59765625,
+      "memory_vms_mb": 29084.94921875,
+      "num_cpu_cores": 8,
+      "available_memory_gb": 59.250675201416016
+    },
+    "gpu_resources": {
+      "current_allocated_mb": 15324.63330078125,
+      "peak_allocated_mb": 18080.2421875,
+      "current_reserved_mb": 16438.0,
+      "peak_reserved_mb": 18946.0,
+      "gpu_device_name": "NVIDIA L40S",
+      "gpu_capability": [
+        8,
+        9
+      ],
+      "total_gpu_memory_mb": 45494.6875
+    },
+    "disk_io": {
+      "input_file_size_mb": 1.630478858947754,
+      "input_file_size_bytes": 1709681
+    }
+  },
+  "token_performance": {
+    "token_statistics": {
+      "total_input_tokens": 11100,
+      "total_output_tokens": 4002,
+      "total_tokens_processed": 15102,
+      "avg_prompt_tokens": 1233.3333333333333,
+      "avg_response_tokens": 444.6666666666667,
+      "max_prompt_tokens": 1431,
+      "max_response_tokens": 512,
+      "truncation_rate": 0.0
+    },
+    "throughput_metrics": {
+      "tokens_per_second": 224.66296007749398,
+      "input_tokens_per_second": 165.12772194809847,
+      "output_tokens_per_second": 59.5352381293955,
+      "effective_context_utilization": 0.15055338541666666
+    }
+  },
+  "generation_type": "pdf_educational"
+}
