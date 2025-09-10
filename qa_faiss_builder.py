@@ -187,8 +187,27 @@ def build_qa_vector_store(qa_pairs_file: Path,
         
         # Generate adaptive embeddings
         print('🔍 Generating adaptive embeddings (Q+A combined)...')
-        adaptive_embeddings = model.encode(adaptive_texts, show_progress_bar=True, convert_to_numpy=True)
-        faiss.normalize_L2(adaptive_embeddings)
+        print(f'   📊 Processing {len(adaptive_texts)} combined Q&A texts...')
+        
+        try:
+            # Use smaller batch sizes to prevent GPU memory issues
+            batch_size = 16  # Smaller batch size for longer Q+A texts
+            adaptive_embeddings = model.encode(
+                adaptive_texts, 
+                show_progress_bar=True, 
+                convert_to_numpy=True,
+                batch_size=batch_size
+            )
+            print(f'✅ Adaptive embeddings generated: shape {adaptive_embeddings.shape}')
+            
+            print('🔧 Normalizing adaptive embeddings...')
+            faiss.normalize_L2(adaptive_embeddings)
+            print('✅ Adaptive embeddings normalized')
+            
+        except Exception as e:
+            print(f'❌ Error during adaptive embedding generation: {e}')
+            print('   🔧 Falling back to answer-only embeddings for adaptive index...')
+            adaptive_embeddings = embeddings.copy()  # Use original answer-only embeddings as fallback
         
         # Adaptive CPU index
         adaptive_cpu_index = faiss.IndexFlatIP(dimension)
