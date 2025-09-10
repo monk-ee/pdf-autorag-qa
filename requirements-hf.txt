@@ -21,3 +21,6 @@ psutil>=5.9.0
 # PDF processing dependencies
 PyPDF2>=3.0.0
 PyMuPDF>=1.23.0
+
+# BM25 support for adaptive RAG
+rank_bm25>=0.2.2

@@ -515,7 +515,7 @@ class AdaptiveRetriever:
         logger.info(f"🎯 HYBRID RETRIEVAL INDICES COMPLETED:")
         logger.info(f"   📊 {len(self.qa_data)} Q&A pairs indexed")
         logger.info(f"   🧠 Dense embeddings: {dimension}D vectors")
-        logger.info(f"   📝 SPLADE sparse: {'✅ ENABLED' if self.has_sparse else '❌ DISABLED - DEGRADED PERFORMANCE!'}")
+        logger.info(f"   📝 BM25 sparse: {'✅ ENABLED' if self.has_bm25 else '❌ DISABLED - DEGRADED PERFORMANCE!'}")
         logger.info(f"   📄 TF-IDF backup: {'✅ ENABLED' if self.has_tfidf else '❌ DISABLED'}")
         logger.info(f"   🔄 Cross-encoder re-ranking: {'✅ ENABLED' if self.has_cross_encoder else '❌ DISABLED - DEGRADED PERFORMANCE!'}")
         
