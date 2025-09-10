@@ -1,0 +1,58 @@
+{
+  "pdf_qa_generation": {
+    "instruct": {
+      "system_prefix": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>",
+      "system_suffix": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>",
+      "templates": {
+        "basic": "Generate basic level educational Q&A pairs from this authoritative content. Focus on factual recall, definitions, and fundamental concepts that establish foundational understanding.\n\nCreate questions that:\n- Test knowledge of key terms and definitions\n- Ask for basic facts and information\n- Focus on \"what\", \"who\", \"when\", \"where\" questions\n- Help students identify and remember core concepts\n\nFormat each pair as:\nQ: [clear, specific question]\nA: [comprehensive, accurate answer]\n\nContent:\n{chunk_text}\n\nGenerate 2-4 Q&A pairs that would help someone learn and understand this material.",
+        "intermediate": "Generate intermediate level educational Q&A pairs from this authoritative content. Focus on application, analysis, and understanding relationships between concepts.\n\nCreate questions that:\n- Test application of principles to new situations\n- Analyze relationships between different concepts\n- Compare and contrast different approaches or ideas\n- Focus on \"how\" and \"why\" questions\n- Require explanation of processes and reasoning\n\nFormat each pair as:\nQ: [clear, specific question]\nA: [comprehensive, accurate answer]\n\nContent:\n{chunk_text}\n\nGenerate 2-4 Q&A pairs that would help someone learn and understand this material.",
+        "advanced": "Generate advanced level educational Q&A pairs from this authoritative content. Focus on synthesis, evaluation, critical thinking, and higher-order cognitive skills.\n\nCreate questions that:\n- Require synthesis of multiple concepts or sources\n- Evaluate the effectiveness or validity of approaches\n- Make predictions or inferences based on the material\n- Create solutions to complex problems\n- Critique methodologies or draw broader implications\n- Focus on analysis, evaluation, and creation\n\nFormat each pair as:\nQ: [clear, specific question]\nA: [comprehensive, accurate answer]\n\nContent:\n{chunk_text}\n\nGenerate 2-4 Q&A pairs that would help someone learn and understand this material."
+      }
+    },
+    "non_instruct": {
+      "system_prefix": "",
+      "system_suffix": "",
+      "templates": {
+        "basic": "Generate basic level educational Q&A pairs from this content. \n\nFormat: Q: [question] A: [answer]\n\nContent:\n{chunk_text}\n\nQ&A Pairs:",
+        "intermediate": "Generate intermediate level educational Q&A pairs from this content. \n\nFormat: Q: [question] A: [answer]\n\nContent:\n{chunk_text}\n\nQ&A Pairs:",
+        "advanced": "Generate advanced level educational Q&A pairs from this content. \n\nFormat: Q: [question] A: [answer]\n\nContent:\n{chunk_text}\n\nQ&A Pairs:"
+      }
+    }
+  },
+  "transcript_qa_extraction": {
+    "instruct": {
+      "system_prefix": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>",
+      "system_suffix": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>",
+      "templates": {
+        "default": "Extract Q&A pairs from this transcript. Focus on questions and answers that appear in the conversation.\n\nFormat each pair as:\nQ: [question from transcript]\nA: [answer from transcript]\n\nTranscript:\n{chunk_text}\n\nExtracted Q&A pairs:"
+      }
+    },
+    "non_instruct": {
+      "system_prefix": "",
+      "system_suffix": "",
+      "templates": {
+        "default": "Extract Q&A pairs from this transcript.\n\nFormat: Q: [question] A: [answer]\n\nTranscript:\n{chunk_text}\n\nQ&A Pairs:"
+      }
+    }
+  },
+  "custom_prompts": {
+    "creative_writing": {
+      "instruct": {
+        "system_prefix": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>",
+        "system_suffix": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>",
+        "templates": {
+          "story_qa": "Create engaging Q&A pairs that explore the themes, characters, and plot elements in this text.\n\nContent:\n{chunk_text}\n\nGenerate thoughtful questions and answers:"
+        }
+      }
+    },
+    "technical_analysis": {
+      "instruct": {
+        "system_prefix": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>",
+        "system_suffix": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>",
+        "templates": {
+          "deep_technical": "Generate technical Q&A pairs that test deep understanding of the concepts, implementation details, and practical applications.\n\nContent:\n{chunk_text}\n\nCreate detailed technical questions and comprehensive answers:"
+        }
+      }
+    }
+  }
+}
