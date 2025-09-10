@@ -140,13 +140,20 @@ class EnhancedAdaptiveRAGEvaluator:
         # Get formatted context from adaptive pipeline
         context = adaptive_result['formatted_context']
         
-        # Create enhanced prompt with adaptive context
-        prompt = f"""Based on the following context from audio equipment Q&A, answer the question accurately and concisely.
+        # Create enhanced prompt with citation requirements
+        prompt = f"""Use ONLY the provided context to answer the question. Cite sources using [ChunkID] format. If information is missing, say so explicitly.
 
 Context:
 {context}
 
 Question: {question}
+
+Instructions:
+- Answer based ONLY on the provided context
+- Cite relevant sources using [ChunkID] format
+- If the context doesn't contain sufficient information, state "The provided context does not contain enough information to answer this question"
+- Be concise but complete
+
 Answer:"""
         
         # Generate with model

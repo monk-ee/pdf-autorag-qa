@@ -386,6 +386,7 @@ class AdaptiveRetriever:
         self.qa_data = qa_data
         self.embedder = embedder
         self.category_config = category_config or {}
+        self._track_metrics = True  # Enable stage metrics for debugging
         
         # IMPROVEMENT 1: QUALITY cross-encoder for better re-ranking
         logger.info("🚀 LOADING BGE-Reranker-Large for precision re-ranking...")
@@ -628,9 +629,9 @@ class AdaptiveRetriever:
         # IMPROVEMENT 2: Hybrid dense + sparse retrieval
         hybrid_candidates = self._hybrid_retrieval(query, analysis, strategy.top_k * 3)  # Get more candidates for re-ranking
         
-        # IMPROVEMENT 1: Cross-encoder re-ranking (if enabled and available)
+        # IMPROVEMENT 1: Cross-encoder precision re-ranking (already have top-8 from MMR)
         if strategy.rerank and self.has_cross_encoder and len(hybrid_candidates) > 1:
-            logger.info(f"🔄 Re-ranking {len(hybrid_candidates)} candidates with cross-encoder...")
+            logger.info(f"🔄 Precision re-ranking {len(hybrid_candidates)} candidates with BGE-reranker...")
             reranked_candidates = self._cross_encoder_rerank(query, hybrid_candidates)
         else:
             reranked_candidates = hybrid_candidates
@@ -650,28 +651,32 @@ class AdaptiveRetriever:
         logger.info(f"🧠 PERFORMING HYBRID RETRIEVAL v2.0 (FIXED) for query type: {query_analysis.query_type}")
         logger.info(f"🔧 This should NOT be 'dense_only' anymore - hybrid retrieval RESTORED!")
         
-        # Get dense and sparse scores
-        dense_scores = self._get_dense_scores(query, query_analysis, top_k * 2)
-        sparse_scores = self._get_sparse_scores(query, top_k * 2) if (self.has_sparse or self.has_tfidf) else {}
+        # 🚀 BREADTH THEN PRECISION: k=50 retrieval → RRF fusion → top-8 diverse
+        retrieve_k = 50  # Breadth first
         
-        # Calculate adaptive alpha for dense vs sparse weighting  
-        adaptive_alpha = self._get_adaptive_alpha(query_analysis)
-        logger.info(f"🎯 Using adaptive alpha={adaptive_alpha:.2f} (dense weight) for {query_analysis.query_type} query")
+        # Get dense results (top-50)
+        dense_results = self._get_dense_results(query, query_analysis, retrieve_k)
         
-        # Combine scores with adaptive weighting
-        if sparse_scores:
-            combined_scores = self._combine_hybrid_scores(dense_scores, sparse_scores, adaptive_alpha)
-            retrieval_method = "hybrid"
+        # Get BM25 results (top-50) 
+        bm25_results = self._get_bm25_results(query, retrieve_k) if self.has_bm25 else []
+        
+        if bm25_results:
+            # RRF fusion (0.5/0.5 mix)
+            logger.info(f"🔀 RRF fusion: {len(dense_results)} dense + {len(bm25_results)} BM25")
+            fused_candidates = self._rrf_fusion(dense_results, bm25_results)[:retrieve_k]
+            retrieval_method = "rrf_hybrid"
         else:
-            combined_scores = dense_scores
+            # Dense-only fallback
+            logger.info(f"📊 Dense-only: {len(dense_results)} candidates (no BM25)")
+            fused_candidates = dense_results
             retrieval_method = "dense_only"
-            logger.warning("⚠️ Sparse retrieval unavailable, falling back to dense-only")
         
-        # Get top candidates
-        top_candidates = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
+        # Apply MMR diversity (λ=0.5) to get final top-8
+        query_embedding = self.embedder.encode([query])[0]
+        diverse_candidates = self._mmr_diversify(fused_candidates, query_embedding, lambda_param=0.5, final_k=8)
         
-        logger.info(f"📊 {retrieval_method.upper()} retrieval: {len(combined_scores)} candidates, returning top {len(top_candidates)}")
-        return [(idx, score, retrieval_method) for idx, score in top_candidates]
+        logger.info(f"📊 {retrieval_method.upper()}: {len(fused_candidates)} → {len(diverse_candidates)} diverse candidates")
+        return diverse_candidates
     
     def _get_dense_scores(self, query: str, query_analysis: QueryAnalysis, top_k: int) -> Dict[int, float]:
         """🚀 Enhanced dense retrieval with multi-strategy weighting"""
@@ -739,6 +744,64 @@ class AdaptiveRetriever:
             rrf_results.append((idx, rrf_score, "rrf_hybrid"))
         
         return rrf_results
+    
+    def _mmr_diversify(self, candidates: List[Tuple], query_embedding: np.ndarray, lambda_param: float = 0.5, final_k: int = 8) -> List[Tuple]:
+        """🚀 MMR diversity to avoid near-duplicate chunks (λ=0.5)"""
+        if len(candidates) <= final_k:
+            return candidates
+        
+        # Get embeddings for all candidates
+        candidate_embeddings = []
+        for idx, score, source in candidates:
+            if idx < len(self.qa_data):
+                # Use answer embeddings for diversity calculation
+                answer_text = self.qa_data[idx].get('output', self.qa_data[idx].get('answer', ''))
+                emb = self.embedder.encode([answer_text])[0]
+                candidate_embeddings.append(emb)
+            else:
+                candidate_embeddings.append(np.zeros(384))  # Fallback
+        
+        candidate_embeddings = np.array(candidate_embeddings)
+        
+        # MMR algorithm
+        selected = []
+        remaining_indices = list(range(len(candidates)))
+        
+        # Select first item (highest relevance)
+        if remaining_indices:
+            best_idx = remaining_indices.pop(0)
+            selected.append(candidates[best_idx])
+        
+        # Select remaining items with MMR
+        while len(selected) < final_k and remaining_indices:
+            mmr_scores = {}
+            
+            for i in remaining_indices:
+                idx, score, source = candidates[i]
+                
+                # Relevance score (normalized to 0-1)
+                relevance = cosine_similarity([query_embedding], [candidate_embeddings[i]])[0][0]
+                
+                # Max similarity to already selected items
+                max_sim = 0
+                if selected:
+                    selected_embeddings = [candidate_embeddings[candidates.index(sel_candidate)] for sel_candidate in selected if sel_candidate in candidates]
+                    if selected_embeddings:
+                        similarities = cosine_similarity([candidate_embeddings[i]], selected_embeddings)[0]
+                        max_sim = max(similarities)
+                
+                # MMR score: λ * relevance - (1-λ) * max_similarity
+                mmr_score = lambda_param * relevance - (1 - lambda_param) * max_sim
+                mmr_scores[i] = mmr_score
+            
+            # Select item with highest MMR score
+            if mmr_scores:
+                best_idx = max(mmr_scores.keys(), key=lambda x: mmr_scores[x])
+                remaining_indices.remove(best_idx)
+                selected.append(candidates[best_idx])
+        
+        logger.info(f"🎯 MMR diversity: {len(candidates)} → {len(selected)} diverse chunks (λ={lambda_param})")
+        return selected
     
     def _get_dense_results(self, query: str, query_analysis: QueryAnalysis, top_k: int) -> List[Tuple]:
         """Get dense retrieval results in (idx, score, source) format"""
@@ -859,52 +922,77 @@ class AdaptiveRetriever:
                                     strategy: RetrievalStrategy, analysis: QueryAnalysis) -> List[Dict]:
         """🚀 IMPROVEMENT 3: Apply dynamic context window adjustment"""
         
-        # Calculate dynamic top_k based on query complexity and confidence
-        base_k = strategy.top_k
+        # 🚀 CONTEXT BUDGETING: 6-8 chunks max, prefer short on-topic
+        max_chunks = 8  # Hard limit for context budget
+        min_chunks = 6  # Minimum for complex queries
         
-        # Adjust based on query complexity
+        # Filter and prioritize chunks by length and relevance
+        chunk_candidates = []
+        for idx, score, source in candidates[:12]:  # Consider up to 12 for filtering
+            if idx < len(self.qa_data):
+                answer_text = self.qa_data[idx].get('output', self.qa_data[idx].get('answer', ''))
+                answer_length = len(answer_text.split())
+                
+                # Prefer shorter, focused answers (100-300 words ideal)
+                if 50 <= answer_length <= 300:
+                    length_penalty = 1.0  # Ideal length
+                elif answer_length < 50:
+                    length_penalty = 0.8  # Too short
+                elif answer_length <= 500:
+                    length_penalty = 0.9  # Acceptable
+                else:
+                    length_penalty = 0.7  # Too long, rambling
+                
+                adjusted_score = score * length_penalty
+                chunk_candidates.append((idx, adjusted_score, source, answer_length))
+        
+        # Sort by adjusted score
+        chunk_candidates.sort(key=lambda x: x[1], reverse=True)
+        
+        # Dynamic chunk count based on complexity
         if analysis.complexity == 'advanced':
-            dynamic_k = int(base_k * 1.3)  # More context for complex queries
-        elif analysis.complexity == 'basic':
-            dynamic_k = max(2, int(base_k * 0.8))  # Less context for simple queries
+            target_chunks = min(max_chunks, max(min_chunks, len(chunk_candidates)))
         else:
-            dynamic_k = base_k
+            target_chunks = min(6, len(chunk_candidates))  # Fewer for simple queries
         
-        # Adjust based on domain relevance
-        if analysis.domain_relevance < 0.3:
-            dynamic_k = max(2, int(dynamic_k * 0.7))  # Less context for out-of-domain
-        elif analysis.domain_relevance > 0.8:
-            dynamic_k = int(dynamic_k * 1.1)  # More context for high-relevance
+        # Select final chunks
+        final_candidates = chunk_candidates[:target_chunks]
         
-        # Apply confidence-based filtering
-        if len(candidates) > 0:
-            scores = [score for _, score, _ in candidates]
-            score_threshold = np.mean(scores) - np.std(scores) if len(scores) > 1 else 0.0
-            
-            # Filter low-confidence candidates
-            filtered_candidates = [(idx, score, source) for idx, score, source in candidates 
-                                 if score >= score_threshold]
-            
-            # Ensure we have at least 1 result
-            if not filtered_candidates and candidates:
-                filtered_candidates = [candidates[0]]
-        else:
-            filtered_candidates = candidates
-        
-        # Select top candidates based on dynamic window
-        final_candidates = filtered_candidates[:dynamic_k]
+        # Convert back to expected format (remove length info)
+        selected_candidates = [(idx, score, source) for idx, score, source, length in final_candidates]
         
         # Convert to result format
         results = []
-        for idx, score, source in final_candidates:
+        for idx, score, source in selected_candidates:
             if idx < len(self.qa_data):
                 result = self.qa_data[idx].copy()
                 result['relevance_score'] = float(score)
                 result['retrieval_source'] = source
                 results.append(result)
         
-        logger.info(f"📏 Dynamic context window: base_k={base_k} → dynamic_k={dynamic_k}, final={len(results)} results")
+        # 🚀 STAGE METRICS: Track retrieval quality
+        if hasattr(self, '_track_metrics') and self._track_metrics:
+            self._log_stage_metrics(candidates, results, analysis)
+        
+        logger.info(f"📊 Context budget: {len(candidates)} → {len(results)} chunks (target={target_chunks}, complexity={analysis.complexity})")
         return results
+    
+    def _log_stage_metrics(self, candidates: List[Tuple], results: List[Dict], analysis: QueryAnalysis):
+        """🚀 Log stage metrics for debugging and optimization"""
+        if not candidates:
+            return
+        
+        # Retrieval metrics
+        scores = [score for _, score, _ in candidates]
+        hit_at_1 = 1 if scores and scores[0] > 0.5 else 0
+        avg_score = np.mean(scores) if scores else 0
+        score_gap = (scores[0] - scores[-1]) if len(scores) > 1 else 0
+        
+        logger.info(f"📈 STAGE METRICS:")
+        logger.info(f"   Hit@1: {hit_at_1} (top score: {scores[0]:.3f})" if scores else "   Hit@1: 0")
+        logger.info(f"   Avg Score: {avg_score:.3f}")
+        logger.info(f"   Score Gap: {score_gap:.3f}")
+        logger.info(f"   Final Chunks: {len(results)}")
     
     def _apply_confidence_gating(self, query: str, analysis: QueryAnalysis, results: List[Dict], 
                                strategy_name: str, strategy: RetrievalStrategy) -> List[Dict]:
