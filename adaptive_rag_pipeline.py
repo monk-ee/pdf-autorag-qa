@@ -507,31 +507,57 @@ class AdaptiveRetriever:
         return final_results, strategy_name
     
     def _hybrid_retrieval(self, query: str, query_analysis: QueryAnalysis, top_k: int = 10) -> List[Tuple[int, float, str]]:
-        """FIX: Simplified retrieval - use dense only until performance is restored"""
-        logger.info(f"🧠 Performing simplified dense retrieval for query type: {query_analysis.query_type}")
+        """🚀 IMPROVEMENT 2: Hybrid dense + sparse retrieval with adaptive weighting"""
+        logger.info(f"🧠 Performing HYBRID retrieval for query type: {query_analysis.query_type}")
         
-        # FIX: Use dense retrieval only (hybrid disabled for debugging)
-        dense_scores = self._get_dense_scores(query, query_analysis, top_k)
+        # Get dense and sparse scores
+        dense_scores = self._get_dense_scores(query, query_analysis, top_k * 2)
+        sparse_scores = self._get_sparse_scores(query, top_k * 2) if (self.has_bm25 or self.has_tfidf) else {}
         
-        # Get top candidates directly from dense scores
-        top_candidates = sorted(dense_scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
+        # Calculate adaptive alpha for dense vs sparse weighting  
+        adaptive_alpha = self._get_adaptive_alpha(query_analysis)
+        logger.info(f"🎯 Using adaptive alpha={adaptive_alpha:.2f} (dense weight) for {query_analysis.query_type} query")
         
-        logger.info(f"📊 Dense retrieval: {len(dense_scores)} candidates, returning top {len(top_candidates)}")
-        return [(idx, score, "dense_only") for idx, score in top_candidates]
+        # Combine scores with adaptive weighting
+        if sparse_scores:
+            combined_scores = self._combine_hybrid_scores(dense_scores, sparse_scores, adaptive_alpha)
+            retrieval_method = "hybrid"
+        else:
+            combined_scores = dense_scores
+            retrieval_method = "dense_only"
+            logger.warning("⚠️ Sparse retrieval unavailable, falling back to dense-only")
+        
+        # Get top candidates
+        top_candidates = sorted(combined_scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
+        
+        logger.info(f"📊 {retrieval_method.upper()} retrieval: {len(combined_scores)} candidates, returning top {len(top_candidates)}")
+        return [(idx, score, retrieval_method) for idx, score in top_candidates]
     
     def _get_dense_scores(self, query: str, query_analysis: QueryAnalysis, top_k: int) -> Dict[int, float]:
-        """FIX: Simplified dense retrieval - use primary strategy only to avoid over-complexity"""
+        """🚀 Enhanced dense retrieval with multi-strategy weighting"""
         query_embedding = self.embedder.encode([query])[0].astype('float32')
         query_embedding = query_embedding.reshape(1, -1)
         faiss.normalize_L2(query_embedding)
         
         scores = {}
         
-        # FIX: Use combined Q+A similarity only (primary strategy) - simpler and more reliable
+        # Strategy 1: Combined Q+A similarity (primary - weight 0.6)
         combined_scores, combined_indices = self.combined_index.search(query_embedding, min(top_k, len(self.qa_data)))
         for i, (idx, score) in enumerate(zip(combined_indices[0], combined_scores[0])):
             if idx >= 0:  # Valid index
-                scores[idx] = float(score)  # FIX: Use raw scores without complex weighting
+                scores[idx] = float(score) * 0.6
+        
+        # Strategy 2: Question-only similarity (secondary - weight 0.25)
+        q_scores, q_indices = self.question_index.search(query_embedding, min(top_k, len(self.qa_data)))
+        for i, (idx, score) in enumerate(zip(q_indices[0], q_scores[0])):
+            if idx >= 0:
+                scores[idx] = scores.get(idx, 0) + float(score) * 0.25
+        
+        # Strategy 3: Answer-only similarity (tertiary - weight 0.15)
+        a_scores, a_indices = self.answer_index.search(query_embedding, min(top_k, len(self.qa_data)))
+        for i, (idx, score) in enumerate(zip(a_indices[0], a_scores[0])):
+            if idx >= 0:
+                scores[idx] = scores.get(idx, 0) + float(score) * 0.15
         
         return scores
     
