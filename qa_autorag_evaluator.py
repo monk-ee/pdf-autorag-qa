@@ -277,19 +277,24 @@ Answer:"""
             'rag_length': rag_len
         }
     
-    def evaluate_qa_pairs(self, test_qa_pairs: List[Dict]) -> List[Dict]:
+    def evaluate_qa_pairs(self, test_qa_pairs: List[Dict], max_pairs: int = None) -> List[Dict]:
         """
         Evaluate Q&A pairs using RAG retrieval.
         
         Args:
             test_qa_pairs: List of Q&A pairs to test
+            max_pairs: Maximum number of pairs to evaluate (for testing)
             
         Returns:
             List of evaluation results
         """
         evaluation_results = []
         
-        print(f'🔍 Running RAG evaluation on {len(test_qa_pairs)} Q&A pairs...')
+        if max_pairs:
+            test_qa_pairs = test_qa_pairs[:max_pairs]
+            print(f'🔍 Running RAG evaluation on {len(test_qa_pairs)} Q&A pairs (limited for testing)...')
+        else:
+            print(f'🔍 Running RAG evaluation on {len(test_qa_pairs)} Q&A pairs...')
         
         for i, pair in enumerate(test_qa_pairs):
             # Handle both HF format (instruction/output) and QA format (question/answer)
@@ -335,8 +340,8 @@ Answer:"""
                 # Add failed result
                 evaluation_results.append({
                     'pair_id': i,
-                    'question': question if 'question' in locals() else 'N/A',
-                    'original_answer': original_answer if 'original_answer' in locals() else 'N/A',
+                    'question': pair.get('instruction', pair.get('question', 'N/A')),
+                    'original_answer': pair.get('output', pair.get('answer', 'N/A')),
                     'rag_answer': '',
                     'error': str(e),
                     'metrics': {'quality_score': 0.0, 'semantic_similarity': 0.0},
@@ -423,6 +428,8 @@ def main():
                        help='Enable 4-bit quantization for memory efficiency')
     parser.add_argument('--verbose', action='store_true',
                        help='Enable verbose output')
+    parser.add_argument('--max-pairs', type=int, default=None,
+                       help='Maximum number of pairs to evaluate (for testing)')
     
     args = parser.parse_args()
     
@@ -448,7 +455,7 @@ def main():
         
         # Run evaluation
         print('🔍 Running Q&A RAG evaluation...')
-        evaluation_results = evaluator.evaluate_qa_pairs(qa_pairs)
+        evaluation_results = evaluator.evaluate_qa_pairs(qa_pairs, max_pairs=args.max_pairs)
         
         # Generate report
         evaluator.generate_evaluation_report(evaluation_results, args.output_dir)

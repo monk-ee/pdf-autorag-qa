@@ -135,7 +135,7 @@ Answer:"""
                 # Calculate semantic similarity
                 expected_emb = self.embedding_model.encode([expected_answer])
                 generated_emb = self.embedding_model.encode([generated_answer])
-                similarity = cosine_similarity(expected_emb, generated_emb)[0][0]
+                similarity = float(cosine_similarity(expected_emb, generated_emb)[0][0])
                 
                 # Calculate BERT score
                 P, R, F1 = bert_score([generated_answer], [expected_answer], lang="en", verbose=False)
@@ -164,13 +164,13 @@ Answer:"""
         end_time = time.time()
         
         # Calculate aggregate metrics
-        avg_similarity = np.mean(similarities) if similarities else 0.0
-        avg_bert_score = np.mean(bert_scores) if bert_scores else 0.0
-        total_time = end_time - start_time
+        avg_similarity = float(np.mean(similarities)) if similarities else 0.0
+        avg_bert_score = float(np.mean(bert_scores)) if bert_scores else 0.0
+        total_time = float(end_time - start_time)
         
         # Count high-quality answers
         high_quality_pairs = sum(1 for s in similarities if s > 0.7)
-        quality_retention_rate = high_quality_pairs / len(similarities) if similarities else 0.0
+        quality_retention_rate = float(high_quality_pairs / len(similarities)) if similarities else 0.0
         
         evaluation_summary = {
             'total_pairs_evaluated': len(qa_pairs),
@@ -181,7 +181,7 @@ Answer:"""
             'high_quality_pairs': high_quality_pairs,
             'quality_retention_rate': quality_retention_rate,
             'total_time_seconds': total_time,
-            'avg_time_per_pair': total_time / len(qa_pairs) if qa_pairs else 0.0
+            'avg_time_per_pair': float(total_time / len(qa_pairs)) if qa_pairs else 0.0
         }
         
         logger.info("📊 Base Model Evaluation Complete:")
