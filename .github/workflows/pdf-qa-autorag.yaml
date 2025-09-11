@@ -313,7 +313,7 @@ jobs:
           --top-k ${{ github.event.inputs.top_k_selection || '50' }} \
           --verbose
     
-    - name: Build Q&A Vector Stores (Standard + Adaptive RAG)
+    - name: Build Q&A Vector Store (Standard RAG)
       run: |
         python qa_faiss_builder.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
@@ -326,18 +326,9 @@ jobs:
         echo "🔹 STANDARD RAG EVALUATION"
         echo "=========================="
         
-        # Use GPU standard index if available, fallback to CPU
-        if [ -f "rag_store/qa_faiss_index_standard_gpu.bin" ]; then
-          echo "🚀 Using Standard GPU-optimized FAISS index"
-          FAISS_INDEX="rag_store/qa_faiss_index_standard_gpu.bin"
-        else
-          echo "⚠️ Standard GPU index not found, using Standard CPU index"
-          FAISS_INDEX="rag_store/qa_faiss_index_standard_cpu.bin"
-        fi
-        
         python qa_autorag_evaluator.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
-          --qa-faiss-index "$FAISS_INDEX" \
+          --qa-faiss-index rag_store/qa_faiss_index.bin \
           --qa-metadata rag_store/qa_metadata.json \
           --output-dir autorag_results/standard_rag \
           --model-name "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
@@ -376,7 +367,7 @@ jobs:
         echo "Demonstrating RAG capabilities with real amplifier questions"
         
         python rag_demo_questions.py \
-          --qa-faiss-index rag_store/qa_faiss_index_standard_cpu.bin \
+          --qa-faiss-index rag_store/qa_faiss_index.bin \
           --qa-metadata rag_store/qa_metadata.json \
           --model-name "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
           --embedding-model all-MiniLM-L6-v2 \
@@ -426,22 +417,18 @@ jobs:
           domain_eval_analysis.json
         retention-days: 30
         
-    - name: List Available FAISS Indices for Download
+    - name: List Available FAISS Index for Download
       run: |
         echo "📦 ============================================"
-        echo "   AVAILABLE FAISS INDICES IN ARTIFACTS"
+        echo "   AVAILABLE FAISS INDEX IN ARTIFACTS"
         echo "============================================"
-        echo "🔥 GPU Indices (created on L40S):"
-        ls -la rag_store/*_gpu.bin 2>/dev/null || echo "   No GPU indices found"
-        echo ""
-        echo "💻 CPU Indices (for local testing):"
-        ls -la rag_store/*_cpu.bin 2>/dev/null || echo "   No CPU indices found"
+        echo "🔍 Standard RAG Index:"
+        ls -la rag_store/qa_faiss_index.bin 2>/dev/null || echo "   No index found"
         echo ""
         echo "📁 Download from GitHub Actions artifacts:"
-        echo "   - rag_store/qa_faiss_index_standard_cpu.bin"
-        echo "   - rag_store/qa_faiss_index_adaptive_cpu.bin"
-        echo "   - rag_store/qa_metadata.json"
-        echo "   - rag_store/model_info.json"
+        echo "   - rag_store/qa_faiss_index.bin (Standard RAG)"
+        echo "   - rag_store/qa_metadata.json (Q&A pairs)"
+        echo "   - rag_store/model_info.json (Build config)"
 
     - name: Display Pipeline Summary
       run: |
@@ -450,11 +437,13 @@ jobs:
         echo "🚀 Standard RAG vs Base Model Comparison"
         echo "=============================================="
         
-        echo "📦 FAISS INDICES CREATED:"
-        echo "========================"
-        find rag_store/ -name "*.bin" | sort | while read file; do
-          echo "  • $(basename "$file")"
-        done
+        echo "📦 FAISS INDEX CREATED:"
+        echo "======================="
+        if [ -f "rag_store/qa_faiss_index.bin" ]; then
+          echo "  • qa_faiss_index.bin (Standard RAG)"
+        else
+          echo "  ⚠️ No FAISS index found"
+        fi
         
         echo ""
         echo "📊 RAG vs BASE MODEL COMPARISON:"
@@ -539,7 +528,7 @@ jobs:
         echo "🚀 READY FOR DEPLOYMENT AND TRAINING:"
         echo "===================================="
         echo "✅ High-quality Q&A dataset: autorag_results/high_quality_pairs.jsonl"
-        echo "✅ Standard RAG FAISS indices: rag_store/"  
+        echo "✅ Standard RAG FAISS index: rag_store/qa_faiss_index.bin"  
         echo "✅ RAG vs Base comparison: autorag_results/rag_vs_base_comparison.json"
         echo "✅ RAG demonstration results: autorag_results/rag_demonstration.json"
         echo "✅ Domain analysis: domain_eval_analysis.json"
