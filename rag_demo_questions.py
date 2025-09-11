@@ -101,7 +101,7 @@ class RAGDemonstrator:
         """Generate answer using RAG with retrieved context"""
         # Build context string
         context_text = "\n\n".join([
-            f"Q: {pair['question']}\nA: {pair['answer']}"
+            f"Q: {pair.get('question', pair.get('instruction', ''))}\nA: {pair.get('answer', pair.get('output', ''))}"
             for pair in context_pairs
         ])
         
@@ -201,7 +201,8 @@ Answer:"""
         context_relevance_scores = []
         
         for pair in context_pairs:
-            context_emb = self.embedding_model.encode([pair['question']])
+            question_text = pair.get('question', pair.get('instruction', ''))
+            context_emb = self.embedding_model.encode([question_text])
             relevance = cosine_similarity(question_emb, context_emb)[0][0]
             context_relevance_scores.append(relevance)
         
@@ -213,8 +214,8 @@ Answer:"""
             'base_answer': base_answer,
             'retrieved_context': [
                 {
-                    'question': pair['question'],
-                    'answer': pair['answer'],
+                    'question': pair.get('question', pair.get('instruction', '')),
+                    'answer': pair.get('answer', pair.get('output', '')),
                     'retrieval_score': pair['retrieval_score'],
                     'source': pair.get('source', 'unknown')
                 }
