@@ -203,10 +203,10 @@ Answer:"""
         for pair in context_pairs:
             question_text = pair.get('question', pair.get('instruction', ''))
             context_emb = self.embedding_model.encode([question_text])
-            relevance = cosine_similarity(question_emb, context_emb)[0][0]
+            relevance = float(cosine_similarity(question_emb, context_emb)[0][0])
             context_relevance_scores.append(relevance)
         
-        avg_context_relevance = np.mean(context_relevance_scores) if context_relevance_scores else 0.0
+        avg_context_relevance = float(np.mean(context_relevance_scores)) if context_relevance_scores else 0.0
         
         result = {
             'question': question,
@@ -299,10 +299,10 @@ def main():
     
     # Calculate summary statistics
     total_questions = len(demonstrations)
-    avg_retrieval_time = np.mean([d['metrics']['retrieval_time_ms'] for d in demonstrations])
-    avg_rag_time = np.mean([d['metrics']['rag_generation_time_ms'] for d in demonstrations])
-    avg_base_time = np.mean([d['metrics']['base_generation_time_ms'] for d in demonstrations])
-    avg_context_relevance = np.mean([d['metrics']['avg_context_relevance'] for d in demonstrations])
+    avg_retrieval_time = float(np.mean([d['metrics']['retrieval_time_ms'] for d in demonstrations]))
+    avg_rag_time = float(np.mean([d['metrics']['rag_generation_time_ms'] for d in demonstrations]))
+    avg_base_time = float(np.mean([d['metrics']['base_generation_time_ms'] for d in demonstrations]))
+    avg_context_relevance = float(np.mean([d['metrics']['avg_context_relevance'] for d in demonstrations]))
     
     # Create comprehensive report
     report = {
@@ -319,7 +319,7 @@ def main():
                 'avg_rag_generation_time_ms': avg_rag_time,
                 'avg_base_generation_time_ms': avg_base_time,
                 'avg_context_relevance': avg_context_relevance,
-                'rag_vs_base_speedup': (avg_base_time / avg_rag_time) if avg_rag_time > 0 else 1.0
+                'rag_vs_base_speedup': float(avg_base_time / avg_rag_time) if avg_rag_time > 0 else 1.0
             }
         },
         'demonstrations': demonstrations,
