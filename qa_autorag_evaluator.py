@@ -218,7 +218,7 @@ Answer:"""
             outputs = self.model.generate(
                 inputs.input_ids,
                 attention_mask=inputs.attention_mask,
-                max_new_tokens=256,
+                max_new_tokens=128,
                 temperature=0.7,
                 do_sample=True,
                 top_p=0.9,
