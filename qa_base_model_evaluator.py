@@ -118,8 +118,13 @@ Answer:"""
         start_time = time.time()
         
         for i, pair in enumerate(qa_pairs):
-            question = pair['question']
-            expected_answer = pair['answer']
+            # Handle both formats: new (instruction/output) and old (question/answer)
+            question = pair.get('instruction') or pair.get('question')
+            expected_answer = pair.get('output') or pair.get('answer')
+            
+            if not question or not expected_answer:
+                logger.error(f"   ❌ Missing question or answer in pair {i+1}")
+                continue
             
             logger.info(f"📝 Processing Q&A pair {i+1}/{len(qa_pairs)}")
             
@@ -142,8 +147,8 @@ Answer:"""
                     'generated_answer': generated_answer,
                     'similarity_score': float(similarity),
                     'bert_f1': float(bert_f1),
-                    'chunk_id': pair.get('chunk_id', f'pair_{i}'),
-                    'source': pair.get('source', 'unknown')
+                    'chunk_id': pair.get('chunk_id') or pair.get('line_number', f'pair_{i}'),
+                    'source': pair.get('source') or pair.get('source_file', 'unknown')
                 }
                 
                 results.append(result)

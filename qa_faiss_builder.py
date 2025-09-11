@@ -56,7 +56,8 @@ def build_qa_vector_store(qa_pairs_file: Path,
     
     # Generate embeddings for answers (standard RAG approach)
     print("\n🔍 Generating embeddings...")
-    answers = [pair['answer'] for pair in qa_pairs]
+    # Handle both formats: new (instruction/output) and old (question/answer)
+    answers = [pair.get('output') or pair.get('answer') for pair in qa_pairs]
     
     start_time = time.time()
     embeddings = model.encode(
