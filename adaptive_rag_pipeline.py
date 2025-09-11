@@ -520,14 +520,14 @@ class AdaptiveRetriever:
         logger.info(f"   🔄 Cross-encoder re-ranking: {'✅ ENABLED' if self.has_cross_encoder else '❌ DISABLED - DEGRADED PERFORMANCE!'}")
         
         # 🚀 CRITICAL: Force fix status check with new improvements
-        if self.has_sparse and self.has_cross_encoder:
+        if self.has_bm25 and self.has_cross_encoder:
             logger.info("🚀 ADAPTIVE RAG FULLY ENHANCED WITH ALL 3 FIXES - EXPECTING +20-30% PERFORMANCE!")
             logger.info("   ✅ BGE Cross-encoder for technical domain")
             logger.info("   ✅ SPLADE-style sparse retrieval with term expansion")
             logger.info("   ✅ Audio-specific query classification")
         else:
             logger.error("❌ CRITICAL: ADAPTIVE RAG IS DEGRADED!")
-            logger.error(f"   Missing SPLADE sparse: {not self.has_sparse}")
+            logger.error(f"   Missing BM25 sparse: {not self.has_bm25}")
             logger.error(f"   Missing Cross-encoder: {not self.has_cross_encoder}")
             logger.error("❌ THIS WILL CAUSE PERFORMANCE DEGRADATION!")
             
@@ -622,7 +622,7 @@ class AdaptiveRetriever:
         
         # 🚀 DEBUG: Confirm what retrieval components are active
         logger.info(f"🔧 RETRIEVAL COMPONENTS STATUS:")
-        logger.info(f"   📝 SPLADE Sparse: {'ACTIVE' if self.has_sparse else 'MISSING - USING DENSE ONLY!'}")
+        logger.info(f"   📝 BM25 Sparse: {'ACTIVE' if self.has_bm25 else 'MISSING - USING DENSE ONLY!'}")
         logger.info(f"   🔄 Cross-encoder: {'ACTIVE' if self.has_cross_encoder else 'MISSING - NO RERANKING!'}")
         logger.info(f"   📊 TF-IDF backup: {'ACTIVE' if self.has_tfidf else 'MISSING'}")
         
