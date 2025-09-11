@@ -345,34 +345,43 @@ jobs:
           ${{ github.event.inputs.use_quantization == 'true' && '--quantization' || '' }} \
           --verbose
     
-    - name: Run Enhanced Adaptive RAG Evaluation  
+    - name: Run Base Model Evaluation (No RAG)
       run: |
-        echo "🚀 ENHANCED ADAPTIVE RAG EVALUATION"
-        echo "===================================="
-        echo "✅ Cross-encoder re-ranking"
-        echo "✅ Hybrid dense+sparse retrieval"  
-        echo "✅ Dynamic context windows"
-        echo "✅ Enhanced query classification"
-        echo "===================================="
+        echo "🔹 BASE MODEL EVALUATION (NO RAG)"
+        echo "=================================="
+        echo "Testing model without any retrieval context"
         
-        # Use Enhanced Adaptive RAG Evaluator (no FAISS index needed - uses internal pipeline)
-        python qa_enhanced_adaptive_evaluator.py \
+        python qa_base_model_evaluator.py \
           --qa-pairs-file rag_input/selected_qa_pairs.json \
-          --output-dir autorag_results/adaptive_rag \
+          --output-dir autorag_results/base_model \
           --model-name "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
-          --domain-config audio_equipment_domain_questions.json \
-          ${{ github.event.inputs.use_quantization == 'true' && '--quantize' || '' }} \
-          --device auto
+          ${{ github.event.inputs.use_quantization == 'true' && '--quantization' || '' }} \
+          --verbose
     
-    - name: Compare Standard vs Adaptive RAG Performance
+    - name: Compare Standard RAG vs Base Model Performance
       run: |
-        echo "📊 RAG APPROACH COMPARISON ANALYSIS"
-        echo "===================================="
+        echo "📊 RAG vs BASE MODEL COMPARISON"
+        echo "==============================="
         
-        python rag_comparison_analyzer.py \
+        python rag_vs_base_comparison.py \
           --standard-results autorag_results/standard_rag \
-          --adaptive-results autorag_results/adaptive_rag \
-          --output-file autorag_results/rag_comparison_report.json \
+          --base-results autorag_results/base_model \
+          --output-file autorag_results/rag_vs_base_comparison.json \
+          --verbose
+    
+    - name: RAG Demonstration with Amplifier Questions
+      run: |
+        echo "🎸 RAG DEMONSTRATION: AMPLIFIER Q&A"
+        echo "===================================="
+        echo "Demonstrating RAG capabilities with real amplifier questions"
+        
+        python rag_demo_questions.py \
+          --qa-faiss-index rag_store/qa_faiss_index_standard_cpu.bin \
+          --qa-metadata rag_store/qa_metadata.json \
+          --model-name "${{ github.event.inputs.model_name || 'meta-llama/Meta-Llama-3-8B-Instruct' }}" \
+          --embedding-model all-MiniLM-L6-v2 \
+          --output-file autorag_results/rag_demonstration.json \
+          ${{ github.event.inputs.use_quantization == 'true' && '--quantization' || '' }} \
           --verbose
     
     - name: Generate High-Quality Training Dataset
@@ -380,24 +389,9 @@ jobs:
         echo "🏗️ TRAINING DATASET GENERATION"
         echo "=============================="
         
-        # Use the comparison report to determine which approach performed better
-        COMPARISON_REPORT="autorag_results/rag_comparison_report.json"
-        
-        if [ -f "$COMPARISON_REPORT" ]; then
-          WINNER=$(python -c "import json; print(json.load(open('$COMPARISON_REPORT'))['summary']['winner'])")
-          echo "🏆 RAG Comparison Winner: $WINNER"
-          
-          if [ "$WINNER" = "adaptive" ]; then
-            EVAL_RESULTS="autorag_results/adaptive_rag/qa_rag_evaluation_report.json"
-            echo "📈 Using Adaptive RAG results for training dataset"
-          else
-            EVAL_RESULTS="autorag_results/standard_rag/qa_rag_evaluation_report.json"
-            echo "📈 Using Standard RAG results for training dataset"
-          fi
-        else
-          echo "⚠️ No comparison report found, defaulting to Standard RAG"
-          EVAL_RESULTS="autorag_results/standard_rag/qa_rag_evaluation_report.json"
-        fi
+        # Use Standard RAG results for training dataset generation
+        EVAL_RESULTS="autorag_results/standard_rag/qa_rag_evaluation_report.json"
+        echo "📈 Using Standard RAG results for training dataset generation"
         
         python training_dataset_generator.py \
           --evaluation-results "$EVAL_RESULTS" \
@@ -422,7 +416,7 @@ jobs:
     - name: Upload Complete Pipeline Results
       uses: actions/upload-artifact@v4
       with:
-        name: pdf-qa-autorag-dual-rag-complete
+        name: pdf-qa-standard-rag-complete
         path: |
           outputs/
           rag_input/
@@ -452,8 +446,8 @@ jobs:
     - name: Display Pipeline Summary
       run: |
         echo "🎯 ============================================"
-        echo "   ENHANCED DUAL RAG Pipeline - FINAL RESULTS"
-        echo "🚀 Standard RAG vs Enhanced Adaptive RAG"
+        echo "   STANDARD RAG Pipeline - FINAL RESULTS"
+        echo "🚀 Standard RAG vs Base Model Comparison"
         echo "=============================================="
         
         echo "📦 FAISS INDICES CREATED:"
@@ -463,12 +457,12 @@ jobs:
         done
         
         echo ""
-        echo "📊 RAG APPROACH COMPARISON:"
-        echo "=========================="
-        if [ -f "autorag_results/rag_comparison_report.json" ]; then
+        echo "📊 RAG vs BASE MODEL COMPARISON:"
+        echo "==============================="
+        if [ -f "autorag_results/rag_vs_base_comparison.json" ]; then
           python -c "
         import json
-        with open('autorag_results/rag_comparison_report.json', 'r') as f:
+        with open('autorag_results/rag_vs_base_comparison.json', 'r') as f:
             report = json.load(f)
         
         summary = report['summary']
@@ -478,17 +472,48 @@ jobs:
         print()
         
         # Show key metrics comparison
-        differences = report['metrics_comparison']['differences']
-        print('📈 Key Performance Differences:')
-        for metric in ['quality_retention_rate', 'avg_bert_score', 'avg_context_relevance']:
-            if metric in differences:
-                diff = differences[metric]
-                improvement = diff['improvement_percent']
-                better = diff['better_approach']
-                print(f'  {metric.replace(\"_\", \" \").title()}: {improvement:+.1f}% ({better} wins)')
+        metrics = report['metrics_comparison']
+        print('📈 Performance Comparison:')
+        print(f'  RAG BERT F1: {metrics[\"standard_rag\"][\"avg_bert_score\"]:.3f}')
+        print(f'  Base BERT F1: {metrics[\"base_model\"][\"avg_bert_score\"]:.3f}')
+        print(f'  RAG Quality Rate: {metrics[\"standard_rag\"][\"quality_retention_rate\"]:.3f}')
+        print(f'  Base Quality Rate: {metrics[\"base_model\"][\"quality_retention_rate\"]:.3f}')
+        
+        if 'differences' in report['metrics_comparison']:
+            differences = report['metrics_comparison']['differences']
+            for metric in ['avg_bert_score', 'quality_retention_rate']:
+                if metric in differences:
+                    diff = differences[metric]
+                    improvement = diff['improvement_percent']
+                    print(f'  {metric.replace(\"_\", \" \").title()}: {improvement:+.1f}% improvement with RAG')
           "
         else
-          echo "⚠️ RAG comparison report not found"
+          echo "⚠️ RAG vs Base comparison report not found"
+        fi
+        
+        echo ""
+        echo "🎸 RAG DEMONSTRATION RESULTS:"
+        echo "============================"
+        if [ -f "autorag_results/rag_demonstration.json" ]; then
+          python -c "
+        import json
+        with open('autorag_results/rag_demonstration.json', 'r') as f:
+            demo = json.load(f)
+        
+        summary = demo['demonstration_summary']
+        print(f'Questions Demonstrated: {summary[\"total_questions\"]}')
+        print(f'Average Context Relevance: {summary[\"performance_metrics\"][\"avg_context_relevance\"]:.3f}')
+        print(f'Average RAG Generation Time: {summary[\"performance_metrics\"][\"avg_rag_generation_time_ms\"]:.1f}ms')
+        print(f'Average Base Generation Time: {summary[\"performance_metrics\"][\"avg_base_generation_time_ms\"]:.1f}ms')
+        
+        # Show sample question
+        if demo['demonstrations']:
+            sample = demo['demonstrations'][0]
+            print(f'\\n🔍 Sample Question: {sample[\"question\"]}')
+            print(f'📚 Retrieved {len(sample[\"retrieved_context\"])} relevant context pairs')
+          "
+        else
+          echo "⚠️ RAG demonstration results not found"
         fi
         
         echo ""
@@ -511,15 +536,16 @@ jobs:
         fi
         
         echo ""
-        echo "🚀 READY FOR LOCAL MODEL TRAINING:"
-        echo "=================================="
+        echo "🚀 READY FOR DEPLOYMENT AND TRAINING:"
+        echo "===================================="
         echo "✅ High-quality Q&A dataset: autorag_results/high_quality_pairs.jsonl"
-        echo "✅ FAISS vector store: rag_store/faiss_index.bin"  
-        echo "✅ Evaluation reports: autorag_results/final_evaluation_report.json"
+        echo "✅ Standard RAG FAISS indices: rag_store/"  
+        echo "✅ RAG vs Base comparison: autorag_results/rag_vs_base_comparison.json"
+        echo "✅ RAG demonstration results: autorag_results/rag_demonstration.json"
         echo "✅ Domain analysis: domain_eval_analysis.json"
         echo ""
         echo "💡 Next Steps:"
-        echo "  1. Download artifacts for local training"
-        echo "  2. Use high_quality_pairs.jsonl for fine-tuning"
-        echo "  3. Deploy FAISS index for RAG frontend"
-        echo "  4. Monitor training with evaluation reports"
+        echo "  1. Deploy Standard RAG for production use"
+        echo "  2. Use high_quality_pairs.jsonl for model fine-tuning"
+        echo "  3. Integrate FAISS index with frontend applications"
+        echo "  4. Reference demonstration results for user examples"
