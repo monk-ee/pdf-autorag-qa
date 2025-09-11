@@ -196,7 +196,9 @@ class QARAGEvaluator:
         # Build context from retrieved Q&A pairs
         context_parts = []
         for pair in retrieved_qa_pairs:
-            context_parts.append(f"Q: {pair['question']}\nA: {pair['answer']}")
+            question_text = pair.get('question', pair.get('instruction', ''))
+            answer_text = pair.get('answer', pair.get('output', ''))
+            context_parts.append(f"Q: {question_text}\nA: {answer_text}")
         
         context = "\n\n".join(context_parts)
         
@@ -320,8 +322,10 @@ Answer:"""
                     'rag_answer': rag_answer,
                     'retrieved_pairs': [
                         {
-                            'question': rp['question'],
-                            'answer': rp['answer'][:100] + '...' if len(rp['answer']) > 100 else rp['answer'],
+                            'question': rp.get('question', rp.get('instruction', '')),
+                            'answer': (rp.get('answer', rp.get('output', ''))[:100] + '...' 
+                                     if len(rp.get('answer', rp.get('output', ''))) > 100 
+                                     else rp.get('answer', rp.get('output', ''))),
                             'score': score
                         }
                         for rp, score in zip(retrieved_pairs, retrieval_scores)
