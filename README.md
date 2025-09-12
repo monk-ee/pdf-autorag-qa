@@ -100,16 +100,16 @@ python rag_demo_questions.py \
 
 ## 📊 **Expected Results**
 
-Based on technical documentation evaluation:
+Based on actual technical documentation evaluation:
 
-| Metric | Base Model | Standard RAG | Improvement |
-|--------|------------|--------------|-------------|
-| BERT F1 Score | 0.72 | 0.83 | +15.3% |
-| Semantic Similarity | 0.68 | 0.82 | +20.6% |
-| Quality Retention | 0.65 | 0.80 | +23.1% |
-| Generation Time | 450ms | 650ms | -44.4% |
+| Metric | Base Model | Standard RAG | RAG Advantage |
+|--------|------------|--------------|---------------|
+| BERT F1 Score | 0.864 | 0.843 | -2.5% (slight trade-off) |
+| Semantic Similarity | 0.756 | 0.869 | +15.0% (better) |
+| Quality Retention | 76.0% | 88.0% | +15.8% (much more consistent) |
+| Generation Speed | 12.6s | 6.2s | +51% faster |
 
-**Key Insight**: RAG provides significant quality improvements for technical documentation at the cost of ~200ms retrieval overhead.
+**Key Insight**: RAG trades minimal quality (-2.5%) for significantly better consistency (+15.8%) and 2× faster generation, making it ideal for production use.
 
 ## 🔧 **Configuration**
 
@@ -137,7 +137,9 @@ autorag_results/
 └── high_quality_pairs.jsonl
 
 rag_store/
-├── qa_faiss_index.bin
+├── qa_faiss_index_cpu.bin     # CPU-compatible version
+├── qa_faiss_index_gpu.bin     # GPU-accelerated version  
+├── qa_faiss_index.bin         # Default (CPU) version
 ├── qa_metadata.json
 └── model_info.json
 ```
@@ -199,11 +201,11 @@ on:
 3. **Scale to Multiple Domains**: Expand beyond audio equipment manuals
 4. **Optimize Inference**: Implement caching and batch processing for production
 
-## 📚 **Additional Resources**
+## 📚 **Available Documentation**
 
-- [Domain Evaluation Framework](docs/domain_evaluation_framework.md)
-- [Architecture Overview](docs/architecture.md)  
-- [Training Dataset Generator](docs/training_dataset_generator.md)
+- [Q&A Generation Engine](docs/cli_pdf_qa.md) - PDF extraction and Q&A generation
+- [Quality-Based Selection](docs/qa_pair_selector.md) - Multi-metric quality assessment  
+- [Domain Evaluation](docs/domain_eval_gpu.md) - Domain-specific expertise measurement
 
 ## 🛠️ **Development**
 

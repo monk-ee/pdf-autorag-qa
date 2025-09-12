@@ -16,17 +16,17 @@ This documentation explains each component of the AutoRAG pipeline in technical 
 **Key Features**: Semantic scoring, deduplication, diversity preservation  
 **Output**: Top-K pairs (default: 50) with quality metadata
 
-### 3. [Vector Store Construction](qa_faiss_builder.md)
+### 3. Vector Store Construction (qa_faiss_builder.py)
 **Purpose**: Build GPU-accelerated FAISS indices for fast retrieval  
-**Key Features**: Dual CPU/GPU indices, hybrid search support, batch embedding  
+**Key Features**: Dual CPU/GPU indices, normalized embeddings, cosine similarity  
 **Output**: Searchable knowledge base with sub-millisecond queries
 
-### 4. [RAG Performance Evaluation](qa_autorag_evaluator.md)
+### 4. RAG Performance Evaluation (qa_autorag_evaluator.py)
 **Purpose**: Compare base vs RAG-enhanced model responses  
-**Key Features**: BERT-Score evaluation, confidence gating, retrieval analysis  
+**Key Features**: BERT-Score evaluation, semantic similarity, quality metrics  
 **Output**: Performance metrics and improvement quantification
 
-### 5. [Training Dataset Generation](training_dataset_generator.md)
+### 5. Training Dataset Generation (training_dataset_generator.py)
 **Purpose**: Convert evaluation results to production training data  
 **Key Features**: Performance-based filtering, quality scoring, format conversion  
 **Output**: High-quality JSONL training dataset
@@ -36,13 +36,9 @@ This documentation explains each component of the AutoRAG pipeline in technical 
 **Key Features**: Configurable domains, uncertainty analysis, technical term scoring  
 **Output**: Domain specialization effectiveness metrics
 
-## Architecture Documents
+## Available Components
 
-### [Pipeline Architecture](architecture.md)
-Complete system overview with data flow, technical stack, and design principles.
-
-### [Key Takeaways](takeaways.md)
-Production insights and optimization opportunities from real pipeline runs.
+All core pipeline components are implemented and ready for use. See individual documentation files linked above for detailed technical specifications and usage examples.
 
 ## Quick Navigation
 
