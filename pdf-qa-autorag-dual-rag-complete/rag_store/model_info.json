@@ -1,26 +1,9 @@
 {
   "embedding_model": "all-MiniLM-L6-v2",
   "dimension": 384,
-  "total_vectors": 44,
+  "num_vectors": 50,
   "index_type": "IndexFlatIP",
-  "similarity_metric": "cosine",
-  "normalized": true,
-  "gpu_available": false,
-  "adaptive_enabled": true,
-  "created_indices": {
-    "standard_cpu": "rag_store/qa_faiss_index_standard_cpu.bin",
-    "adaptive_cpu": "rag_store/qa_faiss_index_adaptive_cpu.bin"
-  },
-  "rag_approaches": {
-    "standard": {
-      "description": "Traditional RAG using answer embeddings only",
-      "embedding_strategy": "answer_text_only",
-      "use_case": "Fast retrieval, direct answer matching"
-    },
-    "adaptive": {
-      "description": "Enhanced RAG using combined Q+A embeddings",
-      "embedding_strategy": "question_answer_combined",
-      "use_case": "Context-aware retrieval, better semantic matching"
-    }
-  }
+  "device_used": "cuda",
+  "build_time_seconds": 0.24548625946044922,
+  "normalized": true
 }

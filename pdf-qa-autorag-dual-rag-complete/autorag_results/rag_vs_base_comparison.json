@@ -1,0 +1,219 @@
+{
+  "metadata": {
+    "analysis_type": "rag_vs_base_comparison",
+    "rag_results_dir": "autorag_results/standard_rag",
+    "base_results_dir": "autorag_results/base_model",
+    "timestamp": "2025-09-11T23:50:57.861882"
+  },
+  "metrics_comparison": {
+    "standard_rag": {
+      "approach": "standard_rag",
+      "total_pairs_evaluated": 50,
+      "avg_similarity_score": 0,
+      "avg_bert_score": 0,
+      "high_quality_pairs": 0,
+      "quality_retention_rate": 0,
+      "avg_context_relevance": 0,
+      "retrieval_time_ms": 0,
+      "generation_time_ms": 0,
+      "overall_score": 0.0
+    },
+    "base_model": {
+      "approach": "base_model",
+      "total_pairs_evaluated": 50,
+      "avg_similarity_score": 0.7562545049190521,
+      "avg_bert_score": 0.8599796879291535,
+      "high_quality_pairs": 42,
+      "quality_retention_rate": 0.84,
+      "avg_context_relevance": "N/A",
+      "retrieval_time_ms": 0,
+      "generation_time_ms": 774798.3884811401,
+      "overall_score": 0.8144936771392823
+    },
+    "differences": {
+      "avg_similarity_score": {
+        "rag": 0,
+        "base": 0.7562545049190521,
+        "improvement_percent": -100.0,
+        "better_approach": "base"
+      },
+      "avg_bert_score": {
+        "rag": 0,
+        "base": 0.8599796879291535,
+        "improvement_percent": -100.0,
+        "better_approach": "base"
+      },
+      "high_quality_pairs": {
+        "rag": 0,
+        "base": 42,
+        "improvement_percent": -100.0,
+        "better_approach": "base"
+      },
+      "quality_retention_rate": {
+        "rag": 0,
+        "base": 0.84,
+        "improvement_percent": -100.0,
+        "better_approach": "base"
+      }
+    }
+  },
+  "approach_analysis": {
+    "standard_rag": {
+      "description": "RAG using curated Q&A knowledge base with FAISS vector retrieval",
+      "strengths": [
+        "Access to specific domain knowledge",
+        "Contextual information for accurate answers",
+        "Reduced hallucination with grounded responses",
+        "Consistent performance on domain-specific queries"
+      ],
+      "weaknesses": [
+        "Additional retrieval latency",
+        "Dependent on quality of knowledge base",
+        "May miss general knowledge outside corpus",
+        "Requires vector index maintenance"
+      ],
+      "best_use_cases": [
+        "Domain-specific question answering",
+        "Technical documentation queries",
+        "Factual information retrieval",
+        "Knowledge base applications"
+      ]
+    },
+    "base_model": {
+      "description": "Base language model using only pre-trained knowledge",
+      "strengths": [
+        "Faster response time (no retrieval)",
+        "Broad general knowledge coverage",
+        "Simple architecture and deployment",
+        "No external knowledge base required"
+      ],
+      "weaknesses": [
+        "Potential hallucination without grounding",
+        "Limited domain-specific knowledge",
+        "Knowledge cutoff limitations",
+        "Inconsistent factual accuracy"
+      ],
+      "best_use_cases": [
+        "General conversation and reasoning",
+        "Creative writing and ideation",
+        "Quick responses without retrieval overhead",
+        "Exploratory or open-ended queries"
+      ]
+    }
+  },
+  "recommendations": {
+    "overall_winner": "base",
+    "performance_improvement": "-100.0%",
+    "use_rag_when": [
+      "Domain-specific accuracy is critical",
+      "Grounded responses are required",
+      "Working with technical documentation",
+      "Factual correctness is more important than speed"
+    ],
+    "use_base_when": [
+      "Speed is more important than domain accuracy",
+      "General knowledge queries",
+      "Creative or open-ended tasks",
+      "Simple deployment is preferred"
+    ],
+    "key_insights": [
+      "RAG provides -100.0% improvement in BERT F1 score",
+      "Quality retention rate improves by -100.0% with RAG",
+      "RAG shows consistent advantage for domain-specific technical queries",
+      "Base model suitable for general knowledge but less reliable for technical facts"
+    ]
+  },
+  "summary": {
+    "winner": "base",
+    "key_finding": "RAG provides -100.0% overall performance improvement",
+    "recommendation_summary": "Recommend Base model for general applications"
+  },
+  "question_level_analysis": {
+    "total_questions_compared": 50,
+    "rag_wins": 0,
+    "base_wins": 50,
+    "rag_win_rate": 0.0,
+    "detailed_comparisons": [
+      {
+        "question": "When storing a preset in Preset mode, what exactly is saved, and what is not saved?",
+        "rag_similarity": 0,
+        "base_similarity": 0.7556507587432861,
+        "rag_bert_f1": 0,
+        "base_bert_f1": 0.8707307577133179,
+        "rag_wins": false
+      },
+      {
+        "question": "How do the Bass and Treble knobs interact with each other, and what is the effect of turning them up all the way to the left?",
+        "rag_similarity": 0,
+        "base_similarity": 0.7677832841873169,
+        "rag_bert_f1": 0,
+        "base_bert_f1": 0.8584575653076172,
+        "rag_wins": false
+      },
+      {
+        "question": "What is the difference between the Output control and the Volume control, and how do they affect the overall sound?",
+        "rag_similarity": 0,
+        "base_similarity": 0.7076666951179504,
+        "rag_bert_f1": 0,
+        "base_bert_f1": 0.8534055352210999,
+        "rag_wins": false
+      },
+      {
+        "question": "What is the function of the Bass and Treble knobs on the Ruby '63 Top Boost Amplifier?",
+        "rag_similarity": 0,
+        "base_similarity": 0.7388210296630859,
+        "rag_bert_f1": 0,
+        "base_bert_f1": 0.8552952408790588,
+        "rag_wins": false
+      },
+      {
+        "question": "What is the primary purpose of the UAFX Ruby '63 Top Boost Amplifier pedal, and what kind of tones can it deliver?",
+        "rag_similarity": 0,
+        "base_similarity": 0.8091275691986084,
+        "rag_bert_f1": 0,
+        "base_bert_f1": 0.8647213578224182,
+        "rag_wins": false
+      },
+      {
+        "question": "What sets the Ruby '63 apart from other amp modelers, and what are some of its key features?",
+        "rag_similarity": 0,
+        "base_similarity": 0.7748507261276245,
+        "rag_bert_f1": 0,
+        "base_bert_f1": 0.856537938117981,
+        "rag_wins": false
+      },
+      {
+        "question": "How does the Ruby '63 pedal's dual-engine processing work, and what are the benefits of this design?",
+        "rag_similarity": 0,
+        "base_similarity": 0.771732747554779,
+        "rag_bert_f1": 0,
+        "base_bert_f1": 0.8726239204406738,
+        "rag_wins": false
+      },
+      {
+        "question": "How can users customize and expand the capabilities of the Ruby '63 pedal, and what is the UAFX Control app used for?",
+        "rag_similarity": 0,
+        "base_similarity": 0.8735783696174622,
+        "rag_bert_f1": 0,
+        "base_bert_f1": 0.8673601150512695,
+        "rag_wins": false
+      },
+      {
+        "question": "Why do the Bass and Treble knobs cut bass and treble frequencies as you rotate them clockwise?",
+        "rag_similarity": 0,
+        "base_similarity": 0.7074078321456909,
+        "rag_bert_f1": 0,
+        "base_bert_f1": 0.855534017086029,
+        "rag_wins": false
+      },
+      {
+        "question": "How can you use the UAFX Control mobile app to customize the operation of the Ruby '63 Top Boost Amplifier's footswitches?",
+        "rag_similarity": 0,
+        "base_similarity": 0.7353031635284424,
+        "rag_bert_f1": 0,
+        "base_bert_f1": 0.8627597093582153,
+        "rag_wins": false
+      }
+    ]
+  }
+}

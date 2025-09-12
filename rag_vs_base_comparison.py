@@ -55,18 +55,18 @@ class RAGvsBaseComparison:
         rag_summary = rag_results['evaluation_summary']
         base_summary = base_results['evaluation_summary']
         
-        # Extract key metrics
+        # Extract key metrics with correct field names
         comparison_metrics = {
             'avg_similarity_score': self.calculate_improvement(
-                rag_summary.get('avg_similarity_score', 0),
-                base_summary.get('avg_similarity_score', 0)
+                rag_summary.get('average_semantic_similarity', rag_summary.get('avg_similarity_score', 0)),
+                base_summary.get('average_semantic_similarity', base_summary.get('avg_similarity_score', 0))
             ),
             'avg_bert_score': self.calculate_improvement(
-                rag_summary.get('avg_bert_score', 0),
-                base_summary.get('avg_bert_score', 0)
+                rag_summary.get('average_quality_score', rag_summary.get('avg_bert_score', 0)),
+                base_summary.get('average_bert_score', base_summary.get('avg_bert_score', 0))
             ),
             'high_quality_pairs': self.calculate_improvement(
-                rag_summary.get('high_quality_pairs', 0),
+                rag_summary.get('successful_evaluations', rag_summary.get('high_quality_pairs', 0)),
                 base_summary.get('high_quality_pairs', 0)
             ),
             'quality_retention_rate': self.calculate_improvement(
@@ -84,16 +84,16 @@ class RAGvsBaseComparison:
                 'better_approach': 'rag'
             }
         
-        # Calculate performance scores for each approach
+        # Calculate performance scores for each approach using correct field names
         rag_score = (
-            rag_summary.get('avg_similarity_score', 0) * 0.4 +
-            rag_summary.get('avg_bert_score', 0) * 0.4 +
+            rag_summary.get('average_semantic_similarity', rag_summary.get('avg_similarity_score', 0)) * 0.4 +
+            rag_summary.get('average_quality_score', rag_summary.get('avg_bert_score', 0)) * 0.4 +
             rag_summary.get('quality_retention_rate', 0) * 0.2
         )
         
         base_score = (
-            base_summary.get('avg_similarity_score', 0) * 0.4 +
-            base_summary.get('avg_bert_score', 0) * 0.4 +
+            base_summary.get('average_semantic_similarity', base_summary.get('avg_similarity_score', 0)) * 0.4 +
+            base_summary.get('average_bert_score', base_summary.get('avg_bert_score', 0)) * 0.4 +
             base_summary.get('quality_retention_rate', 0) * 0.2
         )
         
@@ -112,9 +112,9 @@ class RAGvsBaseComparison:
                 'standard_rag': {
                     'approach': 'standard_rag',
                     'total_pairs_evaluated': rag_summary.get('total_pairs_evaluated', 0),
-                    'avg_similarity_score': rag_summary.get('avg_similarity_score', 0),
-                    'avg_bert_score': rag_summary.get('avg_bert_score', 0),
-                    'high_quality_pairs': rag_summary.get('high_quality_pairs', 0),
+                    'avg_similarity_score': rag_summary.get('average_semantic_similarity', rag_summary.get('avg_similarity_score', 0)),
+                    'avg_bert_score': rag_summary.get('average_quality_score', rag_summary.get('avg_bert_score', 0)),
+                    'high_quality_pairs': rag_summary.get('successful_evaluations', rag_summary.get('high_quality_pairs', 0)),
                     'quality_retention_rate': rag_summary.get('quality_retention_rate', 0),
                     'avg_context_relevance': rag_summary.get('avg_context_relevance', 0),
                     'retrieval_time_ms': rag_summary.get('retrieval_time_ms', 0),
@@ -124,8 +124,8 @@ class RAGvsBaseComparison:
                 'base_model': {
                     'approach': 'base_model',
                     'total_pairs_evaluated': base_summary.get('total_pairs_evaluated', 0),
-                    'avg_similarity_score': base_summary.get('avg_similarity_score', 0),
-                    'avg_bert_score': base_summary.get('avg_bert_score', 0),
+                    'avg_similarity_score': base_summary.get('average_semantic_similarity', base_summary.get('avg_similarity_score', 0)),
+                    'avg_bert_score': base_summary.get('average_bert_score', base_summary.get('avg_bert_score', 0)),
                     'high_quality_pairs': base_summary.get('high_quality_pairs', 0),
                     'quality_retention_rate': base_summary.get('quality_retention_rate', 0),
                     'avg_context_relevance': 'N/A',

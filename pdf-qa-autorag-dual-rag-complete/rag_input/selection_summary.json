@@ -1,18 +1,19 @@
 {
-  "total_pairs": 44,
-  "selected_pairs": 44,
+  "total_pairs": 237,
+  "selected_pairs": 50,
   "top_k_requested": 50,
   "quality_score_range": {
-    "min": 0.5,
+    "min": 1.0,
     "max": 1.0,
-    "avg": 0.8363636363636366
+    "avg": 1.0
   },
   "matrix_distribution": {
-    "intermediate_high_creativity_20250909": 16,
-    "basic_high_creativity_20250909": 4,
-    "advanced_balanced_20250909": 4,
-    "intermediate_balanced_20250909": 12,
-    "advanced_high_creativity_20250909": 4,
-    "basic_balanced_20250909": 4
+    "intermediate_conservative_20250911": 3,
+    "basic_high_creativity_20250911": 1,
+    "intermediate_high_creativity_20250911": 20,
+    "advanced_balanced_20250911": 14,
+    "advanced_balanced_20250909": 1,
+    "advanced_high_creativity_20250909": 1,
+    "advanced_high_creativity_20250911": 10
   }
 }

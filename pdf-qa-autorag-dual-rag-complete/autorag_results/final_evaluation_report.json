@@ -1,10 +1,10 @@
 {
   "pipeline_summary": {
-    "total_matrix_combinations": 6,
-    "total_evaluated_pairs": 44,
-    "successful_evaluations": 44,
-    "high_quality_pairs": 29,
-    "quality_retention_rate": 0.6590909090909091
+    "total_matrix_combinations": 7,
+    "total_evaluated_pairs": 50,
+    "successful_evaluations": 50,
+    "high_quality_pairs": 40,
+    "quality_retention_rate": 0.8
   },
   "quality_thresholds": {
     "minimum_similarity": 0.3,
@@ -15,105 +15,108 @@
   },
   "matrix_performance": {
     "advanced_high_creativity_20250909": {
-      "count": 2,
+      "count": 1,
       "quality_scores": [
-        0.9999999999999999,
-        1.0000000715255737
+        0.9999999999999999
       ],
-      "avg_quality": 1.0000000357627867,
+      "avg_quality": 0.9999999999999999,
       "avg_length_ratio": 1.0,
       "avg_completeness": 1.0
     },
-    "advanced_balanced_20250909": {
-      "count": 3,
+    "intermediate_conservative_20250911": {
+      "count": 1,
       "quality_scores": [
-        0.9489231372636462,
-        0.7463918389955748,
-        0.9999999999999999
+        0.9144554124378448
       ],
-      "avg_quality": 0.8984383254197402,
-      "avg_length_ratio": 1.0053606237816763,
-      "avg_completeness": 0.7171893147502905
+      "avg_quality": 0.9144554124378448,
+      "avg_length_ratio": 1.9444444444444444,
+      "avg_completeness": 0.4788732394366197
     },
-    "intermediate_high_creativity_20250909": {
-      "count": 8,
+    "advanced_high_creativity_20250911": {
+      "count": 9,
       "quality_scores": [
-        0.7157225656509398,
-        0.9122652382097746,
-        0.9546306320908783,
-        0.8606794595718382,
-        0.9042336463928222,
-        0.9704937654992808,
-        0.9489818572998048,
-        0.8540091359097024
+        0.9567532045190985,
+        1.0000001430511476,
+        0.9999999999999999,
+        0.9742439792269751,
+        0.9858992559569223,
+        0.5900225250804102,
+        0.8995260639697884,
+        0.9999999999999999,
+        0.7250645335848243
       ],
-      "avg_quality": 0.8901270375781303,
-      "avg_length_ratio": 1.198497262177182,
-      "avg_completeness": 0.7538463438735178
+      "avg_quality": 0.9035010783765741,
+      "avg_length_ratio": 1.0557162493909482,
+      "avg_completeness": 0.7773597359158989
     },
-    "basic_balanced_20250909": {
-      "count": 4,
+    "intermediate_high_creativity_20250911": {
+      "count": 18,
       "quality_scores": [
-        0.9206041380791437,
-        0.6214671627680461,
-        0.9999999642372132,
-        0.9385989314033872
-      ],
-      "avg_quality": 0.8701675491219475,
-      "avg_length_ratio": 1.0547619047619048,
-      "avg_completeness": 0.7494444444444445
-    },
-    "intermediate_balanced_20250909": {
-      "count": 10,
-      "quality_scores": [
-        0.7295854954719543,
-        0.8097077880766395,
-        0.6080257862401763,
-        0.861916531402632,
-        0.9354722213745117,
+        0.8172435917184504,
+        0.8980522200087426,
+        0.9880868818798167,
+        0.9999999999999999,
+        0.9331039394334304,
+        0.910619650105669,
+        0.5665437237421671,
+        0.9378129320390513,
+        0.9999999999999999,
+        0.9676056428694388,
+        0.9604771134955576,
+        0.9646191490002167,
         1.0000000715255737,
-        0.9131921615054013,
-        0.877859855719975,
-        0.9057666669214579,
-        0.9529659345036461
+        0.8611361322402955,
+        0.5235345789880463,
+        0.9382872947759406,
+        0.9281976377134358,
+        0.942010009223557
       ],
-      "avg_quality": 0.8594492512741969,
-      "avg_length_ratio": 1.0784704815980894,
-      "avg_completeness": 0.6922613556635295
+      "avg_quality": 0.8965183649310773,
+      "avg_length_ratio": 1.2416652978804636,
+      "avg_completeness": 0.7337844701987543
     },
-    "basic_high_creativity_20250909": {
-      "count": 2,
+    "advanced_balanced_20250911": {
+      "count": 11,
       "quality_scores": [
+        0.9393716223725466,
+        0.6670427993627696,
         0.9999999642372132,
-        0.6697516995807027
+        0.7670475574043708,
+        0.5289219956767278,
+        0.8666476051505684,
+        0.9999999999999999,
+        0.8761992787847332,
+        0.9331280094927007,
+        0.9999999999999999,
+        0.8116339083818289
       ],
-      "avg_quality": 0.834875831908958,
-      "avg_length_ratio": 1.0625,
-      "avg_completeness": 0.6395348837209303
+      "avg_quality": 0.8536357037148599,
+      "avg_length_ratio": 1.068709392416819,
+      "avg_completeness": 0.6565216653692355
     }
   },
   "recommendations": {
     "best_matrix_combinations": [
       {
         "combination": "advanced_high_creativity_20250909",
-        "avg_quality": 1.0000000357627867,
-        "pair_count": 2,
+        "avg_quality": 0.9999999999999999,
+        "pair_count": 1,
         "avg_length_ratio": 1.0,
         "avg_completeness": 1.0
       },
       {
-        "combination": "advanced_balanced_20250909",
-        "avg_quality": 0.8984383254197402,
-        "pair_count": 3,
-        "avg_length_ratio": 1.0053606237816763,
-        "avg_completeness": 0.7171893147502905
+        "combination": "intermediate_conservative_20250911",
+        "avg_quality": 0.9144554124378448,
+        "pair_count": 1,
+        "avg_length_ratio": 1.9444444444444444,
+        "avg_completeness": 0.4788732394366197
       },
       {
-        "combination": "intermediate_high_creativity_20250909",
-        "avg_quality": 0.8901270375781303,
-        "pair_count": 8,
-        "avg_length_ratio": 1.198497262177182,
-        "avg_completeness": 0.7538463438735178
+        "combination": "advanced_high_creativity_20250911",
+        "avg_quality": 0.9035010783765741,
+        "pair_count": 9,
+        "avg_length_ratio": 1.0557162493909482,
+        "avg_completeness": 0.7773597359158989
       }
     ],
     "suggested_improvements": [
@@ -121,9 +124,9 @@
     ]
   },
   "dataset_statistics": {
-    "total_training_pairs": 29,
-    "avg_question_length": 12.137931034482758,
-    "avg_answer_length": 27.137931034482758,
-    "avg_quality_score": 0.8814222662571555
+    "total_training_pairs": 40,
+    "avg_question_length": 24.425,
+    "avg_answer_length": 65.75,
+    "avg_quality_score": 0.8893322106862465
   }
 }
