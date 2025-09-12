@@ -299,20 +299,112 @@ def main():
         
         logger.info(f"✅ Comparison report saved to: {output_path}")
         
-        # Print summary
+        # Print comprehensive analysis
         summary = comparison_report['summary']
         metrics = comparison_report['metrics_comparison']
+        diffs = comparison_report['metrics_comparison']['differences']
         
-        print(f"\n🎯 RAG vs BASE MODEL COMPARISON")
-        print(f"===============================")
-        print(f"Overall Winner: {summary['winner'].upper()}")
-        print(f"Key Finding: {summary['key_finding']}")
-        print(f"Recommendation: {summary['recommendation_summary']}")
-        print(f"\n📊 Performance Metrics:")
-        print(f"RAG BERT F1: {metrics['standard_rag']['avg_bert_score']:.3f}")
-        print(f"Base BERT F1: {metrics['base_model']['avg_bert_score']:.3f}")
-        print(f"RAG Quality Rate: {metrics['standard_rag']['quality_retention_rate']:.3f}")
-        print(f"Base Quality Rate: {metrics['base_model']['quality_retention_rate']:.3f}")
+        print(f"\n🏆 RAG vs BASE MODEL EVALUATION RESULTS")
+        print(f"========================================")
+        print(f"")
+        print(f"🎯 OVERALL WINNER: {summary['winner'].upper()} ({summary['key_finding']})")
+        
+        # Performance comparison table
+        print(f"\n📊 DETAILED PERFORMANCE BREAKDOWN:")
+        print(f"==================================")
+        print(f"")
+        print(f"{'Metric':<25} {'RAG':<10} {'Base':<10} {'Improvement':<12} {'Winner':<8}")
+        print(f"{'-'*65}")
+        
+        rag_bert = metrics['standard_rag']['avg_bert_score']
+        base_bert = metrics['base_model']['avg_bert_score'] 
+        bert_diff = diffs['avg_bert_score']['improvement_percent']
+        bert_winner = "🏆 RAG" if bert_diff > 0 else "🏆 BASE"
+        print(f"{'BERT F1 Score':<25} {rag_bert:<10.3f} {base_bert:<10.3f} {bert_diff:+8.1f}% {bert_winner:<8}")
+        
+        rag_qual = metrics['standard_rag']['quality_retention_rate']
+        base_qual = metrics['base_model']['quality_retention_rate']
+        qual_diff = diffs['quality_retention_rate']['improvement_percent'] 
+        qual_winner = "🏆 RAG" if qual_diff > 0 else "🏆 BASE"
+        print(f"{'Quality Rate':<25} {rag_qual:<10.3f} {base_qual:<10.3f} {qual_diff:+8.1f}% {qual_winner:<8}")
+        
+        rag_sim = metrics['standard_rag']['avg_similarity_score']
+        base_sim = metrics['base_model']['avg_similarity_score']
+        sim_diff = diffs['avg_similarity_score']['improvement_percent']
+        sim_winner = "🏆 RAG" if sim_diff > 0 else "🏆 BASE" 
+        print(f"{'Semantic Similarity':<25} {rag_sim:<10.3f} {base_sim:<10.3f} {sim_diff:+8.1f}% {sim_winner:<8}")
+        
+        print(f"\n⚡ PERFORMANCE & SPEED:")
+        print(f"======================")
+        rag_gen_time = comparison_report.get('rag_generation_time_ms', 0) / 1000
+        base_gen_time = metrics['base_model']['generation_time_ms'] / 1000 / metrics['base_model']['total_pairs_evaluated']
+        if base_gen_time > 0 and rag_gen_time > 0:
+            speed_improvement = ((base_gen_time - rag_gen_time) / base_gen_time) * 100
+            faster = "🏆 RAG" if speed_improvement > 0 else "🏆 BASE"
+            print(f"{'Generation Speed':<25} {rag_gen_time:<10.1f}s {base_gen_time:<10.1f}s {speed_improvement:+8.1f}% {faster:<8}")
+        
+        print(f"\n🎯 KEY INSIGHTS:")
+        print(f"===============")
+        
+        # Determine the story
+        if bert_diff > -5 and qual_diff > 10:
+            print(f"✅ RAG SUCCESS: Near-equal accuracy (+{bert_diff:.1f}%) with {qual_diff:+.1f}% better consistency")
+            print(f"   → RAG provides more reliable answers with minimal quality trade-off")
+        elif bert_diff < -10 and qual_diff > 15:
+            print(f"⚖️  RELIABILITY vs QUALITY: RAG trades {abs(bert_diff):.1f}% quality for {qual_diff:+.1f}% consistency")
+            print(f"   → Choose RAG for consistent user experience, Base for peak quality")
+        elif bert_diff > 5:
+            print(f"🚀 RAG DOMINANCE: {bert_diff:+.1f}% better quality AND {qual_diff:+.1f}% better consistency")
+            print(f"   → RAG clearly outperforms base model across all metrics")
+        else:
+            print(f"📊 MIXED RESULTS: Quality {bert_diff:+.1f}%, Consistency {qual_diff:+.1f}%")
+        
+        print(f"\n🎯 BUSINESS IMPACT:")
+        print(f"==================")
+        if qual_diff > 10:
+            user_satisfaction = "📈 Higher user satisfaction (more consistent answers)"
+        else:
+            user_satisfaction = "📊 Similar user satisfaction" 
+            
+        if speed_improvement > 20:
+            cost_impact = "💰 Lower compute costs (faster responses)"
+        else:
+            cost_impact = "💰 Similar compute costs"
+            
+        print(f"• {user_satisfaction}")
+        print(f"• {cost_impact}")
+        
+        accuracy_trade = abs(bert_diff)
+        if accuracy_trade < 5:
+            accuracy_impact = "Minimal accuracy trade-off"
+        elif accuracy_trade < 10:
+            accuracy_impact = f"Small accuracy trade-off ({accuracy_trade:.1f}%)"
+        else:
+            accuracy_impact = f"Notable accuracy trade-off ({accuracy_trade:.1f}%)"
+        print(f"• 🎯 {accuracy_impact}")
+        
+        print(f"\n🚀 DEPLOYMENT RECOMMENDATION:")
+        print(f"=============================")
+        if summary['winner'] == 'rag':
+            print(f"✅ DEPLOY RAG - Better overall performance")
+            if qual_diff > 15:
+                print(f"   📌 Primary benefit: {qual_diff:+.1f}% more consistent answers")
+            if speed_improvement > 20:
+                print(f"   📌 Secondary benefit: {speed_improvement:+.1f}% faster responses")
+        else:
+            print(f"✅ DEPLOY BASE MODEL - Simpler but effective")
+            print(f"   📌 Primary benefit: {abs(bert_diff):.1f}% higher peak quality")
+            print(f"   ⚠️  Consider RAG for: consistency-critical applications")
+        
+        print(f"\n💡 NEXT STEPS:")
+        if summary['winner'] == 'rag':
+            print(f"1. Deploy RAG system in production")
+            print(f"2. Monitor quality retention rate (target: >{rag_qual:.0%})")
+            print(f"3. A/B test with base model on non-critical queries")
+        else:
+            print(f"1. Deploy base model for general queries") 
+            print(f"2. Consider RAG for domain-specific questions")
+            print(f"3. Monitor consistency issues in user feedback")
         
     except Exception as e:
         logger.error(f"❌ Error during comparison: {e}")

@@ -80,18 +80,44 @@ def build_qa_vector_store(qa_pairs_file: Path,
     print("🔧 Normalizing embeddings...")
     faiss.normalize_L2(embeddings)
     
-    # Build FAISS index
-    print("\n🏗️ Building FAISS index...")
+    # Build FAISS indices (CPU and GPU versions)
+    print("\n🏗️ Building FAISS indices...")
     dimension = embeddings.shape[1]
-    index = faiss.IndexFlatIP(dimension)  # Inner product for normalized vectors = cosine similarity
-    index.add(embeddings)
     
-    print(f"✅ FAISS index built with {index.ntotal} vectors")
+    # CPU version (always works)
+    cpu_index = faiss.IndexFlatIP(dimension)  # Inner product for normalized vectors = cosine similarity
+    cpu_index.add(embeddings)
+    print(f"✅ CPU FAISS index built with {cpu_index.ntotal} vectors")
     
-    # Save FAISS index
-    index_path = output_dir / 'qa_faiss_index.bin'
-    faiss.write_index(index, str(index_path))
-    print(f"💾 FAISS index saved: {index_path}")
+    # Save CPU index
+    cpu_index_path = output_dir / 'qa_faiss_index_cpu.bin'
+    faiss.write_index(cpu_index, str(cpu_index_path))
+    print(f"💾 CPU FAISS index saved: {cpu_index_path}")
+    
+    # GPU version (if GPU available)
+    gpu_index_path = output_dir / 'qa_faiss_index_gpu.bin'
+    if device == 'cuda' and faiss.get_num_gpus() > 0:
+        try:
+            print("🚀 Creating GPU FAISS index...")
+            res = faiss.StandardGpuResources()
+            gpu_index = faiss.index_cpu_to_gpu(res, 0, cpu_index)
+            
+            # Convert back to CPU for saving
+            gpu_index_cpu = faiss.index_gpu_to_cpu(gpu_index)
+            faiss.write_index(gpu_index_cpu, str(gpu_index_path))
+            print(f"💾 GPU FAISS index saved: {gpu_index_path}")
+        except Exception as e:
+            print(f"⚠️ GPU index creation failed: {e}")
+            print("🔄 Copying CPU index as GPU fallback...")
+            faiss.write_index(cpu_index, str(gpu_index_path))
+    else:
+        print("🔄 No GPU available, copying CPU index as GPU fallback...")
+        faiss.write_index(cpu_index, str(gpu_index_path))
+    
+    # Default index (backwards compatibility)
+    default_index_path = output_dir / 'qa_faiss_index.bin'
+    faiss.write_index(cpu_index, str(default_index_path))
+    print(f"💾 Default FAISS index saved: {default_index_path}")
     
     # Save metadata
     metadata_path = output_dir / 'qa_metadata.json'
