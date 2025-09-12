@@ -55,6 +55,16 @@ class RAGvsBaseComparison:
         rag_summary = rag_results['evaluation_summary']
         base_summary = base_results['evaluation_summary']
         
+        # Calculate quality retention rate for RAG if not present
+        if 'quality_retention_rate' not in rag_summary:
+            rag_detailed = rag_results.get('detailed_results', [])
+            if rag_detailed:
+                high_quality_count = sum(1 for result in rag_detailed 
+                                       if result.get('metrics', {}).get('quality_score', 0) > 0.7)
+                rag_summary['quality_retention_rate'] = high_quality_count / len(rag_detailed)
+            else:
+                rag_summary['quality_retention_rate'] = 0
+        
         # Extract key metrics with correct field names
         comparison_metrics = {
             'avg_similarity_score': self.calculate_improvement(
