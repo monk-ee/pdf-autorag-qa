@@ -338,10 +338,13 @@ def main():
         print(f"======================")
         rag_gen_time = comparison_report.get('rag_generation_time_ms', 0) / 1000
         base_gen_time = metrics['base_model']['generation_time_ms'] / 1000 / metrics['base_model']['total_pairs_evaluated']
+        speed_improvement = 0  # Default value
         if base_gen_time > 0 and rag_gen_time > 0:
             speed_improvement = ((base_gen_time - rag_gen_time) / base_gen_time) * 100
             faster = "🏆 RAG" if speed_improvement > 0 else "🏆 BASE"
             print(f"{'Generation Speed':<25} {rag_gen_time:<10.1f}s {base_gen_time:<10.1f}s {speed_improvement:+8.1f}% {faster:<8}")
+        else:
+            print(f"{'Generation Speed':<25} {'N/A':<10} {'N/A':<10} {'N/A':<12} {'N/A':<8}")
         
         print(f"\n🎯 KEY INSIGHTS:")
         print(f"===============")
